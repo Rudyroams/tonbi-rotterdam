@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tonbi">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Tonbi · Rotterdam</title>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<style>
+#mapbox-map { width:100%; height:420px; }
+.mapboxgl-popup-content { border-radius:12px; padding:0; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.15); font-family:'DM Sans',sans-serif; min-width:180px; }
+.popup-img { width:100%; height:90px; object-fit:cover; display:block; }
+.popup-body { padding:0.75rem; }
+.popup-num { font-size:0.6rem; font-weight:700; color:#ff6b35; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; }
+.popup-name { font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; margin-bottom:0.2rem; }
+.popup-tag { font-size:0.72rem; color:#6e6e73; line-height:1.4; }
+.popup-btn { display:block; background:#ff6b35; color:#fff; text-align:center; padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:800; text-decoration:none; cursor:pointer; border:none; width:100%; margin-top:0.5rem; border-radius:8px; }
+.mapboxgl-ctrl-logo { display:none !important; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f7f5;
+  --white: #ffffff;
+  --black: #111111;
+  --text: #1c1c1e;
+  --text2: #6e6e73;
+  --border: #e5e5ea;
+  --orange: #ff6b35;
+  --orange-light: #fff3ee;
+  --blue: #2d6be4;
+  --blue-light: #eef3fd;
+  --green: #34c759;
+  --green-light: #edfaf2;
+  --red-light: #ffeef0;
+  --red: #ff3b30;
+  --yellow: #ffcc00;
+  --yellow-light: #fffbe6;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100svh; overflow-x:hidden; }
+
+/* ── PASSWORD ── */
+#pw-screen {
+  position:fixed; inset:0; background:var(--white);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  z-index:9999; padding:2.5rem 2rem; transition:opacity 0.5s, transform 0.5s;
+}
+#pw-screen.exit { opacity:0; transform:scale(0.97); pointer-events:none; }
+.pw-logo { width:80px; height:80px; border-radius:22px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin-bottom:1.25rem; box-shadow:0 8px 24px rgba(255,107,53,0.35); animation:float 3s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.pw-wordmark { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:var(--text); letter-spacing:-0.02em; }
+.pw-city { font-size:0.8rem; color:var(--text2); margin-bottom:2.5rem; }
+.pw-field { width:100%; max-width:320px; background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.9rem 1.25rem; font-family:'DM Sans',sans-serif; font-size:1rem; text-align:center; outline:none; transition:border-color 0.2s; margin-bottom:0.75rem; display:block; color:var(--text); }
+.pw-field:focus { border-color:var(--orange); }
+.pw-btn { width:100%; max-width:320px; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; box-shadow:0 4px 16px rgba(255,107,53,0.3); display:block; }
+.pw-btn:hover { transform:translateY(-1px); }
+.pw-error { color:var(--red); font-size:0.8rem; margin-top:0.6rem; height:1rem; text-align:center; }
+
+/* ── APP ── */
+#app { display:none; }
+#app.show { display:block; }
+
+/* ── HOME ── */
+#home-screen { min-height:100svh; padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+.home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:var(--white); }
+.home-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+.home-logo { display:flex; align-items:center; gap:0.6rem; }
+.home-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.home-logo-name { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:900; }
+.home-logo-sub { font-size:0.65rem; color:var(--text2); }
+.home-city-tag { background:var(--orange-light); color:var(--orange); font-size:0.7rem; font-weight:700; padding:0.35rem 0.75rem; border-radius:20px; }
+.hero-card { margin:0 1.25rem 1.25rem; border-radius:var(--radius); overflow:hidden; position:relative; box-shadow:var(--shadow-lg); }
+.hero-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%); padding:1.25rem; display:flex; flex-direction:column; justify-content:flex-end; }
+.hero-label { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:0.3rem; }
+.hero-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:#fff; line-height:1.1; }
+.hero-desc { font-size:0.8rem; color:rgba(255,255,255,0.75); margin-top:0.3rem; line-height:1.5; }
+.stats-row { display:flex; gap:0.75rem; margin:0 1.25rem 1.25rem; }
+.stat-card { flex:1; background:var(--white); border-radius:var(--radius-sm); padding:0.85rem 0.5rem; text-align:center; box-shadow:var(--shadow); }
+.stat-num { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; line-height:1; }
+.stat-lbl { font-size:0.6rem; color:var(--text2); margin-top:0.15rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
+.start-btn-wrap { margin:0 1.25rem 1.5rem; }
+.start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.3); transition:transform 0.15s; }
+.start-btn:hover { transform:translateY(-1px); }
+.section-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; padding:0 1.25rem; margin-bottom:0.75rem; }
+.stop-item { margin:0 1.25rem 0.75rem; background:var(--white); border-radius:var(--radius); display:flex; align-items:center; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; }
+.stop-item:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.stop-item-num { width:48px; flex-shrink:0; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; align-self:stretch; }
+.stop-item-img { width:80px; height:80px; object-fit:cover; flex-shrink:0; }
+.stop-item-body { flex:1; padding:0.75rem 1rem; }
+.stop-item-name { font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; margin-bottom:0.15rem; }
+.stop-item-tag { font-size:0.72rem; color:var(--text2); line-height:1.4; }
+.stop-item-badges { display:flex; gap:0.35rem; margin-top:0.4rem; }
+.pill { font-size:0.58rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:20px; text-transform:uppercase; letter-spacing:0.05em; }
+.pill-photo { background:var(--orange-light); color:var(--orange); }
+.pill-quiz { background:var(--blue-light); color:var(--blue); }
+.stop-item-arrow { color:var(--border); font-size:1rem; padding-right:1rem; }
+
+/* ── JOURNEY ── */
+#journey-screen { position:fixed; inset:0; background:var(--bg); display:none; flex-direction:column; z-index:200; }
+#journey-screen.show { display:flex; }
+.jt-bar { background:var(--white); padding:calc(0.9rem + env(safe-area-inset-top)) 1.25rem 0.5rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+.jt-bar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.45rem; }
+.jt-back { background:var(--bg); border:none; border-radius:20px; padding:0.4rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; color:var(--text2); cursor:pointer; }
+.jt-stop-label { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; }
+.jt-close { background:var(--bg); border:none; border-radius:50%; width:32px; height:32px; font-size:1rem; cursor:pointer; color:var(--text2); display:flex; align-items:center; justify-content:center; }
+.progress-dots { display:flex; gap:0.4rem; align-items:center; }
+.dot { height:4px; border-radius:4px; background:var(--border); transition:all 0.3s; width:8px; }
+.dot.active { background:var(--orange); width:20px; }
+.dot.done { background:var(--orange); opacity:0.4; }
+.card-viewport { flex:1; overflow:hidden; position:relative; }
+.card-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change:transform; }
+.card { min-width:100%; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:1.25rem; scroll-behavior:smooth; }
+.card.nav-card { padding:0; overflow:hidden; position:relative; }
+
+/* ── VIDEO CARD ── */
+.video-wrap {
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:#000;
+  margin-bottom:0.75rem;
+  position:relative;
+  aspect-ratio:16/9;
+  box-shadow:var(--shadow-lg);
+}
+/* Thumbnail + play button */
+.video-thumb {
+  position:absolute; inset:0;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity 0.3s;
+}
+.video-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.video-thumb-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; }
+.play-btn-circle {
+  width:64px; height:64px; border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  transition:transform 0.2s;
+}
+.video-thumb:hover .play-btn-circle { transform:scale(1.08); }
+.play-triangle { width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:20px solid var(--orange); margin-left:4px; }
+/* YouTube iframe */
+.video-iframe-wrap { position:absolute; inset:0; display:none; }
+.video-iframe-wrap iframe { width:100%; height:100%; border:none; }
+.video-iframe-wrap.active { display:block; }
+/* Skip link */
+.video-skip { font-size:0.75rem; color:var(--text2); text-align:center; margin-bottom:1rem; }
+.video-skip a { color:var(--blue); font-weight:500; text-decoration:none; cursor:pointer; }
+.video-skip a:hover { text-decoration:underline; }
+
+/* Arrival text section */
+.arrival-stop-num { font-size:0.7rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
+.arrival-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+.arrival-tagline { font-size:0.9rem; color:var(--text2); line-height:1.6; margin-bottom:1.25rem; }
+.arrival-map-btn { display:flex; align-items:center; gap:0.75rem; background:var(--white); border-radius:var(--radius-sm); padding:0.9rem 1rem; box-shadow:var(--shadow); text-decoration:none; color:var(--text); margin-bottom:0.75rem; transition:transform 0.15s; }
+.arrival-map-btn:hover { transform:translateY(-1px); }
+.arrival-map-icon { font-size:1.5rem; }
+.arrival-map-text strong { display:block; font-size:0.85rem; font-weight:700; }
+.arrival-map-text span { font-size:0.72rem; color:var(--text2); }
+.arrival-map-arrow { margin-left:auto; color:var(--blue); font-weight:700; }
+
+/* Text section (always visible below video) */
+.arrival-text-section { background:var(--white); border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow); margin-bottom:0.75rem; }
+.arrival-text-label { font-size:0.65rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.6rem; }
+.arrival-text-body { font-size:0.92rem; line-height:1.8; color:var(--text); font-weight:300; }
+
+/* ── OTHER CARD TYPES ── */
+.story-card-inner { background:var(--white); border-radius:var(--radius); padding:1.5rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+.story-avatar { width:44px; height:44px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:#fff; margin-bottom:1rem; }
+.story-from { font-size:0.65rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
+.story-text { font-size:0.92rem; line-height:1.75; color:var(--text); }
+.photo-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.photo-card-header { background:var(--orange); padding:1.25rem; }
+.photo-card-label { font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
+.photo-card-title { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; color:#fff; }
+.photo-card-body { padding:1.25rem; }
+.photo-card-desc { font-size:0.9rem; line-height:1.75; color:var(--text); margin-bottom:1rem; }
+.photo-tip-box { background:var(--yellow-light); border-radius:var(--radius-sm); padding:0.9rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; margin-bottom:1.25rem; }
+.photo-tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; }
+.photo-tip-text { font-size:0.82rem; line-height:1.6; color:var(--text); }
+.photo-tip-text strong { color:#996600; font-weight:700; display:block; margin-bottom:0.15rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; }
+.open-cam-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.open-cam-btn:hover { transform:translateY(-1px); }
+
+/* ── QUIZ ── */
+.quiz-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.quiz-card-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+.quiz-card-body { padding:1.25rem; }
+.quiz-card-label { font-size:0.65rem; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.6rem; }
+.quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; line-height:1.4; margin-bottom:1.1rem; }
+.quiz-opts { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
+.quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.85rem 1rem; font-size:0.88rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.75rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
+.quiz-o:hover:not([disabled]) { border-color:var(--blue); background:var(--blue-light); }
+.quiz-o.correct { background:var(--green-light); border-color:var(--green); }
+.quiz-o.wrong { background:var(--red-light); border-color:var(--red); }
+.quiz-o-icon { width:22px; height:22px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; font-weight:700; }
+.quiz-o.correct .quiz-o-icon { background:var(--green); color:#fff; }
+.quiz-o.wrong .quiz-o-icon { background:var(--red); color:#fff; }
+.quiz-result-box { border-radius:var(--radius-sm); padding:1rem; font-size:0.85rem; line-height:1.65; display:none; }
+.quiz-result-box.show { display:block; }
+.quiz-result-box.correct-res { background:var(--green-light); color:#1a6b2f; }
+.quiz-result-box.wrong-res { background:var(--red-light); color:#b31c13; }
+.quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
+
+/* ── CARD BOTTOM ── */
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.85rem 1.25rem calc(0.85rem + env(safe-area-inset-bottom)); display:flex; gap:0.75rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.85rem 1.25rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
+.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.85rem; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.card-next-btn:hover { transform:translateY(-1px); }
+.card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
+
+/* ── MAP ── */
+#map-screen { display:none; min-height:100svh; padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+#map-screen.show { display:block; }
+.map-top { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1rem; background:var(--white); border-bottom:1px solid var(--border); }
+.map-top-title { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; margin-bottom:0.2rem; }
+.map-top-sub { font-size:0.8rem; color:var(--text2); }
+.map-placeholder-box { margin:1.25rem; background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.map-placeholder-visual { background:linear-gradient(135deg,#e8f0fe,#d2e3fc); aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; }
+.map-placeholder-visual .icon { font-size:2.5rem; }
+.map-placeholder-visual .title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--blue); }
+.map-placeholder-visual .sub { font-size:0.78rem; color:#4a7fcb; max-width:220px; text-align:center; line-height:1.5; }
+.map-notice { margin:0 1.25rem 1.25rem; background:var(--blue-light); border-radius:var(--radius-sm); padding:0.85rem 1rem; font-size:0.8rem; color:var(--blue); font-weight:500; }
+.map-stops-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; padding:0 1.25rem; margin-bottom:0.75rem; }
+.map-pill { margin:0 1.25rem 0.6rem; background:var(--white); border-radius:var(--radius-sm); padding:0.85rem 1rem; display:flex; align-items:center; gap:0.75rem; box-shadow:var(--shadow); cursor:pointer; text-decoration:none; color:var(--text); transition:transform 0.15s; }
+.map-pill:hover { transform:translateY(-1px); }
+.map-pill-num { width:30px; height:30px; border-radius:50%; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:900; flex-shrink:0; }
+.map-pill-name { font-weight:700; font-size:0.88rem; flex:1; }
+.map-pill-addr { font-size:0.7rem; color:var(--text2); }
+.map-pill-link { font-size:0.75rem; color:var(--blue); font-weight:700; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-top:1px solid var(--border); display:flex; height:calc(68px + env(safe-area-inset-bottom)); padding-bottom:env(safe-area-inset-bottom); z-index:100; }
+.nav-btn { flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.25rem; color:var(--text2); cursor:pointer; transition:color 0.2s; padding-top:0.5rem; }
+.nav-btn.active { color:var(--orange); }
+.nav-icon { font-size:1.2rem; line-height:1; }
+.nav-lbl { font-size:0.55rem; letter-spacing:0.05em; font-weight:600; text-transform:uppercase; }
+
+/* ── CAMERA ── */
+#cam-overlay { position:fixed; inset:0; background:#000; z-index:800; display:none; flex-direction:column; }
+#cam-overlay.on { display:flex; }
+#cam-vid { flex:1; object-fit:cover; width:100%; }
+.cam-ui { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(1.5rem + env(safe-area-inset-bottom)); }
+.cam-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.cam-tip-box { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); padding:0.85rem 1rem; max-width:220px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.25); }
+.cam-tip-lbl { font-size:0.6rem; font-weight:700; text-transform:uppercase; color:var(--yellow); margin-bottom:0.25rem; letter-spacing:0.1em; }
+.cam-tip-txt { font-size:0.78rem; line-height:1.5; color:#fff; }
+.cam-x { background:rgba(255,255,255,0.2); border:none; color:#fff; font-size:1.2rem; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.cam-bottom { display:flex; justify-content:center; }
+.shutter { width:74px; height:74px; border-radius:50%; background:#fff; border:5px solid rgba(255,255,255,0.4); cursor:pointer; box-shadow:0 0 0 3px rgba(255,255,255,0.2); transition:transform 0.1s; }
+.shutter:active { transform:scale(0.9); }
+#preview-overlay { position:fixed; inset:0; background:#000; z-index:900; display:none; flex-direction:column; align-items:center; justify-content:center; padding:2rem; }
+#preview-overlay.on { display:flex; }
+#preview-img { max-width:100%; max-height:65vh; border-radius:var(--radius-sm); object-fit:contain; }
+.preview-row { margin-top:1.5rem; display:flex; gap:0.75rem; width:100%; max-width:320px; }
+.prev-btn { flex:1; padding:0.85rem; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; border-radius:var(--radius-sm); }
+.prev-btn.retake { background:rgba(255,255,255,0.15); color:#fff; }
+.prev-btn.save { background:var(--orange); color:#fff; }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD -->
+<div id="pw-screen">
+  <div class="pw-logo">🪁</div>
+  <div class="pw-wordmark">Tonbi</div>
+  <div class="pw-city">Rotterdam · Self-Guided Tour</div>
+  <div style="position:relative;width:100%;max-width:320px;margin-bottom:0.75rem;">
+    <input class="pw-field" type="password" id="pw-in" placeholder="Enter your access code"
+      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+      onkeydown="if(event.key==='Enter')unlock()" style="margin-bottom:0;padding-right:3rem;width:100%;">
+    <button onclick="togglePw()" id="pw-eye"
+      style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--text2);padding:0.25rem;">
+      👁
+    </button>
+  </div>
+  <div class="pw-error" id="pw-err"></div>
+  <button class="pw-btn" onclick="unlock()">Start the Tour 🪁</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="home-screen">
+    <div class="home-header">
+      <div class="home-header-top">
+        <div class="home-logo">
+          <div class="home-logo-icon">🪁</div>
+          <div><div class="home-logo-name">Tonbi</div><div class="home-logo-sub">Self-Guided Tour</div></div>
+        </div>
+        <div class="home-city-tag">Rotterdam 🇳🇱</div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <img class="hero-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Rotterdam">
+      <div class="hero-overlay">
+        <div class="hero-label">Walking Tour</div>
+        <div class="hero-title">Rotterdam</div>
+        <div class="hero-desc">Harbors, architecture & stories by a local filmmaker</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Stops</div></div>
+      <div class="stat-card"><div class="stat-num">2h</div><div class="stat-lbl">Duration</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Quizzes</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Challenges</div></div>
+    </div>
+    <div class="start-btn-wrap">
+      <button class="start-btn" onclick="startJourney(1)">▶ Start Tour — Stop 1</button>
+    </div>
+    <div class="section-title">Your Route</div>
+    <div id="stop-list"></div>
+    <div style="height:1rem"></div>
+  </div>
+
+  <div id="map-screen">
+    <div class="map-top">
+      <div class="map-top-title">Route Map</div>
+      <div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div>
+    </div>
+    <div id="mapbox-map"></div>
+    <div class="map-stops-title" style="margin-top:1.25rem">Navigate to stops</div>
+    <div id="map-pill-list"></div>
+    <div style="height:1rem"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span class="nav-lbl">Tour</span></button>
+    <button class="nav-btn" id="nav-map" onclick="showScreen('map')"><span class="nav-icon">📍</span><span class="nav-lbl">Map</span></button>
+  </nav>
+</div>
+
+<!-- JOURNEY -->
+<div id="journey-screen">
+  <div class="jt-bar" id="jt-bar">
+    <div class="jt-bar-top">
+      <div id="dp-prog" style="margin-left:0;min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#ff6b35;letter-spacing:-0.01em;"></div>
+      <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;font-size:1.05rem;"></div>
+      <button class="jt-close" onclick="closeJourney()">✕</button>
+    </div>
+    <div class="progress-dots" id="progress-dots"></div>
+  </div>
+  <div class="card-viewport">
+    <div class="card-track" id="card-track"></div>
+  </div>
+  <div class="card-bottom" id="card-bottom">
+    <button class="card-prev-btn" id="prev-btn" onclick="prevCard()">← Back</button>
+    <button class="card-next-btn" id="next-btn" onclick="nextCard()">Continue →</button>
+  </div>
+</div>
+
+<!-- CAMERA -->
+<div id="cam-overlay">
+  <video id="cam-vid" autoplay playsinline muted></video>
+  <canvas id="cam-canvas" style="display:none"></canvas>
+  <div class="cam-ui">
+    <div class="cam-top">
+      <div class="cam-tip-box"><div class="cam-tip-lbl">Rudy's Tip</div><div class="cam-tip-txt" id="cam-tip"></div></div>
+      <button class="cam-x" onclick="stopCam()">✕</button>
+    </div>
+    <div class="cam-bottom"><button class="shutter" onclick="snap()"></button></div>
+  </div>
+</div>
+<div id="preview-overlay">
+  <img id="preview-img" src="" alt="">
+  <div class="preview-row">
+    <button class="prev-btn retake" onclick="retake()">Retake</button>
+    <button class="prev-btn save" onclick="savePhoto()">Save 📸</button>
+  </div>
+</div>
+
+<script>
+// ══ DATA ══
+// NOTE: Replace the youtubeId values with your actual unlisted YouTube video IDs.
+// To get an ID: upload to YouTube as Unlisted, copy the URL
+// e.g. https://www.youtube.com/watch?v=ABC123XYZ → ID is "ABC123XYZ"
+// thumbUrl can be left as the stop image or use YouTube's auto-thumbnail:
+// https://img.youtube.com/vi/YOUR_ID/hqdefault.jpg
+
+const stops = [
+  {
+    id:1, name:"Erasmus Bridge", dutch:"Erasmusbrug",
+    tagline:"Where Rotterdam announces itself to the world",
+    img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
+    address:"Boompjeskade, 3011 XE Rotterdam",
+    // Video: replace with your YouTube ID. Leave as null to hide video.
+    youtubeId: "dQw4w9WgXcQ", // ← REPLACE with your actual video ID
+    desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",
+    rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",
+    challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps. The asymmetry is the magic.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},
+    quiz:{img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=70",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"Locals call it <em>De Zwaan</em> — The Swan — because of the graceful curve of its single white pylon, which resembles a swan's neck."}
+  },
+  {
+    id:2, name:"Witte Huis", dutch:"The White House",
+    tagline:"Europe's first skyscraper, still standing proud",
+    img:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&q=80",
+    mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
+    address:"Geldersekade 1, 3011 EG Rotterdam",
+    youtubeId: null, // ← No video for this stop yet
+    desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously, and stands today as a living link to Rotterdam before the war.",
+    rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed. That moment always hits hard.",
+    challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture. The contrast between the 1898 facade and today's glass-and-steel is the whole story of the city in one frame.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},
+    quiz:{img:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=600&q=70",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"The Witte Huis was completed in 1898. At 10 stories, it was a genuine skyscraper for its era — a bold statement from an ambitious city."}
+  },
+  {
+    id:3, name:"Oude Haven", dutch:"Old Harbor",
+    tagline:"The oldest harbor in Rotterdam, still full of life",
+    img:"https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=800&q=80",
+    mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
+    address:"Oudehaven, 3011 KN Rotterdam",
+    youtubeId: null,
+    desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead. My family's connection to these harbors stretches back generations; working hands, heavy ropes, and the smell of the Maas.",
+    rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up. But any time of day, the contrast between old vessels and the Cube Houses above is something completely unique to Rotterdam.",
+    challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water. Move around the edge — the best reflections shift depending on exactly where you stand.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the longer and more dramatic the reflection."},
+    quiz:{img:"https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=600&q=70",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"The Oude Haven dates to 1325, making it the oldest part of Rotterdam's harbor system — and essentially the birthplace of the city."}
+  },
+  {
+    id:4, name:"Cube Houses", dutch:"Kubuswoningen",
+    tagline:"Living tilted at 45° — Rotterdam's most playful architecture",
+    img:"https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+    mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
+    address:"Overblaak 70, 3011 MH Rotterdam",
+    youtubeId: null,
+    desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon. Blom's concept: a village within a city, where each cube is a tree, together forming a forest. The result is disorienting, playful, and completely Rotterdam.",
+    rudy:"Don't just look up at them from below. Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture. That's my favourite spot.",
+    challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically. The overlapping angles and windows create an almost abstract pattern. Try converting to black and white afterwards.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here — don't fight it."},
+    quiz:{img:"https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=70",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed the Cube Houses. His concept: 'living as an urban roof' — each tilted cube a tree, together a forest canopy over the street."}
+  },
+  {
+    id:5, name:"Markthal", dutch:"Market Hall",
+    tagline:"A cathedral of food — and the best ceiling in the Netherlands",
+    img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+    mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
+    address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",
+    youtubeId: null,
+    desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>. Walk in, look up, and let your jaw drop. Then eat something — I insist.",
+    rudy:"The ceiling artwork is extraordinary but most people walk in and look at the stalls. Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",
+    challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork. Try a slow panorama sweep, or take a regular shot and experiment with the fisheye effect in editing.",tip:"The ceiling is brightly lit but the market below is darker — tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},
+    quiz:{img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=70",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."}
+  }
+];
+
+// ══ STATE ══
+let camStream=null, lastTip='';
+const quizAnswered={};
+let currentStop=null, currentCardIdx=0, cards=[];
+// Track which videos have been activated (to avoid re-loading)
+const videoActivated={};
+
+// ══ PASSWORD ══
+function togglePw(){
+  const input=document.getElementById('pw-in');
+  const eye=document.getElementById('pw-eye');
+  input.type=input.type==='password'?'text':'password';
+  eye.textContent=input.type==='password'?'👁':'🙈';
+}
+
+function unlock(){
+  const v=document.getElementById('pw-in').value.toLowerCase().trim();
+  if(v === 'tonbi'){
+    const pw=document.getElementById('pw-screen');
+    pw.classList.add('exit');
+    setTimeout(()=>{
+      pw.style.display='none';
+      document.getElementById('app').classList.add('show');
+      try { showScreen('home'); } catch(e){ console.error('showScreen error:', e); }
+    },500);
+  } else {
+    document.getElementById('pw-err').textContent='Incorrect code — try again.';
+    document.getElementById('pw-in').value='';
+  }
+}
+
+// ══ SCREENS ══
+function showScreen(name){
+  document.getElementById('home-screen').style.display=name==='home'?'block':'none';
+  const mapEl=document.getElementById('map-screen');
+  name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+}
+
+// ══ LISTS ══
+function renderLists(){
+  document.getElementById('stop-list').innerHTML=stops.map(s=>`
+    <div class="stop-item" onclick="startJourney(${s.id})">
+      <div class="stop-item-num">${s.id}</div>
+      <img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy">
+      <div class="stop-item-body">
+        <div class="stop-item-name">${s.name}</div>
+        <div class="stop-item-tag">${s.tagline}</div>
+        <div class="stop-item-badges">
+          ${s.youtubeId?'<span class="pill pill-photo">🎬 Video</span>':''}
+          <span class="pill pill-photo">📸 Challenge</span>
+          <span class="pill pill-quiz">❓ Quiz</span>
+        </div>
+      </div>
+      <div class="stop-item-arrow">›</div>
+    </div>`).join('');
+
+  document.getElementById('map-pill-list').innerHTML=stops.map(s=>`
+    <a class="map-pill" href="${s.mapUrl}" target="_blank">
+      <div class="map-pill-num">${s.id}</div>
+      <div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div>
+      <div class="map-pill-link">Open →</div>
+    </a>`).join('');
+}
+
+// ══ VIDEO ══
+function activateVideo(stopId){
+  const s=stops.find(x=>x.id===stopId);
+  if(!s.youtubeId) return;
+  const iframeWrap=document.getElementById(`yt-wrap-${stopId}`);
+  const thumb=document.getElementById(`yt-thumb-${stopId}`);
+  if(!iframeWrap||!thumb) return;
+  iframeWrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+  iframeWrap.classList.add('active');
+  thumb.style.display='none';
+  videoActivated[stopId]=true;
+}
+
+function skipToText(stopId){
+  // Scroll the card down to the text section
+  const cardEl=document.querySelector(`#card-track .card[data-stop="${stopId}"][data-type="arrival"]`);
+  if(cardEl){
+    const textEl=cardEl.querySelector('.arrival-text-section');
+    if(textEl) textEl.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+
+// Auto-pause YouTube when scrolled out of view
+function setupVideoObserver(stopId){
+  const wrap=document.getElementById(`yt-wrap-${stopId}`);
+  if(!wrap) return;
+  const observer=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting && videoActivated[stopId]){
+        // Post pause message to iframe
+        const iframe=wrap.querySelector('iframe');
+        if(iframe) iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
+      }
+    });
+  },{threshold:0.2});
+  observer.observe(wrap);
+}
+
+// ══ CARDS ══
+function buildCards(stop){
+  const cardTypes=['transition','nav','desc','rudy','photo','quiz'];
+  return cardTypes.map(type=>({type,stop}));
+}
+
+function renderCard(card,idx,total){
+  const s=card.stop;
+  if(card.type==='transition'){
+    const isLast = currentStop.id === stops.length;
+    const nextStop = isLast ? null : stops[currentStop.id];
+    const nextName = nextStop ? nextStop.name : null;
+    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;">
+      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
+      <div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
+        <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
+          ${nextName ? `Next stop: <strong style="color:var(--text)">${nextName}</strong>. ` : ''}We'll show you exactly how to get there with a live map and walking route.
+        </div>
+      </div>
+      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 One quick thing</div>
+        <div style="font-size:0.92rem;line-height:1.7;color:var(--text);font-weight:400;">When your phone asks <em>"Allow location access?"</em> — tap <strong>Allow</strong>. This lets the map show where you are and draw the walking route to the next stop.</div>
+      </div>
+      <button onclick="nextCard()" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,0.25);letter-spacing:-0.01em;">
+        Let's go! 👟
+      </button>
+    </div>`;
+  }
+
+  if(card.type==='nav'){
+    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav">
+
+      <!-- Map fills entire card — sits behind everything -->
+      <div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
+
+      <!-- Header gradient overlay -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
+        background:linear-gradient(to bottom, rgba(255,255,255,0.90) 45%, rgba(255,255,255,0));
+        display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
+          <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
+        </div>
+        <button onclick="closeJourney()" style="background:white;border:1.5px solid rgba(0,0,0,0.12);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,0.12);font-weight:700;margin-top:0.1rem;">✕</button>
+      </div>
+
+      <!-- Stop thumbnail + time pill — top right, comfortably below X -->
+      <div style="position:absolute;top:58px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;">
+        <img src="${s.img}" alt="${s.name}"
+          style="width:77px;height:77px;border-radius:16px;object-fit:cover;
+                 box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
+                 pointer-events:none;display:block;">
+        <div id="route-info-${s.id}"
+          style="display:none;margin-top:-14px;margin-right:6px;z-index:12;position:relative;
+                 background:white;border-radius:20px;padding:0.28rem 0.7rem;
+                 font-size:0.72rem;font-weight:700;color:var(--orange);
+                 box-shadow:0 3px 12px rgba(0,0,0,0.18);
+                 white-space:nowrap;border:2px solid white;"></div>
+      </div>
+
+      <!-- Google Maps pill — bottom right, just above bottom bar -->
+      <a href="${s.mapUrl}" target="_blank"
+        style="position:absolute;bottom:72px;right:14px;z-index:11;
+               background:white;color:var(--blue);border-radius:20px;
+               padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
+               text-decoration:none;white-space:nowrap;
+               box-shadow:0 3px 12px rgba(0,0,0,0.18);">
+        📍 Google Maps
+      </a>
+    </div>`;
+  }
+
+  if(card.type==='desc'){
+    const videoBlock = s.youtubeId ? `
+      <div class="video-wrap" id="video-wrap-${s.id}">
+        <div class="video-thumb" id="yt-thumb-${s.id}" onclick="activateVideo(${s.id})">
+          <img src="${s.img}" alt="${s.name}">
+          <div class="video-thumb-overlay">
+            <div class="play-btn-circle"><div class="play-triangle"></div></div>
+          </div>
+        </div>
+        <div class="video-iframe-wrap" id="yt-wrap-${s.id}"></div>
+      </div>
+      <div class="video-skip">
+        Slow connection? <a onclick="skipToText(${s.id})">Skip video — read text instead</a>
+      </div>` : '';
+
+    return `<div class="card" data-stop="${s.id}" data-type="desc">
+      ${videoBlock}
+      <div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div>
+      <div class="arrival-title">${s.name}</div>
+      <div class="arrival-tagline">${s.tagline}</div>
+      <div class="arrival-text-section" id="text-section-${s.id}">
+        <div class="arrival-text-label">About this stop</div>
+        <div class="arrival-text-body">${s.desc}</div>
+      </div>
+    </div>`;
+  }
+
+  if(card.type==='rudy') return `
+    <div class="card" data-stop="${s.id}" data-type="rudy">
+      <div class="story-card-inner">
+        <div class="story-avatar">R</div>
+        <div class="story-from">Rudy's Note</div>
+        <div class="story-text">${s.rudy}</div>
+      </div>
+    </div>`;
+
+  if(card.type==='photo') return `
+    <div class="card" data-stop="${s.id}" data-type="photo">
+      <div class="photo-card">
+        <div class="photo-card-header">
+          <div class="photo-card-label">📸 Photo Challenge</div>
+          <div class="photo-card-title">${s.challenge.title}</div>
+        </div>
+        <div class="photo-card-body">
+          <p class="photo-card-desc">${s.challenge.desc}</p>
+          <div class="photo-tip-box">
+            <div class="photo-tip-icon">💡</div>
+            <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
+          </div>
+          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\'")}')">📷 Open Camera</button>
+        </div>
+      </div>
+    </div>`;
+
+  if(card.type==='quiz'){
+    const qa=quizAnswered[s.id];
+    const opts=s.quiz.opts.map((opt,i)=>{
+      let cls='',icon='○';
+      if(qa!==undefined){
+        if(i===s.quiz.correct){cls='correct';icon='✓';}
+        else if(i===qa){cls='wrong';icon='✗';}
+      }
+      return `<button class="quiz-o ${cls}" onclick="answerQuiz(${s.id},${i})" ${qa!==undefined?'disabled':''}>
+        <span class="quiz-o-icon">${icon}</span><span>${opt}</span>
+      </button>`;
+    }).join('');
+    const qShow=qa!==undefined;
+    const qClass=qShow?(qa===s.quiz.correct?'correct-res':'wrong-res'):'';
+    const qText=qShow?(qa===s.quiz.correct?`<strong>Correct! 🎉</strong>${s.quiz.explanation}`:`<strong>Not quite!</strong> ${s.quiz.explanation}`):'';
+    return `
+    <div class="card" data-stop="${s.id}" data-type="quiz">
+      <div class="quiz-card">
+        <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
+        <div class="quiz-card-body">
+          <div class="quiz-card-label">❓ Quiz Time</div>
+          <div class="quiz-card-q">${s.quiz.q}</div>
+          <div class="quiz-opts">${opts}</div>
+          <div class="quiz-result-box ${qClass} ${qShow?'show':''}">${qText}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+  return '<div class="card"></div>';
+}
+
+function startJourney(stopId){
+  currentStop=stops.find(s=>s.id===stopId);
+  currentCardIdx=0;
+  cards=buildCards(currentStop);
+  Object.keys(videoActivated).forEach(k=>delete videoActivated[k]);
+  renderJourney();
+  document.getElementById('journey-screen').classList.add('show');
+  // Setup observer after DOM renders
+  if(currentStop.youtubeId){
+    setTimeout(()=>setupVideoObserver(currentStop.id),300);
+  }
+}
+
+function renderJourney(){
+  document.getElementById('jt-label').textContent=currentStop.name;
+  document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
+  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
+  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  // Dots only for content cards (exclude transition index 0 and nav index 1)
+  const contentCards = cards.slice(2);
+  const contentIdx = currentCardIdx - 2;
+  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
+    <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
+  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  updateCardPosition(false);
+  updateNavBtns();
+}
+
+function updateCardPosition(animate=true){
+  const track=document.getElementById('card-track');
+  if(!animate){track.style.transition='none';}
+  track.style.transform=`translateX(-${currentCardIdx*100}%)`;
+  if(!animate) setTimeout(()=>track.style.transition='',50);
+}
+
+function updateProgressDots(){
+  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
+  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  const contentIdx = currentCardIdx - 2;
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
+    d.style.width=i===contentIdx?'20px':'8px';
+  });
+}
+
+function updateNavBtns(){
+  if(!currentStop) return;
+  const prev=document.getElementById('prev-btn');
+  const next=document.getElementById('next-btn');
+  const currentCard = cards[currentCardIdx];
+  const isTransition = currentCard && currentCard.type==='transition';
+  const isNav = currentCard && currentCard.type==='nav';
+  const isLastCard = currentCardIdx===cards.length-1;
+  const isLastStop = currentStop.id===stops.length;
+
+  // Hide back button on first card
+  prev.style.display = currentCardIdx===0 ? 'none' : 'block';
+  // "Back to Map" only on the desc card (index 2, right after nav)
+  prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
+
+  // Next button label
+  if(isLastCard){
+    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
+    next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
+  } else if(isNav){
+    next.textContent = "I've Arrived ✓";
+    next.className = 'card-next-btn';
+  } else {
+    next.textContent = 'Continue →';
+    next.className = 'card-next-btn';
+  }
+
+  // On transition card: hide prev/next buttons (card has its own inline button)
+  document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+  document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+  document.getElementById('card-bottom').style.display = 'flex';
+  // On nav card: make bottom bar semi-transparent so map shows through
+  document.getElementById('card-bottom').classList.toggle('on-map', isNav);
+}
+
+function nextCard(){
+  const isLastCard=currentCardIdx===cards.length-1;
+  if(isLastCard){
+    currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney();
+  } else {
+    currentCardIdx++;
+    updateCardPosition();
+    updateProgressDots();
+    updateNavBtns();
+    // Scroll active card to top
+    setTimeout(()=>{
+      const scrollTarget=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');
+      if(scrollTarget) scrollTarget.scrollTop=0;
+      // Init stop map if this is a nav card
+      const activeCard=cards[currentCardIdx];
+      if(activeCard && activeCard.type==='nav'){
+        setTimeout(()=>initStopMap(activeCard.stop.id), 100);
+      }
+    },400);
+  }
+}
+
+function prevCard(){
+  if(currentCardIdx>0){
+    currentCardIdx--;
+    updateCardPosition();
+    updateProgressDots();
+    updateNavBtns();
+  }
+}
+
+function closeJourney(){
+  document.getElementById('journey-screen').classList.remove('show');
+}
+
+// ══ QUIZ ══
+function answerQuiz(stopId,optIdx){
+  quizAnswered[stopId]=optIdx;
+  const pos=currentCardIdx;
+  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  currentCardIdx=pos;
+  updateCardPosition(false);
+  // Scroll to result
+  setTimeout(()=>{
+    const result=document.querySelectorAll('.card')[pos]?.querySelector('.quiz-result-box');
+    if(result) result.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+// ══ CAMERA ══
+async function openCam(tip){
+  lastTip=tip;
+  document.getElementById('cam-tip').textContent=tip;
+  document.getElementById('cam-overlay').classList.add('on');
+  try {
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('cam-vid').srcObject=camStream;
+  } catch(e){
+    alert('Camera access needed — please allow in your browser settings.');
+    document.getElementById('cam-overlay').classList.remove('on');
+  }
+}
+function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
+function snap(){
+  const v=document.getElementById('cam-vid'),c=document.getElementById('cam-canvas');
+  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);
+  document.getElementById('preview-img').src=c.toDataURL('image/jpeg',0.92);
+  document.getElementById('cam-overlay').classList.remove('on');
+  document.getElementById('preview-overlay').classList.add('on');
+}
+function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
+function savePhoto(){
+  const a=document.createElement('a');
+  a.href=document.getElementById('preview-img').src;
+  a.download='tonbi-rotterdam.jpg';a.click();
+  document.getElementById('preview-overlay').classList.remove('on');
+  stopCam();
+}
+
+
+
+// ══ STOP NAV MINI MAP ══
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
+
+function initStopMap(stopId){
+  if(!window.mapboxgl) return;
+  const coords = [
+    [4.4853, 51.9055], // 1 Erasmus Bridge
+    [4.4884, 51.9180], // 2 Witte Huis
+    [4.4890, 51.9185], // 3 Oude Haven
+    [4.4906, 51.9198], // 4 Cube Houses
+    [4.4896, 51.9201]  // 5 Markthal
+  ];
+  const idx = stopId - 1;
+  const destCoord = coords[idx];
+  const containerId = `stop-map-${stopId}`;
+  const container = document.getElementById(containerId);
+  if(!container || container._mapInitialized) return;
+  container._mapInitialized = true;
+
+  const stopMap = new mapboxgl.Map({
+    container: containerId,
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: destCoord,
+    zoom: 15.5,
+    attributionControl: false,
+    interactive: true
+  });
+
+  // Add destination star marker immediately
+  const destEl = document.createElement('div');
+  destEl.style.cssText = `
+    width:44px;height:44px;border-radius:50%;
+    background:#ff6b35;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;
+    border:3px solid #fff;
+    box-shadow:0 2px 16px rgba(255,107,53,0.6);
+  `;
+  destEl.textContent = '⭐';
+  new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
+
+  stopMap.on('load', () => {
+    // Prepare route source (empty to start)
+    stopMap.addSource('walking-route', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] }
+    });
+
+    // Route line — solid orange
+    stopMap.addLayer({
+      id: 'route-line',
+      type: 'line',
+      source: 'walking-route',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: {
+        'line-color': '#ff6b35',
+        'line-width': 5,
+        'line-opacity': 0.85
+      }
+    });
+
+    // Route direction arrows
+    stopMap.addLayer({
+      id: 'route-arrows',
+      type: 'symbol',
+      source: 'walking-route',
+      layout: {
+        'symbol-placement': 'line',
+        'symbol-spacing': 80,
+        'icon-image': 'arrow-right',
+        'icon-size': 0.8,
+        'icon-rotate': 90
+      }
+    });
+
+    // Get user location and fetch walking directions
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(pos => {
+        const userLng = pos.coords.longitude;
+        const userLat = pos.coords.latitude;
+
+        // Blue dot for user
+        const userEl = document.createElement('div');
+        userEl.style.cssText = `
+          width:20px;height:20px;border-radius:50%;
+          background:#2d6be4;
+          border:3px solid #fff;
+          box-shadow:0 2px 8px rgba(45,107,228,0.5);
+        `;
+        new mapboxgl.Marker(userEl).setLngLat([userLng, userLat]).addTo(stopMap);
+
+        // Fit bounds to show both points
+        const bounds = new mapboxgl.LngLatBounds();
+        bounds.extend([userLng, userLat]);
+        bounds.extend(destCoord);
+        stopMap.fitBounds(bounds, {
+          padding: { top:70, bottom:90, left:50, right:50 },
+          maxZoom: 16,
+          duration: 800
+        });
+
+        // Fetch walking route from Mapbox Directions API
+        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${userLng},${userLat};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
+
+        fetch(url)
+          .then(r => r.json())
+          .then(data => {
+            if(data.routes && data.routes.length > 0){
+              const routeGeo = data.routes[0].geometry;
+              stopMap.getSource('walking-route').setData({
+                type: 'Feature',
+                geometry: routeGeo
+              });
+
+              // Show walking time
+              const minutes = Math.round(data.routes[0].duration / 60);
+              const distance = (data.routes[0].distance / 1000).toFixed(1);
+              const infoEl = document.getElementById(`route-info-${stopId}`);
+              if(infoEl){
+                infoEl.textContent = `🚶 ${minutes} min walk · ${distance} km`;
+                infoEl.style.display = 'block';
+              }
+            }
+          })
+          .catch(() => {
+            // Directions failed silently — map still works
+          });
+
+      }, () => {
+        // Location denied — center on destination
+        stopMap.flyTo({ center: destCoord, zoom: 16 });
+      });
+    }
+  });
+}
+
+// ══ MAPBOX MAP ══
+function initMap(){
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  const map = new mapboxgl.Map({
+    container: 'mapbox-map',
+    style: 'mapbox://styles/mapbox/light-v11',
+    center: [4.4841, 51.9060],
+    zoom: 14.5,
+    attributionControl: false
+  });
+
+  // Stop coordinates [lng, lat]
+  const coords = [
+    [4.4853, 51.9055], // 1 Erasmus Bridge
+    [4.4884, 51.9180], // 2 Witte Huis
+    [4.4890, 51.9185], // 3 Oude Haven
+    [4.4906, 51.9198], // 4 Cube Houses
+    [4.4896, 51.9201]  // 5 Markthal
+  ];
+
+  map.on('load', () => {
+    // Draw walking route line between stops
+    map.addSource('route', {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: coords
+        }
+      }
+    });
+    map.addLayer({
+      id: 'route-line',
+      type: 'line',
+      source: 'route',
+      paint: {
+        'line-color': '#ff6b35',
+        'line-width': 3,
+        'line-dasharray': [2, 1.5],
+        'line-opacity': 0.8
+      }
+    });
+
+    // Add custom markers
+    stops.forEach((stop, i) => {
+      const el = document.createElement('div');
+      el.style.cssText = `
+        width:36px;height:36px;border-radius:50%;
+        background:#ff6b35;color:#fff;
+        display:flex;align-items:center;justify-content:center;
+        font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;
+        border:3px solid #fff;
+        box-shadow:0 2px 12px rgba(255,107,53,0.5);
+        cursor:pointer;
+      `;
+      el.textContent = stop.id;
+
+      const popup = new mapboxgl.Popup({ offset:25, closeButton:false, maxWidth:'220px' })
+        .setHTML(`
+          <img class="popup-img" src="${stop.img}" alt="${stop.name}">
+          <div class="popup-body">
+            <div class="popup-num">Stop ${stop.id}</div>
+            <div class="popup-name">${stop.name}</div>
+            <div class="popup-tag">${stop.tagline}</div>
+            <button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button>
+          </div>`);
+
+      new mapboxgl.Marker(el)
+        .setLngLat(coords[i])
+        .setPopup(popup)
+        .addTo(map);
+    });
+  });
+}
+
+// ══ INIT ══
+try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
+</script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
+</body>
+</html>
