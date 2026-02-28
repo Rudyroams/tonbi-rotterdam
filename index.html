@@ -567,16 +567,16 @@ function buildCards(stop){
 function renderCard(card,idx,total){
   const s=card.stop;
   if(card.type==='transition'){
-    const nextStop = stops.find(x => x.id === s.id + 1) || null;
-    const nextName = nextStop ? nextStop.name : null;
-    const nextImg = nextStop ? nextStop.img : s.img;
-    const nextAlt = nextStop ? nextStop.name : s.name;
-    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;">
-      <img src="${nextImg}" alt="${nextAlt}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
+    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
+
+      <!-- X button -->
+      <button onclick="closeJourney()" style="position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid rgba(0,0,0,0.1);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.1);font-weight:700;">✕</button>
+
+      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
       <div>
         <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
         <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
-          ${nextName ? `Next stop: <strong style="color:var(--text)">${nextName}</strong>. ` : 'This is the last stop — '}We'll show you exactly how to get there with a live map and walking route.
+          Next stop: <strong style="color:var(--text)">${s.name}</strong>. We'll show you exactly how to get there with a live map and walking route.
         </div>
       </div>
       <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
