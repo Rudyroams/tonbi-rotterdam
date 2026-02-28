@@ -19,6 +19,24 @@
 .popup-tag { font-size:0.72rem; color:#6e6e73; line-height:1.4; }
 .popup-btn { display:block; background:#ff6b35; color:#fff; text-align:center; padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:800; text-decoration:none; cursor:pointer; border:none; width:100%; margin-top:0.5rem; border-radius:8px; }
 .mapboxgl-ctrl-logo { display:none !important; }
+
+/* ── Walking figure animation ── */
+@keyframes walkBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes walkLegF { 0%,100%{transform:rotate(-30deg)} 50%{transform:rotate(30deg)} }
+@keyframes walkLegB { 0%,100%{transform:rotate(30deg)} 50%{transform:rotate(-30deg)} }
+@keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
+@keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
+
+/* ── Confetti animation ── */
+@keyframes confettiFall0  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+@keyframes confettiFall1  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-380deg);opacity:0} }
+@keyframes confettiFall2  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(420deg);opacity:0} }
+@keyframes confettiFall3  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-300deg);opacity:0} }
+@keyframes confettiFall4  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(340deg);opacity:0} }
+#confetti-overlay { pointer-events:none; }
+.confetti-piece {
+  position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -268,6 +286,24 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .prev-btn { flex:1; padding:0.85rem; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; border-radius:var(--radius-sm); }
 .prev-btn.retake { background:rgba(255,255,255,0.15); color:#fff; }
 .prev-btn.save { background:var(--orange); color:#fff; }
+
+/* ── Walking figure animation ── */
+@keyframes walkBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes walkLegF { 0%,100%{transform:rotate(-30deg)} 50%{transform:rotate(30deg)} }
+@keyframes walkLegB { 0%,100%{transform:rotate(30deg)} 50%{transform:rotate(-30deg)} }
+@keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
+@keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
+
+/* ── Confetti animation ── */
+@keyframes confettiFall0  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+@keyframes confettiFall1  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-380deg);opacity:0} }
+@keyframes confettiFall2  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(420deg);opacity:0} }
+@keyframes confettiFall3  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-300deg);opacity:0} }
+@keyframes confettiFall4  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(340deg);opacity:0} }
+#confetti-overlay { pointer-events:none; }
+.confetti-piece {
+  position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
+}
 </style>
   </head>
 <body>
@@ -544,34 +580,62 @@ function activateVideo(stopId){
 }
 
 
+
+
 function initWalkAnim(stopId){
-  // Poll until both lottie library and DOM container are ready
-  let attempts = 0;
-  function tryInit(){
-    attempts++;
-    if(attempts > 20) return; // give up after 10 seconds
-    const container = document.getElementById('walk-anim-'+stopId);
-    if(!container){ setTimeout(tryInit, 500); return; }
-    if(container._walkDone) return;
-    if(typeof lottie === 'undefined'){ setTimeout(tryInit, 500); return; }
-    container._walkDone = true;
-    lottie.loadAnimation({container:container, renderer:'svg', loop:true, autoplay:true, animationData:WALK_JSON});
-  }
-  tryInit();
+  const container = document.getElementById('walk-anim-'+stopId);
+  if(!container || container._walkDone) return;
+  container._walkDone = true;
+  container.innerHTML = `
+    <svg viewBox="0 0 60 80" width="60" height="80" style="overflow:visible;">
+      <g style="animation:walkBob 0.5s ease-in-out infinite;transform-origin:30px 40px;">
+        <!-- head -->
+        <circle cx="30" cy="12" r="9" fill="#ff6b35"/>
+        <!-- torso -->
+        <line x1="30" y1="21" x2="30" y2="46" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        <!-- front leg -->
+        <g style="transform-origin:30px 46px;animation:walkLegF 0.5s ease-in-out infinite;">
+          <line x1="30" y1="46" x2="18" y2="68" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <!-- back leg -->
+        <g style="transform-origin:30px 46px;animation:walkLegB 0.5s ease-in-out infinite;">
+          <line x1="30" y1="46" x2="42" y2="68" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <!-- front arm -->
+        <g style="transform-origin:30px 26px;animation:walkArmF 0.5s ease-in-out infinite;">
+          <line x1="30" y1="26" x2="16" y2="42" stroke="#ff6b35" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+        <!-- back arm -->
+        <g style="transform-origin:30px 26px;animation:walkArmB 0.5s ease-in-out infinite;">
+          <line x1="30" y1="26" x2="44" y2="42" stroke="#ff6b35" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+      </g>
+    </svg>`;
 }
 
+const CONFETTI_COLORS = ['#ff6b35','#2d6be4','#ffcc00','#34c759','#e8295c','#af52de'];
 function showConfetti(){
   const overlay = document.getElementById('confetti-overlay');
   const container = document.getElementById('confetti-lottie');
   if(!overlay || !container) return;
-  overlay.style.display = 'block';
   container.innerHTML = '';
-  if(typeof lottie === 'undefined'){
-    setTimeout(()=>showConfetti(), 500); // retry when lottie loads
-    return;
+  overlay.style.display = 'block';
+  const pieces = 28;
+  for(let i=0; i<pieces; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${5 + (i * 3.3) % 90}vw;
+      top:-20px;
+      background:${CONFETTI_COLORS[i % CONFETTI_COLORS.length]};
+      width:${8 + i%5}px;
+      height:${8 + i%4}px;
+      border-radius:${i%3===0?'50%':'2px'};
+      animation:confettiFall${i%5} ${1.5 + (i%5)*0.2}s ease-in ${i*0.07}s forwards;
+    `;
+    container.appendChild(el);
   }
-  const anim = lottie.loadAnimation({container:container, renderer:'svg', loop:false, autoplay:true, animationData:CONFETTI_JSON});
-  anim.addEventListener('complete', ()=>{ overlay.style.display='none'; container.innerHTML=''; });
+  setTimeout(()=>{ overlay.style.display='none'; container.innerHTML=''; }, 3500);
 }
 
 function skipToText(stopId){
@@ -1145,6 +1209,5 @@ function initMap(){
 try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
 </script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </body>
 </html>
