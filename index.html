@@ -39,9 +39,8 @@
 }
 
 /* Hide jt-bar when fullscreen video card is showing */
-#journey-screen.fullscreen-video .jt-bar { display:none !important; }
+#journey-screen.fullscreen-video #jt-bar { display:none !important; }
 #journey-screen.fullscreen-video #progress-dots { display:none !important; }
-#journey-screen.fullscreen-video #card-track { position:fixed; inset:0; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -311,9 +310,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 }
 
 /* Hide jt-bar when fullscreen video card is showing */
-#journey-screen.fullscreen-video .jt-bar { display:none !important; }
+#journey-screen.fullscreen-video #jt-bar { display:none !important; }
 #journey-screen.fullscreen-video #progress-dots { display:none !important; }
-#journey-screen.fullscreen-video #card-track { position:fixed; inset:0; }
 </style>
   </head>
 <body>
@@ -774,7 +772,7 @@ function renderCard(card,idx,total){
     // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
     if(s.cloudflareId && s.cfStyle==='fullscreen'){
       return `<div class="card nav-card" data-stop="${s.id}" data-type="desc"
-        style="position:relative;overflow:hidden;background:#2b1506;">
+        style="position:relative;overflow:hidden;background:#2b1506;min-height:100vh;">
         <!-- Video iframe fills full card -->
         <iframe
           src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
@@ -787,7 +785,6 @@ function renderCard(card,idx,total){
           padding:calc(1rem + env(safe-area-inset-top)) 1.25rem 2.5rem;
           background:linear-gradient(to bottom, rgba(0,0,0,0.65) 30%, transparent);
           pointer-events:none;">
-          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.25rem;">Stop ${s.id} · ${s.dutch}</div>
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
