@@ -650,15 +650,18 @@ function showConfetti(){
 
 
 function updateJourneyHeaderVisibility(){
-  const js = document.getElementById('journey-screen');
-  if(!js) return;
-  // Check if current card is a fullscreen video desc card
   const currentCard = cards[currentCardIdx];
   const isFullscreen = currentCard &&
     currentCard.type === 'desc' &&
     currentCard.stop &&
     currentCard.stop.cfStyle === 'fullscreen';
-  js.classList.toggle('fullscreen-video', !!isFullscreen);
+  const jtBar = document.getElementById('jt-bar');
+  const dots  = document.getElementById('progress-dots');
+  if(jtBar) jtBar.style.display = isFullscreen ? 'none' : '';
+  if(dots)  dots.style.display  = isFullscreen ? 'none' : '';
+  // Also make card-viewport fill from top when fullscreen
+  const vp = document.querySelector('.card-viewport');
+  if(vp) vp.style.marginTop = isFullscreen ? '0' : '';
 }
 function skipToTextFullscreen(stopId){
   const textEl = document.getElementById('text-section-'+stopId);
