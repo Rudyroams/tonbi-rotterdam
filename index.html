@@ -269,7 +269,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .prev-btn.retake { background:rgba(255,255,255,0.15); color:#fff; }
 .prev-btn.save { background:var(--orange); color:#fff; }
 </style>
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
 
@@ -682,6 +682,9 @@ function renderCard(card,idx,total){
                  white-space:nowrap;border:2px solid white;"></div>
       </div>
 
+      <!-- Walking animation — bottom left over map -->
+      <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
+
       <!-- Google Maps pill — bottom right, just above bottom bar -->
       <a href="${s.mapUrl}" target="_blank"
         style="position:absolute;bottom:14px;right:14px;z-index:11;
@@ -874,7 +877,10 @@ function nextCard(){
       // Init stop map if this is a nav card
       const activeCard=cards[currentCardIdx];
       if(activeCard && activeCard.type==='nav'){
-        setTimeout(()=>initStopMap(activeCard.stop.id), 100);
+        setTimeout(()=>{
+          initStopMap(activeCard.stop.id);
+          initWalkAnim(activeCard.stop.id);
+        }, 100);
       }
     },400);
   }
