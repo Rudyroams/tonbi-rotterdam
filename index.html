@@ -519,16 +519,18 @@ function renderLists(){
 }
 
 // ══ VIDEO ══
+function openVideo(youtubeId){
+  // Try YouTube app first, fall back to mobile web
+  window.location.href = `youtube://watch?v=${youtubeId}`;
+  setTimeout(()=>{
+    window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
+  }, 500);
+}
+
 function activateVideo(stopId){
   const s=stops.find(x=>x.id===stopId);
   if(!s.youtubeId) return;
-  const iframeWrap=document.getElementById(`yt-wrap-${stopId}`);
-  const thumb=document.getElementById(`yt-thumb-${stopId}`);
-  if(!iframeWrap||!thumb) return;
-  iframeWrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="border:0;"></iframe>`;
-  iframeWrap.classList.add('active');
-  thumb.style.display='none';
-  videoActivated[stopId]=true;
+  openVideo(s.youtubeId);
 }
 
 function skipToText(stopId){
@@ -565,15 +567,16 @@ function buildCards(stop){
 function renderCard(card,idx,total){
   const s=card.stop;
   if(card.type==='transition'){
-    const isLast = currentStop.id === stops.length;
-    const nextStop = isLast ? null : stops[currentStop.id];
+    const nextStop = stops.find(x => x.id === s.id + 1) || null;
     const nextName = nextStop ? nextStop.name : null;
+    const nextImg = nextStop ? nextStop.img : s.img;
+    const nextAlt = nextStop ? nextStop.name : s.name;
     return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;">
-      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
+      <img src="${nextImg}" alt="${nextAlt}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
       <div>
         <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
         <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
-          ${nextName ? `Next stop: <strong style="color:var(--text)">${nextName}</strong>. ` : ''}We'll show you exactly how to get there with a live map and walking route.
+          ${nextName ? `Next stop: <strong style="color:var(--text)">${nextName}</strong>. ` : 'This is the last stop — '}We'll show you exactly how to get there with a live map and walking route.
         </div>
       </div>
       <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
@@ -632,14 +635,12 @@ function renderCard(card,idx,total){
 
   if(card.type==='desc'){
     const videoBlock = s.youtubeId ? `
-      <div class="video-wrap" id="video-wrap-${s.id}">
-        <div class="video-thumb" id="yt-thumb-${s.id}" onclick="activateVideo(${s.id})">
-          <img src="${s.img}" alt="${s.name}">
-          <div class="video-thumb-overlay">
-            <div class="play-btn-circle"><div class="play-triangle"></div></div>
-          </div>
+      <div class="video-wrap" id="video-wrap-${s.id}" style="position:relative;cursor:pointer;" onclick="openVideo('${s.youtubeId}')">
+        <img src="https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="video-thumb-overlay">
+          <div class="play-btn-circle"><div class="play-triangle"></div></div>
         </div>
-        <div class="video-iframe-wrap" id="yt-wrap-${s.id}"></div>
+        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:4px;font-weight:600;">Opens in YouTube</div>
       </div>
       <div class="video-skip">
         Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
