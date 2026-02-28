@@ -139,7 +139,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .dot { height:4px; border-radius:4px; background:var(--border); transition:all 0.3s; width:8px; }
 .dot.active { background:var(--orange); width:20px; }
 .dot.done { background:var(--orange); opacity:0.4; }
-.card-viewport { flex:1; overflow:hidden; position:relative; }
+.card-viewport { flex:1; overflow:hidden; position:relative; min-height:0; }
 .card-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change:transform; }
 .card { min-width:100%; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:1.25rem; scroll-behavior:smooth; }
 .card.nav-card { padding:0; overflow:hidden; position:relative; }
@@ -236,10 +236,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.85rem 1.25rem calc(0.85rem + env(safe-area-inset-bottom)); display:flex; gap:0.75rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.5rem 1rem calc(0.5rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.85rem 1.25rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
-.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.85rem; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.55rem 1rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
+.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.55rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
 .card-next-btn:hover { transform:translateY(-1px); }
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
 
@@ -312,6 +312,34 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 /* Hide jt-bar when fullscreen video card is showing */
 #journey-screen.fullscreen-video #jt-bar { display:none !important; }
 #journey-screen.fullscreen-video #progress-dots { display:none !important; }
+
+/* Fullscreen video: card-viewport fills all space, bottom bar floats over */
+#journey-screen.fullscreen-video .card-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+#journey-screen.fullscreen-video #card-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: transparent;
+  border-top: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+#journey-screen.fullscreen-video #card-bottom .card-prev-btn {
+  background: rgba(0,0,0,0.45);
+  color: rgba(255,255,255,0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#journey-screen.fullscreen-video #card-bottom .card-next-btn {
+  background: var(--orange);
+  opacity: 0.95;
+}
 </style>
   </head>
 <body>
@@ -932,6 +960,8 @@ function renderJourney(){
   const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
   document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
+  const journeyEl = document.getElementById('journey-screen');
+  if(journeyEl) journeyEl.classList.toggle('fullscreen-video', !!isFullscreenVideo);
   // Dots only for content cards (exclude transition index 0 and nav index 1)
   const contentCards = cards.slice(2);
   const contentIdx = currentCardIdx - 2;
@@ -955,6 +985,8 @@ function updateProgressDots(){
   const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
   document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
+  const journeyEl = document.getElementById('journey-screen');
+  if(journeyEl) journeyEl.classList.toggle('fullscreen-video', !!isFullscreenVideo);
   const contentIdx = currentCardIdx - 2;
   document.querySelectorAll('.dot').forEach((d,i)=>{
     d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
