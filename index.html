@@ -545,11 +545,19 @@ function activateVideo(stopId){
 
 
 function initWalkAnim(stopId){
-  const container = document.getElementById('walk-anim-'+stopId);
-  if(!container || container._walkDone) return;
-  container._walkDone = true;
-  if(typeof lottie === 'undefined'){ setTimeout(()=>initWalkAnim(stopId), 500); return; }
-  lottie.loadAnimation({container:container, renderer:'svg', loop:true, autoplay:true, animationData:WALK_JSON});
+  // Poll until both lottie library and DOM container are ready
+  let attempts = 0;
+  function tryInit(){
+    attempts++;
+    if(attempts > 20) return; // give up after 10 seconds
+    const container = document.getElementById('walk-anim-'+stopId);
+    if(!container){ setTimeout(tryInit, 500); return; }
+    if(container._walkDone) return;
+    if(typeof lottie === 'undefined'){ setTimeout(tryInit, 500); return; }
+    container._walkDone = true;
+    lottie.loadAnimation({container:container, renderer:'svg', loop:true, autoplay:true, animationData:WALK_JSON});
+  }
+  tryInit();
 }
 
 function showConfetti(){
@@ -558,7 +566,10 @@ function showConfetti(){
   if(!overlay || !container) return;
   overlay.style.display = 'block';
   container.innerHTML = '';
-  if(typeof lottie === 'undefined'){ setTimeout(()=>{ overlay.style.display='none'; }, 2000); return; }
+  if(typeof lottie === 'undefined'){
+    setTimeout(()=>showConfetti(), 500); // retry when lottie loads
+    return;
+  }
   const anim = lottie.loadAnimation({container:container, renderer:'svg', loop:false, autoplay:true, animationData:CONFETTI_JSON});
   anim.addEventListener('complete', ()=>{ overlay.style.display='none'; container.innerHTML=''; });
 }
