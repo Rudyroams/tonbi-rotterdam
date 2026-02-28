@@ -927,9 +927,11 @@ function startJourney(stopId){
 function renderJourney(){
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
-  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
-  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
-  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  const currentCard = cards[currentCardIdx];
+  const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
+  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
+  document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
   // Dots only for content cards (exclude transition index 0 and nav index 1)
   const contentCards = cards.slice(2);
   const contentIdx = currentCardIdx - 2;
@@ -948,9 +950,11 @@ function updateCardPosition(animate=true){
 }
 
 function updateProgressDots(){
-  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
-  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
-  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  const currentCard = cards[currentCardIdx];
+  const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
+  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
+  document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
   const contentIdx = currentCardIdx - 2;
   document.querySelectorAll('.dot').forEach((d,i)=>{
     d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
