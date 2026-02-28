@@ -525,19 +525,19 @@ function activateVideo(stopId){
   const iframeWrap=document.getElementById(`yt-wrap-${stopId}`);
   const thumb=document.getElementById(`yt-thumb-${stopId}`);
   if(!iframeWrap||!thumb) return;
-  iframeWrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+  iframeWrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="border:0;"></iframe>`;
   iframeWrap.classList.add('active');
   thumb.style.display='none';
   videoActivated[stopId]=true;
 }
 
 function skipToText(stopId){
-  // Scroll the card down to the text section
-  const cardEl=document.querySelector(`#card-track .card[data-stop="${stopId}"][data-type="arrival"]`);
-  if(cardEl){
-    const textEl=cardEl.querySelector('.arrival-text-section');
-    if(textEl) textEl.scrollIntoView({behavior:'smooth', block:'start'});
-  }
+  const textEl=document.getElementById(`text-section-${stopId}`);
+  const videoWrap=document.getElementById(`video-wrap-${stopId}`);
+  const skipLink=document.querySelector(`#video-wrap-${stopId}`)?.closest('.card')?.querySelector('.video-skip');
+  if(textEl){ textEl.style.display='block'; }
+  if(videoWrap){ videoWrap.style.display='none'; }
+  if(skipLink){ skipLink.style.display='none'; }
 }
 
 // Auto-pause YouTube when scrolled out of view
@@ -620,7 +620,7 @@ function renderCard(card,idx,total){
 
       <!-- Google Maps pill — bottom right, just above bottom bar -->
       <a href="${s.mapUrl}" target="_blank"
-        style="position:absolute;bottom:72px;right:14px;z-index:11;
+        style="position:absolute;bottom:14px;right:14px;z-index:11;
                background:white;color:var(--blue);border-radius:20px;
                padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
                text-decoration:none;white-space:nowrap;
@@ -642,17 +642,16 @@ function renderCard(card,idx,total){
         <div class="video-iframe-wrap" id="yt-wrap-${s.id}"></div>
       </div>
       <div class="video-skip">
-        Slow connection? <a onclick="skipToText(${s.id})">Skip video — read text instead</a>
-      </div>` : '';
+        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
+      </div>` : `<div id="text-section-${s.id}-trigger" style="display:none;"></div>`;
 
-    return `<div class="card" data-stop="${s.id}" data-type="desc">
+    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;">
+      <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+      <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
+      <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
       ${videoBlock}
-      <div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div>
-      <div class="arrival-title">${s.name}</div>
-      <div class="arrival-tagline">${s.tagline}</div>
-      <div class="arrival-text-section" id="text-section-${s.id}">
-        <div class="arrival-text-label">About this stop</div>
-        <div class="arrival-text-body">${s.desc}</div>
+      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${s.youtubeId ? 'none' : 'block'};">
+        <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
       </div>
     </div>`;
   }
@@ -884,11 +883,11 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycX
 function initStopMap(stopId){
   if(!window.mapboxgl) return;
   const coords = [
-    [4.4853, 51.9055], // 1 Erasmus Bridge
-    [4.4884, 51.9180], // 2 Witte Huis
-    [4.4890, 51.9185], // 3 Oude Haven
-    [4.4906, 51.9198], // 4 Cube Houses
-    [4.4896, 51.9201]  // 5 Markthal
+    [4.4871, 51.9090], // 1 Erasmus Bridge
+    [4.4917, 51.9186], // 2 Witte Huis
+    [4.4917, 51.9193], // 3 Oude Haven
+    [4.4877, 51.9188], // 4 Cube Houses
+    [4.4866, 51.9200]  // 5 Markthal
   ];
   const idx = stopId - 1;
   const destCoord = coords[idx];
@@ -1028,11 +1027,11 @@ function initMap(){
 
   // Stop coordinates [lng, lat]
   const coords = [
-    [4.4853, 51.9055], // 1 Erasmus Bridge
-    [4.4884, 51.9180], // 2 Witte Huis
-    [4.4890, 51.9185], // 3 Oude Haven
-    [4.4906, 51.9198], // 4 Cube Houses
-    [4.4896, 51.9201]  // 5 Markthal
+    [4.4871, 51.9090], // 1 Erasmus Bridge
+    [4.4917, 51.9186], // 2 Witte Huis
+    [4.4917, 51.9193], // 3 Oude Haven
+    [4.4877, 51.9188], // 4 Cube Houses
+    [4.4866, 51.9200]  // 5 Markthal
   ];
 
   map.on('load', () => {
