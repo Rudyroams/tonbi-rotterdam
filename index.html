@@ -269,8 +269,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .prev-btn.retake { background:rgba(255,255,255,0.15); color:#fff; }
 .prev-btn.save { background:var(--orange); color:#fff; }
 </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-</head>
+  </head>
 <body>
 
 <!-- PASSWORD -->
@@ -544,27 +543,24 @@ function activateVideo(stopId){
   openVideo(s.youtubeId);
 }
 
+
+function initWalkAnim(stopId){
+  const container = document.getElementById('walk-anim-'+stopId);
+  if(!container || container._walkDone) return;
+  container._walkDone = true;
+  if(typeof lottie === 'undefined'){ setTimeout(()=>initWalkAnim(stopId), 500); return; }
+  lottie.loadAnimation({container:container, renderer:'svg', loop:true, autoplay:true, animationData:WALK_JSON});
+}
+
 function showConfetti(){
   const overlay = document.getElementById('confetti-overlay');
   const container = document.getElementById('confetti-lottie');
   if(!overlay || !container) return;
   overlay.style.display = 'block';
   container.innerHTML = '';
-  if(typeof lottie !== 'undefined'){
-    const anim = lottie.loadAnimation({
-      container: container,
-      renderer: 'svg',
-      loop: false,
-      autoplay: true,
-      animationData: CONFETTI_JSON
-    });
-    anim.addEventListener('complete', ()=>{
-      overlay.style.display = 'none';
-      container.innerHTML = '';
-    });
-  } else {
-    setTimeout(()=>{ overlay.style.display='none'; }, 2500);
-  }
+  if(typeof lottie === 'undefined'){ setTimeout(()=>{ overlay.style.display='none'; }, 2000); return; }
+  const anim = lottie.loadAnimation({container:container, renderer:'svg', loop:false, autoplay:true, animationData:CONFETTI_JSON});
+  anim.addEventListener('complete', ()=>{ overlay.style.display='none'; container.innerHTML=''; });
 }
 
 function skipToText(stopId){
@@ -1138,5 +1134,6 @@ function initMap(){
 try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
 </script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </body>
 </html>
