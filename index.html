@@ -443,6 +443,7 @@ const stops = [
     address:"Boompjeskade, 3011 XE Rotterdam",
     // Video: replace with your YouTube ID. Leave as null to hide video.
     youtubeId: "dQw4w9WgXcQ", // ← REPLACE with your actual video ID
+    cloudflareId: "72c8edc9bb44e6c1a3418c440e872a76", cfStyle: "card",
     desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",
     rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",
     challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps. The asymmetry is the magic.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},
@@ -454,7 +455,8 @@ const stops = [
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",
     mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
     address:"Geldersekade 1, 3011 EG Rotterdam",
-    youtubeId: null, // ← No video for this stop yet
+    youtubeId: null,
+    cloudflareId: "72c8edc9bb44e6c1a3418c440e872a76", cfStyle: "fullscreen",
     desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously, and stands today as a living link to Rotterdam before the war.",
     rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed. That moment always hits hard.",
     challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture. The contrast between the 1898 facade and today's glass-and-steel is the whole story of the city in one frame.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},
@@ -638,6 +640,11 @@ function showConfetti(){
   setTimeout(()=>{ overlay.style.display='none'; container.innerHTML=''; }, 3500);
 }
 
+function skipToTextFullscreen(stopId){
+  const textEl = document.getElementById('text-section-'+stopId);
+  if(textEl) textEl.style.display = 'block';
+}
+
 function skipToText(stopId){
   const textEl=document.getElementById(`text-section-${stopId}`);
   const videoWrap=document.getElementById(`video-wrap-${stopId}`);
@@ -742,7 +749,55 @@ function renderCard(card,idx,total){
   }
 
   if(card.type==='desc'){
-    const videoBlock = s.youtubeId ? `
+    // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
+    if(s.cloudflareId && s.cfStyle==='fullscreen'){
+      return `<div class="card nav-card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;">
+        <iframe
+          src="https://customer-hn7w3dxwgz4b4q8b.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          style="position:absolute;inset:0;width:100%;height:100%;border:0;"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen>
+        </iframe>
+        <!-- Overlay header -->
+        <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+          padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
+          background:linear-gradient(to bottom, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0));
+          pointer-events:none;">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.25rem;">Stop ${s.id} · ${s.dutch}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
+        </div>
+        <!-- Skip link bottom -->
+        <div style="position:absolute;bottom:calc(80px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:10;">
+          <a onclick="skipToTextFullscreen(${s.id})" style="cursor:pointer;color:rgba(255,255,255,0.8);font-size:0.75rem;text-decoration:underline;">Skip video — read text instead</a>
+        </div>
+        <!-- Hidden text overlay -->
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;overflow-y:auto;">
+          <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+          <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
+          <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
+          <div class="arrival-text-body">${s.desc}</div>
+        </div>
+      </div>`;
+    }
+
+    // ── Cloudflare "most of card" video (stop 1 style) ───────────────────────
+    const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
+      <div style="position:relative;width:100%;border-radius:16px;overflow:hidden;background:#000;
+                  aspect-ratio:9/16;max-height:72vh;margin-bottom:0.85rem;box-shadow:var(--shadow-lg);">
+        <iframe
+          src="https://customer-hn7w3dxwgz4b4q8b.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          style="width:100%;height:100%;border:0;"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="video-skip">
+        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
+      </div>` : '';
+
+    // ── YouTube fallback ─────────────────────────────────────────────────────
+    const videoBlock = s.cloudflareId ? cfBlock : s.youtubeId ? `
       <div class="video-wrap" id="video-wrap-${s.id}" style="position:relative;cursor:pointer;" onclick="openVideo('${s.youtubeId}')">
         <img src="https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div class="video-thumb-overlay">
@@ -759,7 +814,7 @@ function renderCard(card,idx,total){
       <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
       <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
       ${videoBlock}
-      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${s.youtubeId ? 'none' : 'block'};">
+      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${(s.cloudflareId||s.youtubeId) ? 'none' : 'block'};">
         <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
       </div>
     </div>`;
