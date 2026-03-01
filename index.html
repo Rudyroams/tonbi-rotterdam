@@ -1303,8 +1303,6 @@ function answerQuiz(stopId,optIdx){
 
 // ══ CAMERA ══
 async function openCam(stopId, stopName){
-  console.log('openCam called', stopId, stopName);
-  alert('openCam called: ' + stopId);
   const stop = stops.find(s=>s.id===parseInt(stopId));
   const tip = stop ? stop.challenge.tip : '';
   lastTip=tip;
@@ -1314,11 +1312,15 @@ async function openCam(stopId, stopName){
   document.getElementById('preview-tip-text').textContent=tip;
   document.getElementById('cam-overlay').classList.add('on');
   try {
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    document.getElementById('cam-vid').srcObject=camStream;
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    camStream = stream;
+    const vid = document.getElementById('cam-vid');
+    vid.srcObject = stream;
+    await vid.play();
   } catch(e){
-    alert('Camera access needed — please allow in your browser settings.');
+    console.error('Camera error:', e);
     document.getElementById('cam-overlay').classList.remove('on');
+    alert('Camera not available: ' + e.message);
   }
 }
 function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
@@ -1335,7 +1337,7 @@ function snap(){
   // Store for gallery
   if(lastStopId) photoCollection[lastStopId] = {dataUrl, tip: lastTip, stopName: lastStopName};
 }
-function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
+function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastStopId, lastStopName); }
 function savePhoto(){
   const a=document.createElement('a');
   a.href=document.getElementById('preview-img').src;
