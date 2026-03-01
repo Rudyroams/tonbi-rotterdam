@@ -331,6 +331,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   padding-right: 1rem;
 }
 #journey-screen.fullscreen-video #card-bottom .card-prev-btn {
+  background: rgba(255,255,255,0.35);
+  color: #111;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#journey-screen.fullscreen-video #card-bottom .card-prev-btn {
   background: rgba(0,0,0,0.45);
   color: rgba(255,255,255,0.9);
   backdrop-filter: blur(8px);
@@ -812,13 +818,13 @@ function renderCard(card,idx,total){
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen>
         </iframe>
-        <!-- Top gradient — full black fade -->
-        <div style="position:absolute;top:0;left:0;right:0;height:40%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 50%, transparent 100%);">
+        <!-- Top gradient — short steep black fade -->
+        <div style="position:absolute;top:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.9) 60%, transparent 100%);">
         </div>
-        <!-- Bottom gradient — full black fade -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:40%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 50%, transparent 100%);">
+        <!-- Bottom gradient — short steep black fade -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 60%, transparent 100%);">
         </div>
         <!-- Top overlay: name + tagline -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
@@ -856,17 +862,53 @@ function renderCard(card,idx,total){
 
     // ── Cloudflare "most of card" video (stop 1 style) ───────────────────────
     const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
-      <div style="position:relative;width:100%;border-radius:16px;overflow:hidden;background:#000;
-                  aspect-ratio:9/16;max-height:72vh;margin-bottom:0.85rem;box-shadow:var(--shadow-lg);">
+      <div class="card nav-card" data-stop="${s.id}" data-type="desc"
+        style="position:absolute;inset:0;overflow:hidden;background:#000;">
         <iframe
           src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
-          style="width:100%;height:100%;border:0;"
+          style="position:absolute;inset:0;width:100%;height:100%;border:0;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen>
         </iframe>
-      </div>
-      <div class="video-skip">
-        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
+        <!-- Top gradient — short steep WHITE fade -->
+        <div style="position:absolute;top:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.9) 60%, transparent 100%);">
+        </div>
+        <!-- Bottom gradient — short steep white fade -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top, #fff 0%, rgba(255,255,255,0.9) 60%, transparent 100%);">
+        </div>
+        <!-- Top text in black -->
+        <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 3rem;
+          pointer-events:none;">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#111;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(0,0,0,0.6);margin-top:0.2rem;">${s.tagline}</div>
+        </div>
+        <!-- Skip link subtle bottom right -->
+        <div style="position:absolute;bottom:calc(62px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
+          <a onclick="skipToText(${s.id})"
+             style="cursor:pointer;color:rgba(0,0,0,0.4);font-size:0.72rem;
+                    text-decoration:underline;text-underline-offset:2px;">
+            Skip video
+          </a>
+        </div>
+        <!-- Text overlay -->
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+          <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+          <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
+          <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
+          <div class="arrival-text-body" style="margin-bottom:2rem;">${s.desc}</div>
+          <div style="text-align:center;margin-top:1rem;">
+            <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
+               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
+                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
+                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;
+                      box-shadow:0 2px 8px rgba(255,107,53,0.4);">
+              ▶ Watch video instead
+            </a>
+          </div>
+        </div>
       </div>` : '';
 
     // ── YouTube fallback ─────────────────────────────────────────────────────
@@ -969,7 +1011,7 @@ function renderJourney(){
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
   const currentCard = cards[currentCardIdx];
   const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
-  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
+  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && (currentCard.stop.cfStyle==='fullscreen' || currentCard.stop.cfStyle==='card');
   document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
   document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
   const journeyEl = document.getElementById('journey-screen');
@@ -994,7 +1036,7 @@ function updateCardPosition(animate=true){
 function updateProgressDots(){
   const currentCard = cards[currentCardIdx];
   const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
-  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && currentCard.stop.cfStyle==='fullscreen';
+  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && (currentCard.stop.cfStyle==='fullscreen' || currentCard.stop.cfStyle==='card');
   document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
   document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
   const journeyEl = document.getElementById('journey-screen');
