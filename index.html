@@ -479,7 +479,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 const stops = [
   {
-    id:1, name:"Erasmus Bridge", dutch:"Erasmusbrug",
+    id:1, lat:51.909, lng:4.4871, name:"Erasmus Bridge", dutch:"Erasmusbrug",
     tagline:"Where Rotterdam announces itself to the world",
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",
     mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
@@ -493,7 +493,7 @@ const stops = [
     quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"Locals call it <em>De Zwaan</em> — The Swan — because of the graceful curve of its single white pylon, which resembles a swan's neck."}
   },
   {
-    id:2, name:"Witte Huis", dutch:"The White House",
+    id:2, lat:51.9186, lng:4.4917, name:"Witte Huis", dutch:"The White House",
     tagline:"Europe's first skyscraper, still standing proud",
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",
     mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
@@ -506,7 +506,7 @@ const stops = [
     quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"The Witte Huis was completed in 1898. At 10 stories, it was a genuine skyscraper for its era — a bold statement from an ambitious city."}
   },
   {
-    id:3, name:"Oude Haven", dutch:"Old Harbor",
+    id:3, lat:51.9193, lng:4.4917, name:"Oude Haven", dutch:"Old Harbor",
     tagline:"The oldest harbor in Rotterdam, still full of life",
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
     mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
@@ -518,7 +518,7 @@ const stops = [
     quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"The Oude Haven dates to 1325, making it the oldest part of Rotterdam's harbor system — and essentially the birthplace of the city."}
   },
   {
-    id:4, name:"Cube Houses", dutch:"Kubuswoningen",
+    id:4, lat:51.9188, lng:4.4877, name:"Cube Houses", dutch:"Kubuswoningen",
     tagline:"Living tilted at 45° — Rotterdam's most playful architecture",
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",
     mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
@@ -530,7 +530,7 @@ const stops = [
     quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed the Cube Houses. His concept: 'living as an urban roof' — each tilted cube a tree, together a forest canopy over the street."}
   },
   {
-    id:5, name:"Markthal", dutch:"Market Hall",
+    id:5, lat:51.92, lng:4.4866, name:"Markthal", dutch:"Market Hall",
     tagline:"A cathedral of food — and the best ceiling in the Netherlands",
     img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
     mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
@@ -843,7 +843,7 @@ function renderCard(card, idx, total){
   // ── PHOTO ──────────────────────────────────────────────────────────────────
   if(card.type === 'photo'){
     return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:0;position:relative;overflow:hidden;">
-      <img src="${s.photo}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
       <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1.25rem 1.25rem;
         background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);">
         <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Stop ${s.id} · ${s.dutch}</div>
@@ -857,9 +857,9 @@ function renderCard(card, idx, total){
     const q = s.quiz;
     return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:1.5rem;overflow-y:auto;">
       <div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">Quick Quiz · Stop ${s.id}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;line-height:1.35;margin-bottom:1.5rem;">${q.question}</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;line-height:1.35;margin-bottom:1.5rem;">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:0.6rem;" id="quiz-opts-${s.id}">
-        ${q.options.map((opt,i)=>`
+        ${q.opts.map((opt,i)=>`
         <button class="quiz-opt" onclick="answerQuiz(${s.id},${i})" id="qopt-${s.id}-${i}"
           style="text-align:left;background:var(--bg);border:2px solid var(--border);border-radius:12px;
                  padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">
@@ -894,7 +894,7 @@ function answerQuiz(stopId, optIdx){
       setTimeout(()=>showConfetti(), 300);
     } else {
       result.style.background='#fee2e2';
-      result.innerHTML=`<div style="font-size:1.3rem;margin-bottom:0.3rem;">❌</div><div style="font-weight:700;color:#991b1b;">Not quite!</div><div style="font-size:0.85rem;color:#991b1b;margin-top:0.25rem;">The answer was: ${stop.quiz.options[stop.quiz.correct]}</div>`;
+      result.innerHTML=`<div style="font-size:1.3rem;margin-bottom:0.3rem;">❌</div><div style="font-weight:700;color:#991b1b;">Not quite!</div><div style="font-size:0.85rem;color:#991b1b;margin-top:0.25rem;">The answer was: ${stop.quiz.opts[stop.quiz.correct]}</div>`;
     }
   }
 }
