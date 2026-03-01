@@ -38,7 +38,27 @@
   position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
 }
 
-/* cf-fullscreen: normal bottom nav */
+/* cf-fullscreen: black bottom bar with pill buttons */
+#journey-screen.cf-fullscreen .card-bottom {
+  background: #000;
+  border-top: none;
+}
+#journey-screen.cf-fullscreen .card-bottom .card-prev-btn {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 99px;
+}
+#journey-screen.cf-fullscreen .card-bottom .card-next-btn {
+  background: rgba(255,107,53,0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: none;
+  border-radius: 99px;
+  box-shadow: none;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -980,7 +1000,13 @@ function updateNavBtns(){
   document.getElementById('card-bottom').classList.toggle('on-map', isNav);
 }
 
+function stopCFVideo(){
+  var iframe = document.querySelector('.card[data-type="desc"] iframe[src*="cloudflarestream"]');
+  if(iframe){ iframe.src = iframe.src; }
+}
+
 function nextCard(){
+  stopCFVideo();
   const isLastCard=currentCardIdx===cards.length-1;
   if(isLastCard){
     currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney();
@@ -1005,6 +1031,7 @@ function nextCard(){
 }
 
 function prevCard(){
+  stopCFVideo();
   if(currentCardIdx>0){
     currentCardIdx--;
     updateCardPosition();
@@ -1014,6 +1041,7 @@ function prevCard(){
 }
 
 function closeJourney(){
+  stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
 }
 
