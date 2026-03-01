@@ -38,27 +38,7 @@
   position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
 }
 
-/* Fullscreen CF video: bottom bar floats over video */
-#journey-screen.cf-fullscreen .card-bottom {
-  position: fixed;
-  bottom: calc(68px + env(safe-area-inset-bottom));
-  left: 0; right: 0;
-  z-index: 30;
-  background: transparent;
-  border-top: none;
-  padding-bottom: 0;
-}
-#journey-screen.cf-fullscreen .card-bottom .card-prev-btn {
-  background: rgba(0,0,0,0.35);
-  color: rgba(255,255,255,0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-#journey-screen.cf-fullscreen .card-bottom .card-next-btn {
-  background: rgba(255,107,53,0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
+#journey-screen.cf-fullscreen .card-bottom{display:none!important;}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -662,6 +642,47 @@ function showConfetti(){
   setTimeout(()=>{ overlay.style.display='none'; container.innerHTML=''; }, 3500);
 }
 
+function cfVideoTap(stopId){
+  var vid=document.getElementById('cf-vid-'+stopId);
+  var btn=document.getElementById('cf-playbtn-'+stopId);
+  var icon=document.getElementById('cf-icon-'+stopId);
+  var nav=document.getElementById('cf-nav-'+stopId);
+  if(!vid) return;
+  if(vid.ended){
+    vid.currentTime=0; vid.play();
+    if(nav) nav.style.display='none';
+    if(btn){ btn.style.display='flex'; icon.innerHTML='&#9654;'; }
+    setTimeout(function(){ if(btn&&!vid.paused) btn.style.display='none'; },700);
+    return;
+  }
+  if(vid.paused){
+    vid.play();
+    if(btn){ btn.style.display='flex'; icon.innerHTML='&#9654;'; }
+    setTimeout(function(){ if(btn&&!vid.paused) btn.style.display='none'; },700);
+  } else {
+    vid.pause();
+    if(btn){ btn.style.display='flex'; icon.innerHTML='&#9614;&#9614;'; }
+  }
+}
+
+function initCFVideo(stopId){
+  var vid=document.getElementById('cf-vid-'+stopId);
+  if(!vid) return;
+  var unmuted=false;
+  vid.addEventListener('playing',function(){
+    if(unmuted) return;
+    unmuted=true;
+    setTimeout(function(){ vid.muted=false; },300);
+  });
+  vid.addEventListener('ended',function(){
+    var btn=document.getElementById('cf-playbtn-'+stopId);
+    var icon=document.getElementById('cf-icon-'+stopId);
+    var nav=document.getElementById('cf-nav-'+stopId);
+    if(btn){ btn.style.display='flex'; icon.innerHTML='&#8635;'; }
+    if(nav) nav.style.display='flex';
+  });
+}
+
 function skipToTextFullscreen(stopId){
   const textEl = document.getElementById('text-section-'+stopId);
   if(textEl) textEl.style.display = 'block';
@@ -773,49 +794,64 @@ function renderCard(card,idx,total){
     // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
     if(s.cloudflareId && s.cfStyle==='fullscreen'){
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;">
-        <iframe
-          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
-          style="position:absolute;inset:0;width:100%;height:100%;border:0;"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowfullscreen>
-        </iframe>
-        <!-- Top overlay: name + tagline only, no small stop label -->
+        <video id="cf-vid-${s.id}"
+          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/downloads/default.mp4"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"
+          playsinline webkit-playsinline autoplay muted preload="auto"></video>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 2rem;
-          background:linear-gradient(to bottom, rgba(0,0,0,0.6) 35%, transparent);
+          background:linear-gradient(to bottom,rgba(0,0,0,0.6) 35%,transparent);
           pointer-events:none;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Skip pill above continue button -->
-        <div style="position:absolute;bottom:calc(52px + 68px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:25;">
+        <div id="cf-overlay-${s.id}" onclick="cfVideoTap(${s.id})"
+          style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;
+                 align-items:center;justify-content:center;gap:1.2rem;cursor:pointer;">
+          <div id="cf-playbtn-${s.id}"
+            style="display:none;width:70px;height:70px;border-radius:50%;
+                   background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+                   align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.3);">
+            <span id="cf-icon-${s.id}" style="font-size:1.8rem;color:white;">&#9654;</span>
+          </div>
+          <div id="cf-nav-${s.id}"
+            style="display:none;flex-direction:column;align-items:center;gap:0.75rem;width:75%;">
+            <button onclick="event.stopPropagation();prevCard()"
+              style="width:100%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+                     -webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25);
+                     border-radius:12px;padding:0.7rem;color:white;font-family:'Nunito',sans-serif;
+                     font-size:0.9rem;font-weight:700;cursor:pointer;">&#8592; Back</button>
+            <button onclick="event.stopPropagation();nextCard()"
+              style="width:100%;background:var(--orange);border:none;border-radius:12px;
+                     padding:0.7rem;color:white;font-family:'Nunito',sans-serif;
+                     font-size:0.9rem;font-weight:700;cursor:pointer;">Continue &#8594;</button>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:20;">
           <a onclick="skipToTextFullscreen(${s.id})"
-             style="cursor:pointer;display:inline-block;
-                    background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+             style="cursor:pointer;display:inline-block;background:rgba(0,0,0,0.3);
+                    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
                     color:rgba(255,255,255,0.6);font-size:0.72rem;font-weight:500;
                     padding:0.3rem 0.9rem;border-radius:99px;
-                    border:1px solid rgba(255,255,255,0.15);text-decoration:none;">
-            Skip video
-          </a>
+                    border:1px solid rgba(255,255,255,0.15);text-decoration:none;">Skip video</a>
         </div>
-        <!-- Hidden text overlay -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
-          <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);
+          z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+          <div class="arrival-stop-num">Stop ${s.id} &#183; ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
           <div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div>
           <div style="text-align:center;padding-bottom:1rem;">
-            <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
-               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
-                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;
-                      box-shadow:0 2px 8px rgba(255,107,53,0.4);">
-              ▶ Watch video instead
-            </a>
+            <a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'"
+              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
+                     background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
+                     padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
+              &#9654; Watch video instead</a>
           </div>
         </div>
       </div>`;
     }
+
 
     // ── Cloudflare "most of card" video (stop 1 style) ───────────────────────
     const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
@@ -930,19 +966,23 @@ function startJourney(stopId){
 function renderJourney(){
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
-  const _curCard = cards[currentCardIdx];
-  const isNavCard = _curCard && (_curCard.type==='nav' || _curCard.type==='transition');
-  const isCFFullscreen = _curCard && _curCard.type==='desc' && _curCard.stop && _curCard.stop.cfStyle==='fullscreen';
-  document.getElementById('jt-bar').style.display = (isNavCard || isCFFullscreen) ? 'none' : 'block';
-  const _js = document.getElementById('journey-screen');
-  if(_js) _js.classList.toggle('cf-fullscreen', !!isCFFullscreen);
-  document.getElementById('progress-dots').style.display = (isNavCard || isCFFullscreen) ? 'none' : 'flex';
+  var _cur=cards[currentCardIdx];
+  var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
+  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
+  document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
+  document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
+  var _js2=document.getElementById('journey-screen');
+  if(_js2) _js2.classList.toggle('cf-fullscreen',!!(isCFFS));
   // Dots only for content cards (exclude transition index 0 and nav index 1)
   const contentCards = cards.slice(2);
   const contentIdx = currentCardIdx - 2;
   document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
     <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  var _cfC2=cards[currentCardIdx];
+  if(_cfC2&&_cfC2.type==='desc'&&_cfC2.stop&&_cfC2.stop.cfStyle==='fullscreen'){
+    setTimeout(function(){ initCFVideo(_cfC2.stop.id); },150);
+  }
   updateCardPosition(false);
   updateNavBtns();
 }
@@ -955,13 +995,13 @@ function updateCardPosition(animate=true){
 }
 
 function updateProgressDots(){
-  const _curCard = cards[currentCardIdx];
-  const isNavCard = _curCard && (_curCard.type==='nav' || _curCard.type==='transition');
-  const isCFFullscreen = _curCard && _curCard.type==='desc' && _curCard.stop && _curCard.stop.cfStyle==='fullscreen';
-  document.getElementById('jt-bar').style.display = (isNavCard || isCFFullscreen) ? 'none' : 'block';
-  const _js = document.getElementById('journey-screen');
-  if(_js) _js.classList.toggle('cf-fullscreen', !!isCFFullscreen);
-  document.getElementById('progress-dots').style.display = (isNavCard || isCFFullscreen) ? 'none' : 'flex';
+  var _cur=cards[currentCardIdx];
+  var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
+  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
+  document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
+  document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
+  var _js2=document.getElementById('journey-screen');
+  if(_js2) _js2.classList.toggle('cf-fullscreen',!!(isCFFS));
   const contentIdx = currentCardIdx - 2;
   document.querySelectorAll('.dot').forEach((d,i)=>{
     d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
@@ -1048,6 +1088,10 @@ function answerQuiz(stopId,optIdx){
   const isCorrect = stop && optIdx===stop.quiz.correct;
   const pos=currentCardIdx;
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  var _cfC2=cards[currentCardIdx];
+  if(_cfC2&&_cfC2.type==='desc'&&_cfC2.stop&&_cfC2.stop.cfStyle==='fullscreen'){
+    setTimeout(function(){ initCFVideo(_cfC2.stop.id); },150);
+  }
   currentCardIdx=pos;
   updateCardPosition(false);
   if(isCorrect) setTimeout(()=>showConfetti(), 300);
@@ -1220,7 +1264,7 @@ function initStopMap(stopId){
 
       }, () => {
         // Location denied — center on destination
-        stopMap.flyTo({ center: destCoord, zoom: 14 });
+        stopMap.flyTo({ center: destCoord, zoom: 12 });
       });
     }
   });
@@ -1234,7 +1278,7 @@ function initMap(){
     container: 'mapbox-map',
     style: 'mapbox://styles/mapbox/light-v11',
     center: [4.4841, 51.9060],
-    zoom: 13.5,
+    zoom: 13,
     attributionControl: false
   });
 
