@@ -1044,7 +1044,7 @@ function renderCard(card,idx,total){
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
-          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\\'")}',' ${s.id}','${s.name}')">📷 Open Camera</button>
+          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\\'")}','${s.id}','${s.name}')">📷 Open Camera</button>
         </div>
       </div>
     </div>`;
