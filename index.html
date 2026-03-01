@@ -135,7 +135,7 @@
 /* ── Photo preview screen ── */
 #preview-overlay {
   position: fixed; inset: 0; background: #000;
-  z-index: 900; display: none; flex-direction: column;
+  z-index: 1001; display: none; flex-direction: column;
 }
 #preview-overlay.on { display: flex; }
 #preview-img {
@@ -449,7 +449,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .nav-lbl { font-size:0.55rem; letter-spacing:0.05em; font-weight:600; text-transform:uppercase; }
 
 /* ── CAMERA ── */
-#cam-overlay { position:fixed; inset:0; background:#000; z-index:800; display:none; flex-direction:column; }
+#cam-overlay { position:fixed; inset:0; background:#000; z-index:1000; display:none; flex-direction:column; }
 #cam-overlay.on { display:flex; }
 #cam-vid { flex:1; object-fit:cover; width:100%; }
 .cam-ui { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(1.5rem + env(safe-area-inset-bottom)); }
