@@ -783,16 +783,16 @@ function renderCard(card,idx,total){
         <!-- Top gradient + title -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(2.2rem + env(safe-area-inset-top)) 1.25rem 2rem;
-          background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.85) 30%,rgba(0,0,0,0.4) 60%,transparent 100%);
+          background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.95) 25%,rgba(0,0,0,0.6) 55%,transparent 100%);
           pointer-events:none;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Bottom black gradient -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top,#000 0%,rgba(0,0,0,0.85) 30%,rgba(0,0,0,0.4) 60%,transparent 100%);"></div>
+        <!-- Bottom black gradient — sits above CF controls zone -->
+        <div style="position:absolute;bottom:52px;left:0;right:0;height:14%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top,#000 0%,rgba(0,0,0,0.95) 25%,rgba(0,0,0,0.6) 55%,transparent 100%);"></div>
         <!-- Read text only pill — topmost overlay item -->
-        <div style="position:absolute;bottom:calc(131px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:25;">
+        <div style="position:absolute;bottom:calc(131px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
           <a onclick="skipToTextFullscreen(${s.id})"
              style="cursor:pointer;display:inline-block;background:rgba(0,0,0,0.3);
                     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
