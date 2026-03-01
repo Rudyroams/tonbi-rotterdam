@@ -804,7 +804,7 @@ function renderCard(card,idx,total){
     // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
     if(s.cloudflareId && s.cfStyle==='fullscreen'){
       return `<div class="card nav-card" data-stop="${s.id}" data-type="desc"
-        style="position:relative;overflow:hidden;background:#2b1506;min-height:100vh;">
+        style="position:relative;overflow:hidden;background:#000;min-height:100vh;">
         <!-- Video iframe fills full card -->
         <iframe
           src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
@@ -812,17 +812,17 @@ function renderCard(card,idx,total){
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen>
         </iframe>
-        <!-- Top gradient blending black bars into content -->
-        <div style="position:absolute;top:0;left:0;right:0;height:35%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #2b1506 0%, rgba(43,21,6,0.7) 40%, transparent 100%);">
+        <!-- Top gradient — full black fade -->
+        <div style="position:absolute;top:0;left:0;right:0;height:40%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 50%, transparent 100%);">
         </div>
-        <!-- Bottom gradient -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:35%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #2b1506 0%, rgba(43,21,6,0.7) 40%, transparent 100%);">
+        <!-- Bottom gradient — full black fade -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:40%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 50%, transparent 100%);">
         </div>
-        <!-- Top overlay: name + tagline pushed down past safe area -->
+        <!-- Top overlay: name + tagline -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(2.5rem + env(safe-area-inset-top)) 1.25rem 3rem;
+          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 3rem;
           pointer-events:none;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
