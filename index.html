@@ -807,42 +807,41 @@ function renderCard(card,idx,total){
   }
 
   if(card.type==='desc'){
-    // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
-    if(s.cloudflareId && s.cfStyle==='fullscreen'){
-      return `<div class="card nav-card" data-stop="${s.id}" data-type="desc"
-        style="position:relative;overflow:hidden;background:#000;min-height:100vh;">
-        <!-- Video iframe fills full card -->
+    const CF_BASE = 'https://customer-umijtu8zknmpubqb.cloudflarestream.com';
+
+    // ── Stop 1: card style with white gradients + black text ─────────────────
+    if(s.cloudflareId && s.cfStyle==='card'){
+      return `<div class="card" data-stop="${s.id}" data-type="desc"
+        style="position:relative;overflow:hidden;background:#000;padding:0;">
         <iframe
-          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          src="${CF_BASE}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
           style="position:absolute;inset:0;width:100%;height:100%;border:0;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen>
         </iframe>
-        <!-- Top gradient — short steep black fade -->
-        <div style="position:absolute;top:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.9) 60%, transparent 100%);">
+        <!-- Top white gradient -->
+        <div style="position:absolute;top:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.85) 40%, transparent 100%);">
         </div>
-        <!-- Bottom gradient — short steep black fade -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 60%, transparent 100%);">
+        <!-- Bottom white gradient -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top, #fff 0%, rgba(255,255,255,0.85) 40%, transparent 100%);">
         </div>
-        <!-- Top overlay: name + tagline -->
+        <!-- Top text: black -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 3rem;
-          pointer-events:none;">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
+          padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 2rem;pointer-events:none;">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#111;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(0,0,0,0.55);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Skip link — subtle, bottom right -->
+        <!-- Skip link bottom right -->
         <div style="position:absolute;bottom:calc(62px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
-          <a onclick="skipToTextFullscreen(${s.id})"
-             style="cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.72rem;
-                    text-decoration:underline;text-underline-offset:2px;">
-            Skip video
-          </a>
+          <a onclick="skipToText(${s.id})"
+             style="cursor:pointer;color:rgba(0,0,0,0.35);font-size:0.72rem;
+                    text-decoration:underline;text-underline-offset:2px;">Skip video</a>
         </div>
-        <!-- Text overlay (shown when skip is tapped) -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+        <!-- Text overlay -->
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;
+          padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
           <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
@@ -851,8 +850,7 @@ function renderCard(card,idx,total){
             <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
                style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
                       background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
-                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;
-                      box-shadow:0 2px 8px rgba(255,107,53,0.4);">
+                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
               ▶ Watch video instead
             </a>
           </div>
@@ -860,41 +858,39 @@ function renderCard(card,idx,total){
       </div>`;
     }
 
-    // ── Cloudflare "most of card" video (stop 1 style) ───────────────────────
-    const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
-      <div class="card nav-card" data-stop="${s.id}" data-type="desc"
-        style="position:absolute;inset:0;overflow:hidden;background:#000;">
+    // ── Stop 2: fullscreen style with black gradients + white text ───────────
+    if(s.cloudflareId && s.cfStyle==='fullscreen'){
+      return `<div class="card" data-stop="${s.id}" data-type="desc"
+        style="position:relative;overflow:hidden;background:#000;padding:0;">
         <iframe
-          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          src="${CF_BASE}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
           style="position:absolute;inset:0;width:100%;height:100%;border:0;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen>
         </iframe>
-        <!-- Top gradient — short steep WHITE fade -->
-        <div style="position:absolute;top:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.9) 60%, transparent 100%);">
+        <!-- Top black gradient -->
+        <div style="position:absolute;top:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 40%, transparent 100%);">
         </div>
-        <!-- Bottom gradient — short steep white fade -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:22%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #fff 0%, rgba(255,255,255,0.9) 60%, transparent 100%);">
+        <!-- Bottom black gradient -->
+        <div style="position:absolute;bottom:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 40%, transparent 100%);">
         </div>
-        <!-- Top text in black -->
+        <!-- Top text: white -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 3rem;
-          pointer-events:none;">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#111;line-height:1.1;">${s.name}</div>
-          <div style="font-size:0.85rem;color:rgba(0,0,0,0.6);margin-top:0.2rem;">${s.tagline}</div>
+          padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 2rem;pointer-events:none;">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Skip link subtle bottom right -->
+        <!-- Skip link bottom right -->
         <div style="position:absolute;bottom:calc(62px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
-          <a onclick="skipToText(${s.id})"
-             style="cursor:pointer;color:rgba(0,0,0,0.4);font-size:0.72rem;
-                    text-decoration:underline;text-underline-offset:2px;">
-            Skip video
-          </a>
+          <a onclick="skipToTextFullscreen(${s.id})"
+             style="cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.72rem;
+                    text-decoration:underline;text-underline-offset:2px;">Skip video</a>
         </div>
         <!-- Text overlay -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;
+          padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
           <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
@@ -903,489 +899,214 @@ function renderCard(card,idx,total){
             <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
                style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
                       background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
-                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;
-                      box-shadow:0 2px 8px rgba(255,107,53,0.4);">
+                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
               ▶ Watch video instead
             </a>
           </div>
         </div>
-      </div>` : '';
+      </div>`;
+    }
 
-    // ── YouTube fallback ─────────────────────────────────────────────────────
-    const videoBlock = s.cloudflareId ? cfBlock : s.youtubeId ? `
-      <div class="video-wrap" id="video-wrap-${s.id}" style="position:relative;cursor:pointer;" onclick="openVideo('${s.youtubeId}')">
-        <img src="https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        <div class="video-thumb-overlay">
-          <div class="play-btn-circle"><div class="play-triangle"></div></div>
-        </div>
-        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:4px;font-weight:600;">Opens in YouTube</div>
-      </div>
-      <div class="video-skip">
-        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
-      </div>` : `<div id="text-section-${s.id}-trigger" style="display:none;"></div>`;
-
+    // ── No video: plain text card ─────────────────────────────────────────────
     return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;">
       <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
       <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
       <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
-      ${videoBlock}
-      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${(s.cloudflareId||s.youtubeId) ? 'none' : 'block'};">
+      <div class="arrival-text-section" id="text-section-${s.id}">
         <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
       </div>
     </div>`;
   }
 
-  if(card.type==='rudy') return `
-    <div class="card" data-stop="${s.id}" data-type="rudy">
-      <div class="story-card-inner">
-        <div class="story-avatar">R</div>
-        <div class="story-from">Rudy's Note</div>
-        <div class="story-text">${s.rudy}</div>
-      </div>
-    </div>`;
 
-  if(card.type==='photo') return `
-    <div class="card" data-stop="${s.id}" data-type="photo">
-      <div class="photo-card">
-        <div class="photo-card-header">
-          <div class="photo-card-label">📸 Photo Challenge</div>
-          <div class="photo-card-title">${s.challenge.title}</div>
-        </div>
-        <div class="photo-card-body">
-          <p class="photo-card-desc">${s.challenge.desc}</p>
-          <div class="photo-tip-box">
-            <div class="photo-tip-icon">💡</div>
-            <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
-          </div>
-          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\'")}')">📷 Open Camera</button>
-        </div>
+
+  if(card.type==='photo'){
+    const s = card.stop;
+    return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:0;position:relative;overflow:hidden;">
+      <img src="${s.photo}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1.25rem 1.25rem;
+        background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 100%);">
+        <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Stop ${s.id} · ${s.dutch}</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;">${s.name}</div>
       </div>
     </div>`;
+  }
 
   if(card.type==='quiz'){
-    const qa=quizAnswered[s.id];
-    const opts=s.quiz.opts.map((opt,i)=>{
-      let cls='',icon='○';
-      if(qa!==undefined){
-        if(i===s.quiz.correct){cls='correct';icon='✓';}
-        else if(i===qa){cls='wrong';icon='✗';}
-      }
-      return `<button class="quiz-o ${cls}" onclick="answerQuiz(${s.id},${i})" ${qa!==undefined?'disabled':''}>
-        <span class="quiz-o-icon">${icon}</span><span>${opt}</span>
-      </button>`;
-    }).join('');
-    const qShow=qa!==undefined;
-    const qClass=qShow?(qa===s.quiz.correct?'correct-res':'wrong-res'):'';
-    const qText=qShow?(qa===s.quiz.correct?`<strong>Correct! 🎉</strong>${s.quiz.explanation}`:`<strong>Not quite!</strong> ${s.quiz.explanation}`):'';
-    return `
-    <div class="card" data-stop="${s.id}" data-type="quiz">
-      <div class="quiz-card">
-        <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
-        <div class="quiz-card-body">
-          <div class="quiz-card-label">❓ Quiz Time</div>
-          <div class="quiz-card-q">${s.quiz.q}</div>
-          <div class="quiz-opts">${opts}</div>
-          <div class="quiz-result-box ${qClass} ${qShow?'show':''}">${qText}</div>
-        </div>
+    const s = card.stop;
+    const q = s.quiz;
+    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:1.5rem;">
+      <div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">Quick Quiz · Stop ${s.id}</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;line-height:1.35;margin-bottom:1.5rem;">${q.question}</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;" id="quiz-opts-${s.id}">
+        ${q.options.map((opt,i)=>`
+        <button class="quiz-opt" onclick="answerQuiz(${s.id},${i})" id="qopt-${s.id}-${i}"
+          style="text-align:left;background:var(--bg);border:2px solid var(--border);border-radius:12px;
+                 padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;
+                 transition:all 0.2s;">
+          <span style="font-weight:700;color:var(--orange);margin-right:0.5rem;">${String.fromCharCode(65+i)}</span>${opt}
+        </button>`).join('')}
       </div>
+      <div id="quiz-result-${s.id}" style="display:none;margin-top:1.25rem;padding:1rem;border-radius:12px;text-align:center;"></div>
     </div>`;
   }
-  return '<div class="card"></div>';
+
+  if(card.type==='nav'){
+    const s = card.stop;
+    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav" style="position:relative;overflow:hidden;">
+      <div id="nav-map-${s.id}" style="position:absolute;inset:0;"></div>
+      <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
+      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 0.5rem;
+        background:linear-gradient(to bottom,rgba(255,255,255,0.95) 70%,transparent);">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;">Navigating to</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;">${s.name}</div>
+      </div>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank"
+        style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:12;
+               display:inline-flex;align-items:center;gap:0.4rem;
+               background:white;border:1.5px solid var(--border);border-radius:99px;
+               padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;color:var(--text);
+               text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#4285F4" stroke="none"/></svg>
+        Open in Google Maps
+      </a>
+    </div>`;
+  }
+
+  if(card.type==='transition'){
+    const next = card.stop;
+    return `<div class="card" data-stop="${next.id}" data-type="transition" style="padding:1.5rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1rem;">
+      <div style="font-size:2.5rem;">🎉</div>
+      <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;">Next Stop</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;line-height:1.1;">${next.name}</div>
+      <div style="font-size:0.9rem;color:var(--text2);">${next.tagline}</div>
+    </div>`;
+  }
+
+  return `<div class="card" style="padding:1.25rem;"><p>Unknown card type: ${card.type}</p></div>`;
 }
 
-function startJourney(stopId){
-  currentStop=stops.find(s=>s.id===stopId);
-  currentCardIdx=0;
-  cards=buildCards(currentStop);
-  Object.keys(videoActivated).forEach(k=>delete videoActivated[k]);
-  renderJourney();
-  document.getElementById('journey-screen').classList.add('show');
-  // Setup observer after DOM renders
-  if(currentStop.youtubeId){
-    setTimeout(()=>setupVideoObserver(currentStop.id),300);
+function answerQuiz(stopId, optIdx){
+  const stop = stops.find(s=>s.id===stopId);
+  if(!stop) return;
+  const opts = document.querySelectorAll(`#quiz-opts-${stopId} .quiz-opt`);
+  opts.forEach((btn,i)=>{
+    btn.disabled = true;
+    if(i===stop.quiz.correct){
+      btn.style.background='#d1fae5'; btn.style.borderColor='#34c759'; btn.style.color='#065f46';
+    } else if(i===optIdx && optIdx!==stop.quiz.correct){
+      btn.style.background='#fee2e2'; btn.style.borderColor='#ef4444'; btn.style.color='#991b1b';
+    }
+  });
+  const result = document.getElementById(`quiz-result-${stopId}`);
+  if(result){
+    result.style.display='block';
+    if(optIdx===stop.quiz.correct){
+      result.style.background='#d1fae5'; result.style.borderColor='#34c759';
+      result.innerHTML=`<div style="font-size:1.3rem;margin-bottom:0.3rem;">✅</div><div style="font-weight:700;color:#065f46;">Correct!</div><div style="font-size:0.85rem;color:#065f46;margin-top:0.25rem;">${stop.quiz.explanation||''}</div>`;
+      setTimeout(()=>showConfetti(), 300);
+    } else {
+      result.style.background='#fee2e2';
+      result.innerHTML=`<div style="font-size:1.3rem;margin-bottom:0.3rem;">❌</div><div style="font-weight:700;color:#991b1b;">Not quite!</div><div style="font-size:0.85rem;color:#991b1b;margin-top:0.25rem;">The answer was: ${stop.quiz.options[stop.quiz.correct]}</div>`;
+    }
   }
 }
 
-function renderJourney(){
-  document.getElementById('jt-label').textContent=currentStop.name;
-  document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
-  const currentCard = cards[currentCardIdx];
-  const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
-  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && (currentCard.stop.cfStyle==='fullscreen' || currentCard.stop.cfStyle==='card');
-  document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
-  document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
-  const journeyEl = document.getElementById('journey-screen');
-  if(journeyEl) journeyEl.classList.toggle('fullscreen-video', !!isFullscreenVideo);
-  // Dots only for content cards (exclude transition index 0 and nav index 1)
-  const contentCards = cards.slice(2);
-  const contentIdx = currentCardIdx - 2;
-  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
-    <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
-  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
-  updateCardPosition(false);
-  updateNavBtns();
-}
-
-function updateCardPosition(animate=true){
-  const track=document.getElementById('card-track');
-  if(!animate){track.style.transition='none';}
-  track.style.transform=`translateX(-${currentCardIdx*100}%)`;
-  if(!animate) setTimeout(()=>track.style.transition='',50);
-}
-
-function updateProgressDots(){
-  const currentCard = cards[currentCardIdx];
-  const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
-  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop && (currentCard.stop.cfStyle==='fullscreen' || currentCard.stop.cfStyle==='card');
-  document.getElementById('jt-bar').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
-  document.getElementById('progress-dots').style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
-  const journeyEl = document.getElementById('journey-screen');
-  if(journeyEl) journeyEl.classList.toggle('fullscreen-video', !!isFullscreenVideo);
-  const contentIdx = currentCardIdx - 2;
-  document.querySelectorAll('.dot').forEach((d,i)=>{
-    d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
-    d.style.width=i===contentIdx?'20px':'8px';
+function initNavMap(stopId){
+  const stop = stops.find(s=>s.id===stopId);
+  if(!stop) return;
+  const container = document.getElementById(`nav-map-${stopId}`);
+  if(!container || container._mapDone) return;
+  container._mapDone = true;
+  if(typeof mapboxgl === 'undefined'){ setTimeout(()=>initNavMap(stopId),500); return; }
+  const map = new mapboxgl.Map({
+    container: container,
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [stop.lng, stop.lat],
+    zoom: 14,
+    interactive: false
+  });
+  map.on('load',()=>{
+    new mapboxgl.Marker({color:'#ff6b35'}).setLngLat([stop.lng,stop.lat]).addTo(map);
   });
 }
 
-function updateNavBtns(){
-  if(!currentStop) return;
-  const prev=document.getElementById('prev-btn');
-  const next=document.getElementById('next-btn');
-  const currentCard = cards[currentCardIdx];
-  const isTransition = currentCard && currentCard.type==='transition';
-  const isNav = currentCard && currentCard.type==='nav';
-  const isLastCard = currentCardIdx===cards.length-1;
-  const isLastStop = currentStop.id===stops.length;
-
-  // Hide back button on first card
-  prev.style.display = currentCardIdx===0 ? 'none' : 'block';
-  // "Back to Map" only on the desc card (index 2, right after nav)
-  prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
-
-  // Next button label
-  if(isLastCard){
-    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
-    next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
-  } else if(isNav){
-    next.textContent = "I've Arrived ✓";
-    next.className = 'card-next-btn';
-  } else {
-    next.textContent = 'Continue →';
-    next.className = 'card-next-btn';
-  }
-
-  // On transition card: hide prev/next buttons (card has its own inline button)
-  document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('card-bottom').style.display = 'flex';
-  // On nav card: make bottom bar semi-transparent so map shows through
-  document.getElementById('card-bottom').classList.toggle('on-map', isNav);
-}
-
 function nextCard(){
-  const isLastCard=currentCardIdx===cards.length-1;
-  if(isLastCard){
-    currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney();
-  } else {
+  if(currentCardIdx < cards.length-1){
     currentCardIdx++;
-    updateCardPosition();
-    updateProgressDots();
-    updateNavBtns();
-    // Scroll active card to top
-    setTimeout(()=>{
-      const scrollTarget=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');
-      if(scrollTarget) scrollTarget.scrollTop=0;
-      // Init stop map if this is a nav card
-      const activeCard=cards[currentCardIdx];
-      if(activeCard && activeCard.type==='nav'){
-        setTimeout(()=>{
-          initStopMap(activeCard.stop.id);
-          initWalkAnim(activeCard.stop.id);
-        }, 100);
-      }
-    },400);
+    renderJourney();
+    const activeCard = cards[currentCardIdx];
+    if(activeCard && activeCard.type==='nav'){
+      setTimeout(()=>{
+        updateJourneyHeaderVisibility();
+        initNavMap(activeCard.stop.id);
+        initWalkAnim(activeCard.stop.id);
+      }, 100);
+    } else {
+      updateJourneyHeaderVisibility();
+    }
   }
 }
 
 function prevCard(){
-  if(currentCardIdx>0){
+  if(currentCardIdx > 0){
     currentCardIdx--;
-    updateCardPosition();
-    updateProgressDots();
-    updateNavBtns();
+    renderJourney();
+    updateJourneyHeaderVisibility();
+    const activeCard = cards[currentCardIdx];
+    if(activeCard && activeCard.type==='nav'){
+      setTimeout(()=>{ initNavMap(activeCard.stop.id); initWalkAnim(activeCard.stop.id); }, 100);
+    }
   }
+}
+
+function updateNavBtns(){
+  const prev = document.getElementById('prev-btn');
+  const next = document.getElementById('next-btn');
+  if(!prev||!next) return;
+  prev.style.display = currentCardIdx===0 ? 'none' : '';
+  next.textContent = currentCardIdx===cards.length-1 ? 'Finish Tour ✓' : 'Continue →';
 }
 
 function closeJourney(){
   document.getElementById('journey-screen').classList.remove('show');
+  showScreen('home');
 }
 
-// ══ QUIZ ══
-function answerQuiz(stopId,optIdx){
-  quizAnswered[stopId]=optIdx;
-  const stop=stops.find(s=>s.id===stopId);
-  const isCorrect = stop && optIdx===stop.quiz.correct;
-  const pos=currentCardIdx;
-  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
-  currentCardIdx=pos;
-  updateCardPosition(false);
-  if(isCorrect) setTimeout(()=>showConfetti(), 300);
-  // Scroll to result
-  setTimeout(()=>{
-    const result=document.querySelectorAll('.card')[pos]?.querySelector('.quiz-result-box');
-    if(result) result.scrollIntoView({behavior:'smooth',block:'nearest'});
-  },100);
+function startJourney(stopId){
+  const stop = stops.find(s=>s.id===stopId);
+  if(!stop) return;
+  currentStop = stop;
+  currentCardIdx = 0;
+  buildCards(stop);
+  document.getElementById('journey-screen').classList.add('show');
+  renderJourney();
+  updateJourneyHeaderVisibility();
 }
 
-// ══ CAMERA ══
-async function openCam(tip){
-  lastTip=tip;
-  document.getElementById('cam-tip').textContent=tip;
-  document.getElementById('cam-overlay').classList.add('on');
-  try {
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    document.getElementById('cam-vid').srcObject=camStream;
-  } catch(e){
-    alert('Camera access needed — please allow in your browser settings.');
-    document.getElementById('cam-overlay').classList.remove('on');
-  }
-}
-function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
-function snap(){
-  const v=document.getElementById('cam-vid'),c=document.getElementById('cam-canvas');
-  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);
-  document.getElementById('preview-img').src=c.toDataURL('image/jpeg',0.92);
-  document.getElementById('cam-overlay').classList.remove('on');
-  document.getElementById('preview-overlay').classList.add('on');
-}
-function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
-function savePhoto(){
-  const a=document.createElement('a');
-  a.href=document.getElementById('preview-img').src;
-  a.download='tonbi-rotterdam.jpg';a.click();
-  document.getElementById('preview-overlay').classList.remove('on');
-  stopCam();
+function stopCam(){ 
+  const overlay = document.getElementById('cam-overlay');
+  if(overlay) overlay.style.display='none';
+  const vid = document.getElementById('cam-vid');
+  if(vid && vid.srcObject){ vid.srcObject.getTracks().forEach(t=>t.stop()); vid.srcObject=null; }
 }
 
-
-
-// ══ STOP NAV MINI MAP ══
-const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
-
-function initStopMap(stopId){
-  if(!window.mapboxgl) return;
-  const coords = [
-    [4.4871, 51.9090], // 1 Erasmus Bridge
-    [4.4917, 51.9186], // 2 Witte Huis
-    [4.4917, 51.9193], // 3 Oude Haven
-    [4.4877, 51.9188], // 4 Cube Houses
-    [4.4866, 51.9200]  // 5 Markthal
-  ];
-  const idx = stopId - 1;
-  const destCoord = coords[idx];
-  const containerId = `stop-map-${stopId}`;
-  const container = document.getElementById(containerId);
-  if(!container || container._mapInitialized) return;
-  container._mapInitialized = true;
-
-  const stopMap = new mapboxgl.Map({
-    container: containerId,
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: destCoord,
-    zoom: 15.5,
-    attributionControl: false,
-    interactive: true
+function showScreen(name){
+  ['home-screen','map-screen'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = id===name+'-screen' ? 'block' : 'none';
   });
-
-  // Add destination star marker immediately
-  const destEl = document.createElement('div');
-  destEl.style.cssText = `
-    width:44px;height:44px;border-radius:50%;
-    background:#ff6b35;color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.4rem;
-    border:3px solid #fff;
-    box-shadow:0 2px 16px rgba(255,107,53,0.6);
-  `;
-  destEl.textContent = '⭐';
-  new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
-
-  stopMap.on('load', () => {
-    // Prepare route source (empty to start)
-    stopMap.addSource('walking-route', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] }
-    });
-
-    // Route line — solid orange
-    stopMap.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'walking-route',
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: {
-        'line-color': '#ff6b35',
-        'line-width': 5,
-        'line-opacity': 0.85
-      }
-    });
-
-    // Route direction arrows
-    stopMap.addLayer({
-      id: 'route-arrows',
-      type: 'symbol',
-      source: 'walking-route',
-      layout: {
-        'symbol-placement': 'line',
-        'symbol-spacing': 80,
-        'icon-image': 'arrow-right',
-        'icon-size': 0.8,
-        'icon-rotate': 90
-      }
-    });
-
-    // Get user location and fetch walking directions
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(pos => {
-        const userLng = pos.coords.longitude;
-        const userLat = pos.coords.latitude;
-
-        // Blue dot for user
-        const userEl = document.createElement('div');
-        userEl.style.cssText = `
-          width:20px;height:20px;border-radius:50%;
-          background:#2d6be4;
-          border:3px solid #fff;
-          box-shadow:0 2px 8px rgba(45,107,228,0.5);
-        `;
-        new mapboxgl.Marker(userEl).setLngLat([userLng, userLat]).addTo(stopMap);
-
-        // Fit bounds to show both points
-        const bounds = new mapboxgl.LngLatBounds();
-        bounds.extend([userLng, userLat]);
-        bounds.extend(destCoord);
-        stopMap.fitBounds(bounds, {
-          padding: { top:70, bottom:90, left:50, right:50 },
-          maxZoom: 16,
-          duration: 800
-        });
-
-        // Fetch walking route from Mapbox Directions API
-        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${userLng},${userLat};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
-
-        fetch(url)
-          .then(r => r.json())
-          .then(data => {
-            if(data.routes && data.routes.length > 0){
-              const routeGeo = data.routes[0].geometry;
-              stopMap.getSource('walking-route').setData({
-                type: 'Feature',
-                geometry: routeGeo
-              });
-
-              // Show walking time
-              const minutes = Math.round(data.routes[0].duration / 60);
-              const distance = (data.routes[0].distance / 1000).toFixed(1);
-              const infoEl = document.getElementById(`route-info-${stopId}`);
-              if(infoEl){
-                infoEl.textContent = `🚶 ${minutes} min walk · ${distance} km`;
-                infoEl.style.display = 'block';
-              }
-            }
-          })
-          .catch(() => {
-            // Directions failed silently — map still works
-          });
-
-      }, () => {
-        // Location denied — center on destination
-        stopMap.flyTo({ center: destCoord, zoom: 16 });
-      });
-    }
+  document.querySelectorAll('.nav-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.screen===name);
   });
 }
 
-// ══ MAPBOX MAP ══
-function initMap(){
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-
-  const map = new mapboxgl.Map({
-    container: 'mapbox-map',
-    style: 'mapbox://styles/mapbox/light-v11',
-    center: [4.4841, 51.9060],
-    zoom: 14.5,
-    attributionControl: false
-  });
-
-  // Stop coordinates [lng, lat]
-  const coords = [
-    [4.4871, 51.9090], // 1 Erasmus Bridge
-    [4.4917, 51.9186], // 2 Witte Huis
-    [4.4917, 51.9193], // 3 Oude Haven
-    [4.4877, 51.9188], // 4 Cube Houses
-    [4.4866, 51.9200]  // 5 Markthal
-  ];
-
-  map.on('load', () => {
-    // Draw walking route line between stops
-    map.addSource('route', {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: coords
-        }
-      }
-    });
-    map.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'route',
-      paint: {
-        'line-color': '#ff6b35',
-        'line-width': 3,
-        'line-dasharray': [2, 1.5],
-        'line-opacity': 0.8
-      }
-    });
-
-    // Add custom markers
-    stops.forEach((stop, i) => {
-      const el = document.createElement('div');
-      el.style.cssText = `
-        width:36px;height:36px;border-radius:50%;
-        background:#ff6b35;color:#fff;
-        display:flex;align-items:center;justify-content:center;
-        font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;
-        border:3px solid #fff;
-        box-shadow:0 2px 12px rgba(255,107,53,0.5);
-        cursor:pointer;
-      `;
-      el.textContent = stop.id;
-
-      const popup = new mapboxgl.Popup({ offset:25, closeButton:false, maxWidth:'220px' })
-        .setHTML(`
-          <img class="popup-img" src="${stop.img}" alt="${stop.name}">
-          <div class="popup-body">
-            <div class="popup-num">Stop ${stop.id}</div>
-            <div class="popup-name">${stop.name}</div>
-            <div class="popup-tag">${stop.tagline}</div>
-            <button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button>
-          </div>`);
-
-      new mapboxgl.Marker(el)
-        .setLngLat(coords[i])
-        .setPopup(popup)
-        .addTo(map);
-    });
-  });
-}
-
-// ══ INIT ══
-try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  renderLists();
+  showScreen('home');
+});
 </script>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
 </body>
 </html>
