@@ -720,198 +720,128 @@ function setupVideoObserver(stopId){
 
 // ══ CARDS ══
 function buildCards(stop){
-  const cardTypes=['transition','nav','desc','rudy','photo','quiz'];
-  return cardTypes.map(type=>({type,stop}));
+  return [
+    {type:'transition', stop},
+    {type:'nav',        stop},
+    {type:'desc',       stop},
+    {type:'photo',      stop},
+    {type:'quiz',       stop}
+  ];
 }
 
-function renderCard(card,idx,total){
-  const s=card.stop;
-  if(card.type==='transition'){
-    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
+function renderCard(card, idx, total){
+  const s = card.stop;
+  const CF = 'https://customer-umijtu8zknmpubqb.cloudflarestream.com';
 
-      <!-- X button -->
-      <button onclick="closeJourney()" style="position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid rgba(0,0,0,0.1);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.1);font-weight:700;">✕</button>
-
-      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
-      <div>
-        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
-        <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
-          Next stop: <strong style="color:var(--text)">${s.name}</strong>. We'll show you exactly how to get there with a live map and walking route.
-        </div>
-      </div>
-      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 One quick thing</div>
-        <div style="font-size:0.92rem;line-height:1.7;color:var(--text);font-weight:400;">When your phone asks <em>"Allow location access?"</em> — tap <strong>Allow</strong>. This lets the map show where you are and draw the walking route to the next stop.</div>
-      </div>
-      <button onclick="nextCard()" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,0.25);letter-spacing:-0.01em;">
-        Let's go! 👟
-      </button>
+  // ── TRANSITION ─────────────────────────────────────────────────────────────
+  if(card.type === 'transition'){
+    const isFirst = s.id === 1;
+    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.2rem;">
+      <div style="font-size:2.5rem;">${isFirst ? '🦅' : '🚶'}</div>
+      <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;">${isFirst ? 'Your journey begins' : 'Next Stop'}</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;line-height:1.1;">${s.name}</div>
+      <div style="font-size:0.9rem;color:var(--text2);">${s.tagline}</div>
     </div>`;
   }
 
-  if(card.type==='nav'){
-    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav">
-
-      <!-- Map fills entire card — sits behind everything -->
-      <div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
-
-      <!-- Header gradient overlay -->
-      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
-        background:linear-gradient(to bottom, rgba(255,255,255,0.90) 45%, rgba(255,255,255,0));
-        display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;">
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
-          <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
-        </div>
-        <button onclick="closeJourney()" style="background:white;border:1.5px solid rgba(0,0,0,0.12);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,0.12);font-weight:700;margin-top:0.1rem;">✕</button>
-      </div>
-
-      <!-- Stop thumbnail + time pill — top right, comfortably below X -->
-      <div style="position:absolute;top:58px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;">
-        <img src="${s.img}" alt="${s.name}"
-          style="width:77px;height:77px;border-radius:16px;object-fit:cover;
-                 box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
-                 pointer-events:none;display:block;">
-        <div id="route-info-${s.id}"
-          style="display:none;margin-top:-14px;margin-right:6px;z-index:12;position:relative;
-                 background:white;border-radius:20px;padding:0.28rem 0.7rem;
-                 font-size:0.72rem;font-weight:700;color:var(--orange);
-                 box-shadow:0 3px 12px rgba(0,0,0,0.18);
-                 white-space:nowrap;border:2px solid white;"></div>
-      </div>
-
-      <!-- Walking animation — bottom left over map -->
+  // ── NAV MAP ────────────────────────────────────────────────────────────────
+  if(card.type === 'nav'){
+    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav" style="position:relative;overflow:hidden;">
+      <div id="nav-map-${s.id}" style="position:absolute;inset:0;"></div>
       <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
-
-      <!-- Google Maps pill — bottom right, just above bottom bar -->
-      <a href="${s.mapUrl}" target="_blank"
-        style="position:absolute;bottom:14px;right:14px;z-index:11;
-               background:white;color:var(--blue);border-radius:20px;
-               padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
-               text-decoration:none;white-space:nowrap;
-               box-shadow:0 3px 12px rgba(0,0,0,0.18);">
-        📍 Google Maps
+      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 0.75rem;
+        background:linear-gradient(to bottom,rgba(255,255,255,0.96) 65%,transparent);">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.1rem;">Navigating to</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;">${s.name}</div>
+      </div>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank"
+        style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:12;
+               display:inline-flex;align-items:center;gap:0.4rem;white-space:nowrap;
+               background:white;border:1.5px solid var(--border);border-radius:99px;
+               padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;color:var(--text);
+               text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#4285F4" stroke="none"/></svg>
+        Open in Google Maps
       </a>
     </div>`;
   }
 
-  if(card.type==='desc'){
-    const CF_BASE = 'https://customer-umijtu8zknmpubqb.cloudflarestream.com';
-
-    // ── Stop 1: card style with white gradients + black text ─────────────────
-    if(s.cloudflareId && s.cfStyle==='card'){
-      return `<div class="card" data-stop="${s.id}" data-type="desc"
-        style="position:relative;overflow:hidden;background:#000;padding:0;">
-        <iframe
-          src="${CF_BASE}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+  // ── DESC (video or text) ───────────────────────────────────────────────────
+  if(card.type === 'desc'){
+    // Cloudflare card style (stop 1 — white gradient)
+    if(s.cloudflareId && s.cfStyle === 'card'){
+      return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;">
+        <iframe src="${CF}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
           style="position:absolute;inset:0;width:100%;height:100%;border:0;"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowfullscreen>
-        </iframe>
-        <!-- Top white gradient -->
-        <div style="position:absolute;top:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.85) 40%, transparent 100%);">
-        </div>
-        <!-- Bottom white gradient -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #fff 0%, rgba(255,255,255,0.85) 40%, transparent 100%);">
-        </div>
-        <!-- Top text: black -->
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <div style="position:absolute;top:0;left:0;right:0;height:10%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,0.85) 40%,transparent 100%);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:10%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top,#fff 0%,rgba(255,255,255,0.85) 40%,transparent 100%);"></div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 2rem;pointer-events:none;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:#111;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(0,0,0,0.55);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Skip link bottom right -->
         <div style="position:absolute;bottom:calc(62px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
-          <a onclick="skipToText(${s.id})"
-             style="cursor:pointer;color:rgba(0,0,0,0.35);font-size:0.72rem;
-                    text-decoration:underline;text-underline-offset:2px;">Skip video</a>
+          <a onclick="skipToText(${s.id})" style="cursor:pointer;color:rgba(0,0,0,0.35);font-size:0.72rem;text-decoration:underline;">Skip video</a>
         </div>
-        <!-- Text overlay -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;
-          padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
           <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
           <div class="arrival-text-body" style="margin-bottom:2rem;">${s.desc}</div>
-          <div style="text-align:center;margin-top:1rem;">
+          <div style="text-align:center;">
             <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
-               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
-                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
-              ▶ Watch video instead
-            </a>
+              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
+              ▶ Watch video instead</a>
           </div>
         </div>
       </div>`;
     }
-
-    // ── Stop 2: fullscreen style with black gradients + white text ───────────
-    if(s.cloudflareId && s.cfStyle==='fullscreen'){
-      return `<div class="card" data-stop="${s.id}" data-type="desc"
-        style="position:relative;overflow:hidden;background:#000;padding:0;">
-        <iframe
-          src="${CF_BASE}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+    // Cloudflare fullscreen style (stop 2 — black gradient)
+    if(s.cloudflareId && s.cfStyle === 'fullscreen'){
+      return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;">
+        <iframe src="${CF}/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
           style="position:absolute;inset:0;width:100%;height:100%;border:0;"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowfullscreen>
-        </iframe>
-        <!-- Top black gradient -->
-        <div style="position:absolute;top:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
-          background:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.85) 40%, transparent 100%);">
-        </div>
-        <!-- Bottom black gradient -->
-        <div style="position:absolute;bottom:0;left:0;right:0;height:15%;z-index:9;pointer-events:none;
-          background:linear-gradient(to top, #000 0%, rgba(0,0,0,0.85) 40%, transparent 100%);">
-        </div>
-        <!-- Top text: white -->
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <div style="position:absolute;top:0;left:0;right:0;height:10%;z-index:9;pointer-events:none;
+          background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.85) 40%,transparent 100%);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:10%;z-index:9;pointer-events:none;
+          background:linear-gradient(to top,#000 0%,rgba(0,0,0,0.85) 40%,transparent 100%);"></div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 2rem;pointer-events:none;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <!-- Skip link bottom right -->
         <div style="position:absolute;bottom:calc(62px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
-          <a onclick="skipToTextFullscreen(${s.id})"
-             style="cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.72rem;
-                    text-decoration:underline;text-underline-offset:2px;">Skip video</a>
+          <a onclick="skipToTextFullscreen(${s.id})" style="cursor:pointer;color:rgba(255,255,255,0.45);font-size:0.72rem;text-decoration:underline;">Skip video</a>
         </div>
-        <!-- Text overlay -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;
-          padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
           <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
           <div class="arrival-text-body" style="margin-bottom:2rem;">${s.desc}</div>
-          <div style="text-align:center;margin-top:1rem;">
+          <div style="text-align:center;">
             <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
-               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
-                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
-              ▶ Watch video instead
-            </a>
+              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
+              ▶ Watch video instead</a>
           </div>
         </div>
       </div>`;
     }
-
-    // ── No video: plain text card ─────────────────────────────────────────────
-    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;">
+    // Plain text
+    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;overflow-y:auto;">
       <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
       <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
       <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
-      <div class="arrival-text-section" id="text-section-${s.id}">
-        <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
-      </div>
+      <div class="arrival-text-body">${s.desc}</div>
     </div>`;
   }
 
-
-
-  if(card.type==='photo'){
-    const s = card.stop;
+  // ── PHOTO ──────────────────────────────────────────────────────────────────
+  if(card.type === 'photo'){
     return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:0;position:relative;overflow:hidden;">
       <img src="${s.photo}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
       <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1.25rem 1.25rem;
@@ -922,18 +852,17 @@ function renderCard(card,idx,total){
     </div>`;
   }
 
-  if(card.type==='quiz'){
-    const s = card.stop;
+  // ── QUIZ ───────────────────────────────────────────────────────────────────
+  if(card.type === 'quiz'){
     const q = s.quiz;
-    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:1.5rem;">
+    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:1.5rem;overflow-y:auto;">
       <div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">Quick Quiz · Stop ${s.id}</div>
       <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;line-height:1.35;margin-bottom:1.5rem;">${q.question}</div>
       <div style="display:flex;flex-direction:column;gap:0.6rem;" id="quiz-opts-${s.id}">
         ${q.options.map((opt,i)=>`
         <button class="quiz-opt" onclick="answerQuiz(${s.id},${i})" id="qopt-${s.id}-${i}"
           style="text-align:left;background:var(--bg);border:2px solid var(--border);border-radius:12px;
-                 padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;
-                 transition:all 0.2s;">
+                 padding:0.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;">
           <span style="font-weight:700;color:var(--orange);margin-right:0.5rem;">${String.fromCharCode(65+i)}</span>${opt}
         </button>`).join('')}
       </div>
@@ -941,40 +870,7 @@ function renderCard(card,idx,total){
     </div>`;
   }
 
-  if(card.type==='nav'){
-    const s = card.stop;
-    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav" style="position:relative;overflow:hidden;">
-      <div id="nav-map-${s.id}" style="position:absolute;inset:0;"></div>
-      <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
-      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 0.5rem;
-        background:linear-gradient(to bottom,rgba(255,255,255,0.95) 70%,transparent);">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;">Navigating to</div>
-        <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;">${s.name}</div>
-      </div>
-      <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank"
-        style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:12;
-               display:inline-flex;align-items:center;gap:0.4rem;
-               background:white;border:1.5px solid var(--border);border-radius:99px;
-               padding:0.45rem 1rem;font-size:0.78rem;font-weight:700;color:var(--text);
-               text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#4285F4" stroke="none"/></svg>
-        Open in Google Maps
-      </a>
-    </div>`;
-  }
-
-  if(card.type==='transition'){
-    const next = card.stop;
-    return `<div class="card" data-stop="${next.id}" data-type="transition" style="padding:1.5rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1rem;">
-      <div style="font-size:2.5rem;">🎉</div>
-      <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;">Next Stop</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;line-height:1.1;">${next.name}</div>
-      <div style="font-size:0.9rem;color:var(--text2);">${next.tagline}</div>
-    </div>`;
-  }
-
-  return `<div class="card" style="padding:1.25rem;"><p>Unknown card type: ${card.type}</p></div>`;
+  return `<div class="card" style="padding:1.25rem;"><p>Unknown: ${card.type}</p></div>`;
 }
 
 function answerQuiz(stopId, optIdx){
