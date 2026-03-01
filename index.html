@@ -1079,7 +1079,7 @@ function startJourney(stopId){
   if(!stop) return;
   currentStop = stop;
   currentCardIdx = 0;
-  buildCards(stop);
+  cards = buildCards(stop);
   document.getElementById('journey-screen').classList.add('show');
   renderJourney();
   updateJourneyHeaderVisibility();
