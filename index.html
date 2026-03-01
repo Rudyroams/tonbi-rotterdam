@@ -232,10 +232,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.85rem 1.25rem calc(0.85rem + env(safe-area-inset-bottom)); display:flex; gap:0.75rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.85rem 1.25rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
-.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.85rem; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
+.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
 .card-next-btn:hover { transform:translateY(-1px); }
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
 
@@ -734,7 +734,6 @@ function renderCard(card,idx,total){
       </div>
 
       <!-- Walking animation — bottom left over map -->
-      <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
 
       <!-- Google Maps pill — bottom right, just above bottom bar -->
       <a href="${s.mapUrl}" target="_blank"
@@ -772,11 +771,20 @@ function renderCard(card,idx,total){
           <a onclick="skipToTextFullscreen(${s.id})" style="cursor:pointer;color:rgba(255,255,255,0.8);font-size:0.75rem;text-decoration:underline;">Skip video — read text instead</a>
         </div>
         <!-- Hidden text overlay -->
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;overflow-y:auto;">
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
           <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
           <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
           <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
-          <div class="arrival-text-body">${s.desc}</div>
+          <div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div>
+          <div style="text-align:center;padding-bottom:1rem;">
+            <a onclick="document.getElementById('text-section-${s.id}').style.display='none'"
+               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
+                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
+                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;
+                      box-shadow:0 2px 8px rgba(255,107,53,0.4);">
+              ▶ Watch video instead
+            </a>
+          </div>
         </div>
       </div>`;
     }
@@ -978,7 +986,6 @@ function nextCard(){
       if(activeCard && activeCard.type==='nav'){
         setTimeout(()=>{
           initStopMap(activeCard.stop.id);
-          initWalkAnim(activeCard.stop.id);
         }, 100);
       }
     },400);
@@ -1070,7 +1077,7 @@ function initStopMap(stopId){
     container: containerId,
     style: 'mapbox://styles/mapbox/streets-v12',
     center: destCoord,
-    zoom: 15.5,
+    zoom: 14,
     attributionControl: false,
     interactive: true
   });
@@ -1177,7 +1184,7 @@ function initStopMap(stopId){
 
       }, () => {
         // Location denied — center on destination
-        stopMap.flyTo({ center: destCoord, zoom: 16 });
+        stopMap.flyTo({ center: destCoord, zoom: 14 });
       });
     }
   });
@@ -1191,7 +1198,7 @@ function initMap(){
     container: 'mapbox-map',
     style: 'mapbox://styles/mapbox/light-v11',
     center: [4.4841, 51.9060],
-    zoom: 14.5,
+    zoom: 13.5,
     attributionControl: false
   });
 
