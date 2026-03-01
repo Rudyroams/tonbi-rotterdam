@@ -38,9 +38,7 @@
   position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
 }
 
-#journey-screen.cf-fullscreen .card-bottom{ position:fixed; bottom:calc(68px + env(safe-area-inset-bottom)); left:0; right:0; z-index:30; background:transparent; border-top:none; padding-bottom:0; }
-#journey-screen.cf-fullscreen .card-bottom .card-prev-btn{ background:rgba(0,0,0,0.35); color:rgba(255,255,255,0.9); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:10px; }
-#journey-screen.cf-fullscreen .card-bottom .card-next-btn{ background:rgba(255,107,53,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:10px; }
+/* cf-fullscreen: normal bottom nav */
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -521,7 +519,7 @@ function togglePw(){
 
 function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(v === 'tonbi'){
+  if(v === 'yyy'){
     const pw=document.getElementById('pw-screen');
     pw.classList.add('exit');
     setTimeout(()=>{
@@ -767,7 +765,7 @@ function renderCard(card,idx,total){
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <div style="position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));right:1.2rem;z-index:20;">
+        <div style="position:absolute;bottom:calc(80px + env(safe-area-inset-bottom));right:1.2rem;z-index:20;">
           <a onclick="skipToTextFullscreen(${s.id})"
              style="cursor:pointer;display:inline-block;background:rgba(0,0,0,0.3);
                     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
