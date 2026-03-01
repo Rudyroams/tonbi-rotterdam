@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tonbi">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Tonbi · Rotterdam</title>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <style>
@@ -15,6 +19,24 @@
 .popup-tag { font-size:0.72rem; color:#6e6e73; line-height:1.4; }
 .popup-btn { display:block; background:#ff6b35; color:#fff; text-align:center; padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:800; text-decoration:none; cursor:pointer; border:none; width:100%; margin-top:0.5rem; border-radius:8px; }
 .mapboxgl-ctrl-logo { display:none !important; }
+
+/* ── Walking figure animation ── */
+@keyframes walkBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes walkLegF { 0%,100%{transform:rotate(-30deg)} 50%{transform:rotate(30deg)} }
+@keyframes walkLegB { 0%,100%{transform:rotate(30deg)} 50%{transform:rotate(-30deg)} }
+@keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
+@keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
+
+/* ── Confetti animation ── */
+@keyframes confettiFall0  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+@keyframes confettiFall1  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-380deg);opacity:0} }
+@keyframes confettiFall2  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(420deg);opacity:0} }
+@keyframes confettiFall3  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-300deg);opacity:0} }
+@keyframes confettiFall4  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(340deg);opacity:0} }
+#confetti-overlay { pointer-events:none; }
+.confetti-piece {
+  position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -104,8 +126,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 /* ── JOURNEY ── */
 #journey-screen { position:fixed; inset:0; background:var(--bg); display:none; flex-direction:column; z-index:200; }
 #journey-screen.show { display:flex; }
-.jt-bar { background:var(--white); padding:calc(1rem + env(safe-area-inset-top)) 1.25rem 0.75rem; border-bottom:1px solid var(--border); flex-shrink:0; }
-.jt-bar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
+.jt-bar { background:var(--white); padding:calc(0.9rem + env(safe-area-inset-top)) 1.25rem 0.5rem; border-bottom:1px solid var(--border); flex-shrink:0; }
+.jt-bar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.45rem; }
 .jt-back { background:var(--bg); border:none; border-radius:20px; padding:0.4rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; color:var(--text2); cursor:pointer; }
 .jt-stop-label { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; }
 .jt-close { background:var(--bg); border:none; border-radius:50%; width:32px; height:32px; font-size:1rem; cursor:pointer; color:var(--text2); display:flex; align-items:center; justify-content:center; }
@@ -116,6 +138,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .card-viewport { flex:1; overflow:hidden; position:relative; }
 .card-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change:transform; }
 .card { min-width:100%; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:1.25rem; scroll-behavior:smooth; }
+.card.nav-card { padding:0; overflow:hidden; position:relative; }
 
 /* ── VIDEO CARD ── */
 .video-wrap {
@@ -209,7 +232,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.85rem 1.25rem calc(0.85rem + env(safe-area-inset-bottom)); display:flex; gap:0.75rem; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.85rem 1.25rem calc(0.85rem + env(safe-area-inset-bottom)); display:flex; gap:0.75rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
 .card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.85rem 1.25rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
 .card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.85rem; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
 .card-next-btn:hover { transform:translateY(-1px); }
@@ -262,8 +286,26 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .prev-btn { flex:1; padding:0.85rem; border:none; cursor:pointer; font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:800; border-radius:var(--radius-sm); }
 .prev-btn.retake { background:rgba(255,255,255,0.15); color:#fff; }
 .prev-btn.save { background:var(--orange); color:#fff; }
+
+/* ── Walking figure animation ── */
+@keyframes walkBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes walkLegF { 0%,100%{transform:rotate(-30deg)} 50%{transform:rotate(30deg)} }
+@keyframes walkLegB { 0%,100%{transform:rotate(30deg)} 50%{transform:rotate(-30deg)} }
+@keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
+@keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
+
+/* ── Confetti animation ── */
+@keyframes confettiFall0  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+@keyframes confettiFall1  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-380deg);opacity:0} }
+@keyframes confettiFall2  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(420deg);opacity:0} }
+@keyframes confettiFall3  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-300deg);opacity:0} }
+@keyframes confettiFall4  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(340deg);opacity:0} }
+#confetti-overlay { pointer-events:none; }
+.confetti-piece {
+  position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
+}
 </style>
-</head>
+  </head>
 <body>
 
 <!-- PASSWORD -->
@@ -297,7 +339,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       </div>
     </div>
     <div class="hero-card">
-      <img class="hero-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Rotterdam">
+      <img class="hero-img" src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" alt="Rotterdam">
       <div class="hero-overlay">
         <div class="hero-label">Walking Tour</div>
         <div class="hero-title">Rotterdam</div>
@@ -337,10 +379,20 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <!-- JOURNEY -->
 <div id="journey-screen">
-  <div class="jt-bar">
+  <!-- Confetti overlay — shown on correct quiz answer -->
+  <div id="confetti-overlay" style="display:none;position:fixed;inset:0;z-index:999;pointer-events:none;">
+    <lottie-player
+      id="confetti-lottie"
+      src="https://assets2.lottiefiles.com/packages/lf20_u4yrau84.json"
+      background="transparent"
+      speed="1"
+      style="width:100%;height:100%;">
+    </lottie-player>
+  </div>
+  <div class="jt-bar" id="jt-bar">
     <div class="jt-bar-top">
-      <div class="dp-progress" id="dp-prog" style="margin-left:0;min-width:70px;"></div>
-      <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;"></div>
+      <div id="dp-prog" style="margin-left:0;min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#ff6b35;letter-spacing:-0.01em;"></div>
+      <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;font-size:1.05rem;"></div>
       <button class="jt-close" onclick="closeJourney()">✕</button>
     </div>
     <div class="progress-dots" id="progress-dots"></div>
@@ -348,7 +400,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <div class="card-viewport">
     <div class="card-track" id="card-track"></div>
   </div>
-  <div class="card-bottom">
+  <div class="card-bottom" id="card-bottom">
     <button class="card-prev-btn" id="prev-btn" onclick="prevCard()">← Back</button>
     <button class="card-next-btn" id="next-btn" onclick="nextCard()">Continue →</button>
   </div>
@@ -386,63 +438,65 @@ const stops = [
   {
     id:1, name:"Erasmus Bridge", dutch:"Erasmusbrug",
     tagline:"Where Rotterdam announces itself to the world",
-    img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+    img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",
     mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
     address:"Boompjeskade, 3011 XE Rotterdam",
     // Video: replace with your YouTube ID. Leave as null to hide video.
     youtubeId: "dQw4w9WgXcQ", // ← REPLACE with your actual video ID
+    cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "card",
     desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",
     rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",
     challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps. The asymmetry is the magic.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},
-    quiz:{img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=70",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"Locals call it <em>De Zwaan</em> — The Swan — because of the graceful curve of its single white pylon, which resembles a swan's neck."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"Locals call it <em>De Zwaan</em> — The Swan — because of the graceful curve of its single white pylon, which resembles a swan's neck."}
   },
   {
     id:2, name:"Witte Huis", dutch:"The White House",
     tagline:"Europe's first skyscraper, still standing proud",
-    img:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&q=80",
+    img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",
     mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
     address:"Geldersekade 1, 3011 EG Rotterdam",
-    youtubeId: null, // ← No video for this stop yet
+    youtubeId: null,
+    cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
     desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously, and stands today as a living link to Rotterdam before the war.",
     rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed. That moment always hits hard.",
     challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture. The contrast between the 1898 facade and today's glass-and-steel is the whole story of the city in one frame.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},
-    quiz:{img:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=600&q=70",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"The Witte Huis was completed in 1898. At 10 stories, it was a genuine skyscraper for its era — a bold statement from an ambitious city."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"The Witte Huis was completed in 1898. At 10 stories, it was a genuine skyscraper for its era — a bold statement from an ambitious city."}
   },
   {
     id:3, name:"Oude Haven", dutch:"Old Harbor",
     tagline:"The oldest harbor in Rotterdam, still full of life",
-    img:"https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=800&q=80",
+    img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
     mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
     address:"Oudehaven, 3011 KN Rotterdam",
     youtubeId: null,
     desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead. My family's connection to these harbors stretches back generations; working hands, heavy ropes, and the smell of the Maas.",
     rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up. But any time of day, the contrast between old vessels and the Cube Houses above is something completely unique to Rotterdam.",
     challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water. Move around the edge — the best reflections shift depending on exactly where you stand.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the longer and more dramatic the reflection."},
-    quiz:{img:"https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=600&q=70",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"The Oude Haven dates to 1325, making it the oldest part of Rotterdam's harbor system — and essentially the birthplace of the city."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"The Oude Haven dates to 1325, making it the oldest part of Rotterdam's harbor system — and essentially the birthplace of the city."}
   },
   {
     id:4, name:"Cube Houses", dutch:"Kubuswoningen",
     tagline:"Living tilted at 45° — Rotterdam's most playful architecture",
-    img:"https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+    img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",
     mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
     address:"Overblaak 70, 3011 MH Rotterdam",
     youtubeId: null,
     desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon. Blom's concept: a village within a city, where each cube is a tree, together forming a forest. The result is disorienting, playful, and completely Rotterdam.",
     rudy:"Don't just look up at them from below. Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture. That's my favourite spot.",
     challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically. The overlapping angles and windows create an almost abstract pattern. Try converting to black and white afterwards.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here — don't fight it."},
-    quiz:{img:"https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=70",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed the Cube Houses. His concept: 'living as an urban roof' — each tilted cube a tree, together a forest canopy over the street."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed the Cube Houses. His concept: 'living as an urban roof' — each tilted cube a tree, together a forest canopy over the street."}
   },
   {
     id:5, name:"Markthal", dutch:"Market Hall",
     tagline:"A cathedral of food — and the best ceiling in the Netherlands",
-    img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+    img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
     mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
     address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",
     youtubeId: null,
     desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>. Walk in, look up, and let your jaw drop. Then eat something — I insist.",
     rudy:"The ceiling artwork is extraordinary but most people walk in and look at the stalls. Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",
     challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork. Try a slow panorama sweep, or take a regular shot and experiment with the fisheye effect in editing.",tip:"The ceiling is brightly lit but the market below is darker — tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},
-    quiz:{img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=70",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."}
   }
 ];
 
@@ -463,10 +517,14 @@ function togglePw(){
 
 function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(['tonbi2025','rotterdam','tonbi'].includes(v)){
+  if(v === 'tonbi'){
     const pw=document.getElementById('pw-screen');
     pw.classList.add('exit');
-    setTimeout(()=>{ pw.style.display='none'; document.getElementById('app').classList.add('show'); },500);
+    setTimeout(()=>{
+      pw.style.display='none';
+      document.getElementById('app').classList.add('show');
+      try { showScreen('home'); } catch(e){ console.error('showScreen error:', e); }
+    },500);
   } else {
     document.getElementById('pw-err').textContent='Incorrect code — try again.';
     document.getElementById('pw-in').value='';
@@ -509,25 +567,91 @@ function renderLists(){
 }
 
 // ══ VIDEO ══
+function openVideo(youtubeId){
+  // Try YouTube app first, fall back to mobile web
+  window.location.href = `youtube://watch?v=${youtubeId}`;
+  setTimeout(()=>{
+    window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
+  }, 500);
+}
+
 function activateVideo(stopId){
   const s=stops.find(x=>x.id===stopId);
   if(!s.youtubeId) return;
-  const iframeWrap=document.getElementById(`yt-wrap-${stopId}`);
-  const thumb=document.getElementById(`yt-thumb-${stopId}`);
-  if(!iframeWrap||!thumb) return;
-  iframeWrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${s.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-  iframeWrap.classList.add('active');
-  thumb.style.display='none';
-  videoActivated[stopId]=true;
+  openVideo(s.youtubeId);
+}
+
+
+
+
+function initWalkAnim(stopId){
+  const container = document.getElementById('walk-anim-'+stopId);
+  if(!container || container._walkDone) return;
+  container._walkDone = true;
+  container.innerHTML = `
+    <svg viewBox="0 0 60 80" width="60" height="80" style="overflow:visible;">
+      <g style="animation:walkBob 0.5s ease-in-out infinite;transform-origin:30px 40px;">
+        <!-- head -->
+        <circle cx="30" cy="12" r="9" fill="#ff6b35"/>
+        <!-- torso -->
+        <line x1="30" y1="21" x2="30" y2="46" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        <!-- front leg -->
+        <g style="transform-origin:30px 46px;animation:walkLegF 0.5s ease-in-out infinite;">
+          <line x1="30" y1="46" x2="18" y2="68" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <!-- back leg -->
+        <g style="transform-origin:30px 46px;animation:walkLegB 0.5s ease-in-out infinite;">
+          <line x1="30" y1="46" x2="42" y2="68" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <!-- front arm -->
+        <g style="transform-origin:30px 26px;animation:walkArmF 0.5s ease-in-out infinite;">
+          <line x1="30" y1="26" x2="16" y2="42" stroke="#ff6b35" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+        <!-- back arm -->
+        <g style="transform-origin:30px 26px;animation:walkArmB 0.5s ease-in-out infinite;">
+          <line x1="30" y1="26" x2="44" y2="42" stroke="#ff6b35" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+      </g>
+    </svg>`;
+}
+
+const CONFETTI_COLORS = ['#ff6b35','#2d6be4','#ffcc00','#34c759','#e8295c','#af52de'];
+function showConfetti(){
+  const overlay = document.getElementById('confetti-overlay');
+  const container = document.getElementById('confetti-lottie');
+  if(!overlay || !container) return;
+  container.innerHTML = '';
+  overlay.style.display = 'block';
+  const pieces = 28;
+  for(let i=0; i<pieces; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${5 + (i * 3.3) % 90}vw;
+      top:-20px;
+      background:${CONFETTI_COLORS[i % CONFETTI_COLORS.length]};
+      width:${8 + i%5}px;
+      height:${8 + i%4}px;
+      border-radius:${i%3===0?'50%':'2px'};
+      animation:confettiFall${i%5} ${1.5 + (i%5)*0.2}s ease-in ${i*0.07}s forwards;
+    `;
+    container.appendChild(el);
+  }
+  setTimeout(()=>{ overlay.style.display='none'; container.innerHTML=''; }, 3500);
+}
+
+function skipToTextFullscreen(stopId){
+  const textEl = document.getElementById('text-section-'+stopId);
+  if(textEl) textEl.style.display = 'block';
 }
 
 function skipToText(stopId){
-  // Scroll the card down to the text section
-  const cardEl=document.querySelector(`#card-track .card[data-stop="${stopId}"][data-type="arrival"]`);
-  if(cardEl){
-    const textEl=cardEl.querySelector('.arrival-text-section');
-    if(textEl) textEl.scrollIntoView({behavior:'smooth', block:'start'});
-  }
+  const textEl=document.getElementById(`text-section-${stopId}`);
+  const videoWrap=document.getElementById(`video-wrap-${stopId}`);
+  const skipLink=document.querySelector(`#video-wrap-${stopId}`)?.closest('.card')?.querySelector('.video-skip');
+  if(textEl){ textEl.style.display='block'; }
+  if(videoWrap){ videoWrap.style.display='none'; }
+  if(skipLink){ skipLink.style.display='none'; }
 }
 
 // Auto-pause YouTube when scrolled out of view
@@ -548,53 +672,150 @@ function setupVideoObserver(stopId){
 
 // ══ CARDS ══
 function buildCards(stop){
-  const cardTypes=['nav','desc','rudy','photo','quiz'];
+  const cardTypes=['transition','nav','desc','rudy','photo','quiz'];
   return cardTypes.map(type=>({type,stop}));
 }
 
 function renderCard(card,idx,total){
   const s=card.stop;
+  if(card.type==='transition'){
+    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
+
+      <!-- X button -->
+      <button onclick="closeJourney()" style="position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid rgba(0,0,0,0.1);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.1);font-weight:700;">✕</button>
+
+      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
+      <div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
+        <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
+          Next stop: <strong style="color:var(--text)">${s.name}</strong>. We'll show you exactly how to get there with a live map and walking route.
+        </div>
+      </div>
+      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 One quick thing</div>
+        <div style="font-size:0.92rem;line-height:1.7;color:var(--text);font-weight:400;">When your phone asks <em>"Allow location access?"</em> — tap <strong>Allow</strong>. This lets the map show where you are and draw the walking route to the next stop.</div>
+      </div>
+      <button onclick="nextCard()" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,0.25);letter-spacing:-0.01em;">
+        Let's go! 👟
+      </button>
+    </div>`;
+  }
+
   if(card.type==='nav'){
-    return `<div class="card" data-stop="${s.id}" data-type="nav" style="padding:0;display:flex;flex-direction:column;">
-      <div style="padding:1rem 1.25rem 0.75rem;background:var(--white);border-bottom:1px solid var(--border);">
-        <div class="arrival-stop-num">Stop ${s.id} of ${stops.length}</div>
-        <div class="arrival-title">${s.name}</div>
-        <div style="font-size:0.8rem;color:var(--text2);margin-top:0.1rem;">${s.address}</div>
+    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav">
+
+      <!-- Map fills entire card — sits behind everything -->
+      <div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
+
+      <!-- Header gradient overlay -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
+        background:linear-gradient(to bottom, rgba(255,255,255,0.90) 45%, rgba(255,255,255,0));
+        display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
+          <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
+        </div>
+        <button onclick="closeJourney()" style="background:white;border:1.5px solid rgba(0,0,0,0.12);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,0.12);font-weight:700;margin-top:0.1rem;">✕</button>
       </div>
-      <div id="stop-map-${s.id}" style="flex:1;min-height:360px;width:100%;"></div>
-      <div style="padding:0.85rem 1.25rem;">
-        <a class="arrival-map-btn" href="${s.mapUrl}" target="_blank" style="padding:0.65rem 1rem;">
-          <span style="font-size:1.1rem;">📍</span>
-          <span style="font-size:0.85rem;font-weight:700;flex:1;">Navigate in Google Maps</span>
-          <span style="color:var(--blue);font-weight:700;">→</span>
-        </a>
+
+      <!-- Stop thumbnail + time pill — top right, comfortably below X -->
+      <div style="position:absolute;top:58px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;">
+        <img src="${s.img}" alt="${s.name}"
+          style="width:77px;height:77px;border-radius:16px;object-fit:cover;
+                 box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
+                 pointer-events:none;display:block;">
+        <div id="route-info-${s.id}"
+          style="display:none;margin-top:-14px;margin-right:6px;z-index:12;position:relative;
+                 background:white;border-radius:20px;padding:0.28rem 0.7rem;
+                 font-size:0.72rem;font-weight:700;color:var(--orange);
+                 box-shadow:0 3px 12px rgba(0,0,0,0.18);
+                 white-space:nowrap;border:2px solid white;"></div>
       </div>
+
+      <!-- Walking animation — bottom left over map -->
+      <div id="walk-anim-${s.id}" style="position:absolute;bottom:65px;left:12px;width:80px;height:80px;z-index:11;pointer-events:none;"></div>
+
+      <!-- Google Maps pill — bottom right, just above bottom bar -->
+      <a href="${s.mapUrl}" target="_blank"
+        style="position:absolute;bottom:14px;right:14px;z-index:11;
+               background:white;color:var(--blue);border-radius:20px;
+               padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
+               text-decoration:none;white-space:nowrap;
+               box-shadow:0 3px 12px rgba(0,0,0,0.18);">
+        📍 Google Maps
+      </a>
     </div>`;
   }
 
   if(card.type==='desc'){
-    const videoBlock = s.youtubeId ? `
-      <div class="video-wrap" id="video-wrap-${s.id}">
-        <div class="video-thumb" id="yt-thumb-${s.id}" onclick="activateVideo(${s.id})">
-          <img src="${s.img}" alt="${s.name}">
-          <div class="video-thumb-overlay">
-            <div class="play-btn-circle"><div class="play-triangle"></div></div>
-          </div>
+    // ── Cloudflare fullscreen video (stop 2 style) ──────────────────────────
+    if(s.cloudflareId && s.cfStyle==='fullscreen'){
+      return `<div class="card nav-card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;">
+        <iframe
+          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          style="position:absolute;inset:0;width:100%;height:100%;border:0;"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen>
+        </iframe>
+        <!-- Overlay header -->
+        <div style="position:absolute;top:0;left:0;right:0;z-index:10;
+          padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
+          background:linear-gradient(to bottom, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0));
+          pointer-events:none;">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.25rem;">Stop ${s.id} · ${s.dutch}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <div class="video-iframe-wrap" id="yt-wrap-${s.id}"></div>
+        <!-- Skip link bottom -->
+        <div style="position:absolute;bottom:calc(80px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:10;">
+          <a onclick="skipToTextFullscreen(${s.id})" style="cursor:pointer;color:rgba(255,255,255,0.8);font-size:0.75rem;text-decoration:underline;">Skip video — read text instead</a>
+        </div>
+        <!-- Hidden text overlay -->
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:20;padding:1.5rem;overflow-y:auto;">
+          <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+          <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
+          <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
+          <div class="arrival-text-body">${s.desc}</div>
+        </div>
+      </div>`;
+    }
+
+    // ── Cloudflare "most of card" video (stop 1 style) ───────────────────────
+    const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
+      <div style="position:relative;width:100%;border-radius:16px;overflow:hidden;background:#000;
+                  aspect-ratio:9/16;max-height:72vh;margin-bottom:0.85rem;box-shadow:var(--shadow-lg);">
+        <iframe
+          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
+          style="width:100%;height:100%;border:0;"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen>
+        </iframe>
       </div>
       <div class="video-skip">
-        Slow connection? <a onclick="skipToText(${s.id})">Skip video — read text instead</a>
+        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
       </div>` : '';
 
-    return `<div class="card" data-stop="${s.id}" data-type="desc">
+    // ── YouTube fallback ─────────────────────────────────────────────────────
+    const videoBlock = s.cloudflareId ? cfBlock : s.youtubeId ? `
+      <div class="video-wrap" id="video-wrap-${s.id}" style="position:relative;cursor:pointer;" onclick="openVideo('${s.youtubeId}')">
+        <img src="https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="video-thumb-overlay">
+          <div class="play-btn-circle"><div class="play-triangle"></div></div>
+        </div>
+        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:4px;font-weight:600;">Opens in YouTube</div>
+      </div>
+      <div class="video-skip">
+        Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a>
+      </div>` : `<div id="text-section-${s.id}-trigger" style="display:none;"></div>`;
+
+    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;">
+      <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
+      <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
+      <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
       ${videoBlock}
-      <div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div>
-      <div class="arrival-title">${s.name}</div>
-      <div class="arrival-tagline">${s.tagline}</div>
-      <div class="arrival-text-section" id="text-section-${s.id}">
-        <div class="arrival-text-label">About this stop</div>
-        <div class="arrival-text-body">${s.desc}</div>
+      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${(s.cloudflareId||s.youtubeId) ? 'none' : 'block'};">
+        <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
       </div>
     </div>`;
   }
@@ -664,8 +885,6 @@ function startJourney(stopId){
   Object.keys(videoActivated).forEach(k=>delete videoActivated[k]);
   renderJourney();
   document.getElementById('journey-screen').classList.add('show');
-  // Init stop mini map for nav card
-  setTimeout(()=>initStopMap(stopId), 300);
   // Setup observer after DOM renders
   if(currentStop.youtubeId){
     setTimeout(()=>setupVideoObserver(currentStop.id),300);
@@ -675,8 +894,14 @@ function startJourney(stopId){
 function renderJourney(){
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
-  document.getElementById('progress-dots').innerHTML=cards.map((_,i)=>`
-    <div class="dot ${i===currentCardIdx?'active':i<currentCardIdx?'done':''}" style="width:${i===currentCardIdx?'20px':'8px'}"></div>`).join('');
+  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
+  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  // Dots only for content cards (exclude transition index 0 and nav index 1)
+  const contentCards = cards.slice(2);
+  const contentIdx = currentCardIdx - 2;
+  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
+    <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   updateCardPosition(false);
   updateNavBtns();
@@ -690,31 +915,49 @@ function updateCardPosition(animate=true){
 }
 
 function updateProgressDots(){
+  const isNavCard = cards[currentCardIdx] && (cards[currentCardIdx].type==='nav' || cards[currentCardIdx].type==='transition');
+  document.getElementById('jt-bar').style.display = isNavCard ? 'none' : 'block';
+  document.getElementById('progress-dots').style.display = isNavCard ? 'none' : 'flex';
+  const contentIdx = currentCardIdx - 2;
   document.querySelectorAll('.dot').forEach((d,i)=>{
-    d.className='dot'+(i===currentCardIdx?' active':i<currentCardIdx?' done':'');
-    d.style.width=i===currentCardIdx?'20px':'8px';
+    d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
+    d.style.width=i===contentIdx?'20px':'8px';
   });
 }
 
 function updateNavBtns(){
+  if(!currentStop) return;
   const prev=document.getElementById('prev-btn');
   const next=document.getElementById('next-btn');
-  // Show "Back to Map" on the card immediately after the nav card (index 1)
-  prev.style.display=currentCardIdx===0?'none':'block';
-  prev.textContent=currentCardIdx===1?'← Back to Map':'← Back';
-  const isLastCard=currentCardIdx===cards.length-1;
-  const isLastStop=currentStop.id===stops.length;
-  const currentCard=cards[currentCardIdx];
+  const currentCard = cards[currentCardIdx];
+  const isTransition = currentCard && currentCard.type==='transition';
+  const isNav = currentCard && currentCard.type==='nav';
+  const isLastCard = currentCardIdx===cards.length-1;
+  const isLastStop = currentStop.id===stops.length;
+
+  // Hide back button on first card
+  prev.style.display = currentCardIdx===0 ? 'none' : 'block';
+  // "Back to Map" only on the desc card (index 2, right after nav)
+  prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
+
+  // Next button label
   if(isLastCard){
-    next.textContent=isLastStop?'🎉 Finish Tour':`Next Stop: ${stops[currentStop.id].name} →`;
-    next.className=isLastStop?'card-next-btn final':'card-next-btn';
-  } else if(currentCard && currentCard.type==='nav'){
-    next.textContent="I've Arrived ✓";
-    next.className='card-next-btn';
+    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
+    next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
+  } else if(isNav){
+    next.textContent = "I've Arrived ✓";
+    next.className = 'card-next-btn';
   } else {
-    next.textContent='Continue →';
-    next.className='card-next-btn';
+    next.textContent = 'Continue →';
+    next.className = 'card-next-btn';
   }
+
+  // On transition card: hide prev/next buttons (card has its own inline button)
+  document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+  document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+  document.getElementById('card-bottom').style.display = 'flex';
+  // On nav card: make bottom bar semi-transparent so map shows through
+  document.getElementById('card-bottom').classList.toggle('on-map', isNav);
 }
 
 function nextCard(){
@@ -728,11 +971,15 @@ function nextCard(){
     updateNavBtns();
     // Scroll active card to top
     setTimeout(()=>{
-      const activeCard=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');
-      if(activeCard) activeCard.scrollTop=0;
+      const scrollTarget=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');
+      if(scrollTarget) scrollTarget.scrollTop=0;
       // Init stop map if this is a nav card
-      if(cards[currentCardIdx] && cards[currentCardIdx].type==='nav'){
-        initStopMap(cards[currentCardIdx].stop.id);
+      const activeCard=cards[currentCardIdx];
+      if(activeCard && activeCard.type==='nav'){
+        setTimeout(()=>{
+          initStopMap(activeCard.stop.id);
+          initWalkAnim(activeCard.stop.id);
+        }, 100);
       }
     },400);
   }
@@ -754,10 +1001,13 @@ function closeJourney(){
 // ══ QUIZ ══
 function answerQuiz(stopId,optIdx){
   quizAnswered[stopId]=optIdx;
+  const stop=stops.find(s=>s.id===stopId);
+  const isCorrect = stop && optIdx===stop.quiz.correct;
   const pos=currentCardIdx;
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   currentCardIdx=pos;
   updateCardPosition(false);
+  if(isCorrect) setTimeout(()=>showConfetti(), 300);
   // Scroll to result
   setTimeout(()=>{
     const result=document.querySelectorAll('.card')[pos]?.querySelector('.quiz-result-box');
@@ -798,16 +1048,19 @@ function savePhoto(){
 
 
 // ══ STOP NAV MINI MAP ══
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
+
 function initStopMap(stopId){
   if(!window.mapboxgl) return;
   const coords = [
-    [4.4853, 51.9055], // 1 Erasmus Bridge
-    [4.4884, 51.9180], // 2 Witte Huis
-    [4.4890, 51.9185], // 3 Oude Haven
-    [4.4906, 51.9198], // 4 Cube Houses
-    [4.4896, 51.9201]  // 5 Markthal
+    [4.4871, 51.9090], // 1 Erasmus Bridge
+    [4.4917, 51.9186], // 2 Witte Huis
+    [4.4917, 51.9193], // 3 Oude Haven
+    [4.4877, 51.9188], // 4 Cube Houses
+    [4.4866, 51.9200]  // 5 Markthal
   ];
   const idx = stopId - 1;
+  const destCoord = coords[idx];
   const containerId = `stop-map-${stopId}`;
   const container = document.getElementById(containerId);
   if(!container || container._mapInitialized) return;
@@ -816,52 +1069,115 @@ function initStopMap(stopId){
   const stopMap = new mapboxgl.Map({
     container: containerId,
     style: 'mapbox://styles/mapbox/streets-v12',
-    center: coords[idx],
+    center: destCoord,
     zoom: 15.5,
     attributionControl: false,
     interactive: true
   });
 
-  stopMap.on('load', () => {
-    // Star marker for the destination stop
-    const el = document.createElement('div');
-    el.style.cssText = `
-      width:44px;height:44px;border-radius:50%;
-      background:#ff6b35;color:#fff;
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.4rem;
-      border:3px solid #fff;
-      box-shadow:0 2px 16px rgba(255,107,53,0.6);
-    `;
-    el.textContent = '⭐';
-    new mapboxgl.Marker(el).setLngLat(coords[idx]).addTo(stopMap);
+  // Add destination star marker immediately
+  const destEl = document.createElement('div');
+  destEl.style.cssText = `
+    width:44px;height:44px;border-radius:50%;
+    background:#ff6b35;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;
+    border:3px solid #fff;
+    box-shadow:0 2px 16px rgba(255,107,53,0.6);
+  `;
+  destEl.textContent = '⭐';
+  new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
 
-    // Try to get user location and auto-zoom to fit both
+  stopMap.on('load', () => {
+    // Prepare route source (empty to start)
+    stopMap.addSource('walking-route', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] }
+    });
+
+    // Route line — solid orange
+    stopMap.addLayer({
+      id: 'route-line',
+      type: 'line',
+      source: 'walking-route',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: {
+        'line-color': '#ff6b35',
+        'line-width': 5,
+        'line-opacity': 0.85
+      }
+    });
+
+    // Route direction arrows
+    stopMap.addLayer({
+      id: 'route-arrows',
+      type: 'symbol',
+      source: 'walking-route',
+      layout: {
+        'symbol-placement': 'line',
+        'symbol-spacing': 80,
+        'icon-image': 'arrow-right',
+        'icon-size': 0.8,
+        'icon-rotate': 90
+      }
+    });
+
+    // Get user location and fetch walking directions
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(pos => {
         const userLng = pos.coords.longitude;
         const userLat = pos.coords.latitude;
-        const destLng = coords[idx][0];
-        const destLat = coords[idx][1];
 
-        // Add blue dot for user
+        // Blue dot for user
         const userEl = document.createElement('div');
         userEl.style.cssText = `
-          width:18px;height:18px;border-radius:50%;
+          width:20px;height:20px;border-radius:50%;
           background:#2d6be4;
           border:3px solid #fff;
           box-shadow:0 2px 8px rgba(45,107,228,0.5);
         `;
         new mapboxgl.Marker(userEl).setLngLat([userLng, userLat]).addTo(stopMap);
 
-        // Fit map to show both user and destination with padding
+        // Fit bounds to show both points
         const bounds = new mapboxgl.LngLatBounds();
         bounds.extend([userLng, userLat]);
-        bounds.extend([destLng, destLat]);
-        stopMap.fitBounds(bounds, { padding: { top:60, bottom:80, left:50, right:50 }, maxZoom:16 });
+        bounds.extend(destCoord);
+        stopMap.fitBounds(bounds, {
+          padding: { top:70, bottom:90, left:50, right:50 },
+          maxZoom: 16,
+          duration: 800
+        });
+
+        // Fetch walking route from Mapbox Directions API
+        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${userLng},${userLat};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
+
+        fetch(url)
+          .then(r => r.json())
+          .then(data => {
+            if(data.routes && data.routes.length > 0){
+              const routeGeo = data.routes[0].geometry;
+              stopMap.getSource('walking-route').setData({
+                type: 'Feature',
+                geometry: routeGeo
+              });
+
+              // Show walking time
+              const minutes = Math.round(data.routes[0].duration / 60);
+              const distance = (data.routes[0].distance / 1000).toFixed(1);
+              const infoEl = document.getElementById(`route-info-${stopId}`);
+              if(infoEl){
+                infoEl.textContent = `🚶 ${minutes} min walk · ${distance} km`;
+                infoEl.style.display = 'block';
+              }
+            }
+          })
+          .catch(() => {
+            // Directions failed silently — map still works
+          });
+
       }, () => {
-        // Location denied — just center on destination
-        stopMap.flyTo({ center: coords[idx], zoom: 16 });
+        // Location denied — center on destination
+        stopMap.flyTo({ center: destCoord, zoom: 16 });
       });
     }
   });
@@ -869,7 +1185,7 @@ function initStopMap(stopId){
 
 // ══ MAPBOX MAP ══
 function initMap(){
-  mapboxgl.accessToken = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
+  mapboxgl.accessToken = MAPBOX_TOKEN;
 
   const map = new mapboxgl.Map({
     container: 'mapbox-map',
@@ -881,11 +1197,11 @@ function initMap(){
 
   // Stop coordinates [lng, lat]
   const coords = [
-    [4.4853, 51.9055], // 1 Erasmus Bridge
-    [4.4884, 51.9180], // 2 Witte Huis
-    [4.4890, 51.9185], // 3 Oude Haven
-    [4.4906, 51.9198], // 4 Cube Houses
-    [4.4896, 51.9201]  // 5 Markthal
+    [4.4871, 51.9090], // 1 Erasmus Bridge
+    [4.4917, 51.9186], // 2 Witte Huis
+    [4.4917, 51.9193], // 3 Oude Haven
+    [4.4877, 51.9188], // 4 Cube Houses
+    [4.4866, 51.9200]  // 5 Markthal
   ];
 
   map.on('load', () => {
@@ -945,8 +1261,7 @@ function initMap(){
 }
 
 // ══ INIT ══
-renderLists();
-showScreen('home');
+try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
 </script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
 </body>
