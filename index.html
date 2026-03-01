@@ -1044,7 +1044,7 @@ function renderCard(card,idx,total){
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
-          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\\'")}','${s.id}','${s.name}')">📷 Open Camera</button>
+          <button class="open-cam-btn" onclick="openCam('${s.id}','${s.name}')">📷 Open Camera</button>
         </div>
       </div>
     </div>`;
@@ -1302,7 +1302,9 @@ function answerQuiz(stopId,optIdx){
 }
 
 // ══ CAMERA ══
-async function openCam(tip, stopId, stopName){
+async function openCam(stopId, stopName){
+  const stop = stops.find(s=>s.id===parseInt(stopId));
+  const tip = stop ? stop.challenge.tip : '';
   lastTip=tip;
   lastStopId=stopId||null;
   lastStopName=stopName||'';
