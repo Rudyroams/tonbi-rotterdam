@@ -40,7 +40,7 @@
 
 #journey-screen.cf-fullscreen .card-bottom {
   position: fixed;
-  bottom: calc(68px + env(safe-area-inset-bottom));
+  bottom: calc(83px + env(safe-area-inset-bottom));
   left: 0; right: 0;
   z-index: 30;
   background: transparent;
@@ -797,19 +797,7 @@ function renderCard(card,idx,total){
                     padding:0.3rem 0.9rem;border-radius:99px;
                     border:1px solid rgba(255,255,255,0.15);text-decoration:none;">Read text only</a>
         </div>
-        <!-- Nav buttons — above video controls -->
-        <div style="position:absolute;bottom:calc(175px + env(safe-area-inset-bottom));left:1rem;right:1rem;z-index:20;display:flex;gap:0.6rem;">
-          <button onclick="prevCard()"
-            style="flex-shrink:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                   border:1px solid rgba(255,255,255,0.2);border-radius:99px;
-                   padding:0.5rem 1rem;color:rgba(255,255,255,0.85);font-family:'Nunito',sans-serif;
-                   font-size:0.85rem;font-weight:800;cursor:pointer;">&#8592; Back</button>
-          <button onclick="nextCard()"
-            style="flex:1;background:rgba(255,107,53,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                   border:none;border-radius:99px;
-                   padding:0.5rem;color:white;font-family:'Nunito',sans-serif;
-                   font-size:0.9rem;font-weight:800;cursor:pointer;">Continue &#8594;</button>
-        </div>
+
         <!-- Text overlay -->
         <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);
           z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
