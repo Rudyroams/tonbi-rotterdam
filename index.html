@@ -1303,6 +1303,8 @@ function answerQuiz(stopId,optIdx){
 
 // ══ CAMERA ══
 async function openCam(stopId, stopName){
+  console.log('openCam called', stopId, stopName);
+  alert('openCam called: ' + stopId);
   const stop = stops.find(s=>s.id===parseInt(stopId));
   const tip = stop ? stop.challenge.tip : '';
   lastTip=tip;
