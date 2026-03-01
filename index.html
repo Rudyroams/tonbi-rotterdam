@@ -1187,11 +1187,12 @@ function answerQuiz(stopId,optIdx){
   currentCardIdx=pos;
   updateCardPosition(false);
   if(isCorrect) setTimeout(()=>showConfetti(), 300);
-  // Scroll to result
+  // Scroll to Rudy bubble
   setTimeout(()=>{
-    const result=document.querySelectorAll('.card')[pos]?.querySelector('.quiz-result-box');
-    if(result) result.scrollIntoView({behavior:'smooth',block:'nearest'});
-  },100);
+    const card=document.querySelectorAll('.card')[pos];
+    const target=card?.querySelector('.rudy-bubble-wrap') || card?.querySelector('.quiz-opts');
+    if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
+  },200);
 }
 
 // ══ CAMERA ══
@@ -1231,6 +1232,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycX
 
 function initStopMap(stopId){
   if(!window.mapboxgl) return;
+  mapboxgl.accessToken = MAPBOX_TOKEN;
   const coords = [
     [4.4871, 51.9090], // 1 Erasmus Bridge
     [4.4917, 51.9186], // 2 Witte Huis
