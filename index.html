@@ -38,7 +38,26 @@
   position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
 }
 
-#journey-screen.cf-fullscreen .card-bottom { display:none !important; }
+#journey-screen.cf-fullscreen .card-bottom {
+  position: fixed;
+  bottom: calc(68px + env(safe-area-inset-bottom));
+  left: 0; right: 0;
+  z-index: 30;
+  background: transparent;
+  border-top: none;
+  padding-bottom: 0;
+}
+#journey-screen.cf-fullscreen .card-bottom .card-prev-btn {
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#journey-screen.cf-fullscreen .card-bottom .card-next-btn {
+  background: rgba(255,107,53,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -645,6 +664,9 @@ function showConfetti(){
 function skipToTextFullscreen(stopId){
   const textEl = document.getElementById('text-section-'+stopId);
   if(textEl) textEl.style.display = 'block';
+  // Stop video by removing src
+  const iframe = document.getElementById('cf-iframe-'+stopId);
+  if(iframe) iframe.src = '';
 }
 
 function skipToText(stopId){
