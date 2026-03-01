@@ -685,19 +685,9 @@ function showConfetti(){
 
 
 function updateJourneyHeaderVisibility(){
-  const currentCard = cards[currentCardIdx];
-  const isFullscreen = currentCard &&
-    currentCard.type === 'desc' &&
-    currentCard.stop &&
-    currentCard.stop.cfStyle === 'fullscreen';
-  const jtBar = document.getElementById('jt-bar');
-  const dots  = document.getElementById('progress-dots');
-  if(jtBar) jtBar.style.display = isFullscreen ? 'none' : '';
-  if(dots)  dots.style.display  = isFullscreen ? 'none' : '';
-  // Also make card-viewport fill from top when fullscreen
-  const vp = document.querySelector('.card-viewport');
-  if(vp) vp.style.marginTop = isFullscreen ? '0' : '';
+  // Handled by renderJourney
 }
+
 function skipToTextFullscreen(stopId){
   const textEl = document.getElementById('text-section-'+stopId);
   if(textEl) textEl.style.display = 'block';
@@ -1030,6 +1020,54 @@ function initNavMap(stopId){
   map.on('load',()=>{
     new mapboxgl.Marker({color:'#ff6b35'}).setLngLat([stop.lng,stop.lat]).addTo(map);
   });
+}
+
+
+function renderJourney(){
+  const currentCard = cards[currentCardIdx];
+  const isNavCard = currentCard && (currentCard.type==='nav' || currentCard.type==='transition');
+  const isFullscreenVideo = currentCard && currentCard.type==='desc' && currentCard.stop &&
+    (currentCard.stop.cfStyle==='fullscreen' || currentCard.stop.cfStyle==='card');
+
+  // jt-bar visibility
+  const jtBar = document.getElementById('jt-bar');
+  const dots  = document.getElementById('progress-dots');
+  if(jtBar) jtBar.style.display = (isNavCard || isFullscreenVideo) ? 'none' : 'block';
+  if(dots)  dots.style.display  = (isNavCard || isFullscreenVideo) ? 'none' : 'flex';
+
+  // Stop label
+  const label = document.getElementById('jt-label');
+  const prog  = document.getElementById('dp-prog');
+  if(label) label.textContent = currentStop ? currentStop.name : '';
+  if(prog)  prog.textContent  = currentStop ? `Stop ${currentStop.id} of ${stops.length}` : '';
+
+  // Progress dots
+  if(dots){
+    const contentCards = cards.slice(2);
+    const contentIdx = currentCardIdx - 2;
+    dots.innerHTML = contentCards.map((_,i)=>`
+      <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}"
+           style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
+  }
+
+  // Render cards
+  const track = document.getElementById('card-track');
+  if(track) track.innerHTML = cards.map((card,i)=>renderCard(card,i,cards.length)).join('');
+
+  updateCardPosition(false);
+  updateNavBtns();
+
+  // Toggle fullscreen class on journey screen
+  const js = document.getElementById('journey-screen');
+  if(js) js.classList.toggle('fullscreen-video', !!isFullscreenVideo);
+}
+
+function updateCardPosition(animate=true){
+  const track = document.getElementById('card-track');
+  if(!track) return;
+  if(!animate){ track.style.transition='none'; }
+  track.style.transform = `translateX(-${currentCardIdx * 100}%)`;
+  if(!animate) setTimeout(()=>{ track.style.transition=''; }, 50);
 }
 
 function nextCard(){
