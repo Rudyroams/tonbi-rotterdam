@@ -1311,16 +1311,27 @@ async function openCam(stopId, stopName){
   document.getElementById('cam-tip').textContent=tip;
   document.getElementById('preview-tip-text').textContent=tip;
   document.getElementById('cam-overlay').classList.add('on');
+
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    alert('Camera not supported in this browser. Try opening the page in Safari (iPhone) or Chrome (Android).');
+    document.getElementById('cam-overlay').classList.remove('on');
+    return;
+  }
   try {
     const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
     camStream = stream;
     const vid = document.getElementById('cam-vid');
     vid.srcObject = stream;
-    await vid.play();
+    vid.play().catch(e=>console.warn('play error',e));
   } catch(e){
-    console.error('Camera error:', e);
     document.getElementById('cam-overlay').classList.remove('on');
-    alert('Camera not available: ' + e.message);
+    if(e.name==='NotAllowedError'){
+      alert('Camera permission denied. Please allow camera access in your browser settings and try again.');
+    } else if(e.name==='NotFoundError'){
+      alert('No camera found on this device.');
+    } else {
+      alert('Camera error: ' + e.name + ' — ' + e.message);
+    }
   }
 }
 function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
