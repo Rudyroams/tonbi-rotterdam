@@ -186,6 +186,39 @@
   box-shadow: 0 4px 12px rgba(255,107,53,0.4);
 }
 
+
+/* ── End-of-tour photo gallery ── */
+.photo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+.gallery-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 2px solid var(--border);
+}
+.gallery-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.gallery-thumb-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white; font-size: 0.65rem; font-weight: 700;
+  padding: 0.4rem 0.5rem;
+}
+.gallery-empty {
+  aspect-ratio: 1; border-radius: 10px;
+  background: var(--bg); border: 2px dashed var(--border);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--text2); font-size: 0.75rem; gap: 0.3rem;
+}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -570,17 +603,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 <div id="preview-overlay">
   <img id="preview-img" src="" alt="Your photo">
   <div class="preview-bottom">
-    <div class="preview-tip-box">
-      <div style="font-size:1.1rem;flex-shrink:0;">💡</div>
-      <div>
-        <div class="preview-tip-label">Rudy's Tip</div>
-        <div class="preview-tip-text" id="preview-tip-text"></div>
-      </div>
-    </div>
     <div class="preview-actions">
       <button class="preview-btn preview-btn-retake" onclick="retake()">↩ Retake</button>
-      <button class="preview-btn preview-btn-save" onclick="savePhoto()">⬇ Save</button>
-      <button class="preview-btn preview-btn-share" onclick="sharePhoto()">Share ↗</button>
+      <button class="preview-btn preview-btn-save" onclick="saveAndShare()">⬇ Save / Share</button>
+      <button class="preview-btn preview-btn-share" onclick="closePreview()" style="background:var(--orange);color:white;box-shadow:0 4px 12px rgba(255,107,53,0.4);">Use this ✓</button>
     </div>
   </div>
 </div>
@@ -1018,7 +1044,7 @@ function renderCard(card,idx,total){
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
-          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\'")}')">📷 Open Camera</button>
+          <button class="open-cam-btn" onclick="openCam('${s.challenge.tip.replace(/'/g,"\\\'")}',' ${s.id}','${s.name}')">📷 Open Camera</button>
         </div>
       </div>
     </div>`;
@@ -1222,7 +1248,19 @@ function showFinalScore(scored, total){
   const el = document.createElement('div');
   el.id = 'final-score-overlay';
   el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem;';
-  el.innerHTML = `<div class="final-score-card" style="max-width:340px;width:100%;">
+  // Build photo gallery HTML
+  const galleryHTML = stops.map(stop => {
+    const p = photoCollection[stop.id];
+    if(p) return `<div class="gallery-thumb">
+      <img src="${p.dataUrl}" alt="${p.stopName}">
+      <div class="gallery-thumb-label">${stop.name}</div>
+    </div>`;
+    return `<div class="gallery-empty"><span style="font-size:1.5rem;">📷</span><span>${stop.name}</span></div>`;
+  }).join('');
+
+  const hasPhotos = Object.keys(photoCollection).length > 0;
+
+  el.innerHTML = `<div class="final-score-card" style="max-width:360px;width:100%;max-height:90vh;overflow-y:auto;">
     <div style="font-size:2.2rem;margin-bottom:0.4rem;letter-spacing:0.1em;">🎉🏆🎉</div>
     <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Tour Complete!</div>
     <div class="final-score-num">${scored}/${total}</div>
@@ -1232,6 +1270,10 @@ function showFinalScore(scored, total){
     </div>
     <div style="font-size:0.72rem;color:var(--text2);margin-bottom:0.75rem;">${pct}%</div>
     <div style="margin:0.5rem 0 1rem;font-size:0.88rem;color:var(--text2);">${msg}</div>
+    ${hasPhotos ? `<div style="text-align:left;margin-bottom:0.5rem;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📸 Your Photos</div>
+      <div class="photo-gallery-grid">${galleryHTML}</div>
+    </div>` : ''}
     <button onclick="document.getElementById('final-score-overlay').remove()"
       style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.65rem 1.8rem;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;width:100%;">
       Back to Tour 🗺️
@@ -1260,8 +1302,10 @@ function answerQuiz(stopId,optIdx){
 }
 
 // ══ CAMERA ══
-async function openCam(tip){
+async function openCam(tip, stopId, stopName){
   lastTip=tip;
+  lastStopId=stopId||null;
+  lastStopName=stopName||'';
   document.getElementById('cam-tip').textContent=tip;
   document.getElementById('preview-tip-text').textContent=tip;
   document.getElementById('cam-overlay').classList.add('on');
@@ -1275,11 +1319,17 @@ async function openCam(tip){
 }
 function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
 function snap(){
-  const v=document.getElementById('cam-vid'),c=document.getElementById('cam-canvas');
-  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);
-  document.getElementById('preview-img').src=c.toDataURL('image/jpeg',0.92);
+  const v=document.getElementById('cam-vid'),cv=document.getElementById('cam-canvas');
+  cv.width=v.videoWidth; cv.height=v.videoHeight;
+  cv.getContext('2d').drawImage(v,0,0);
+  const dataUrl = cv.toDataURL('image/jpeg',0.92);
+  document.getElementById('preview-img').src = dataUrl;
+  // Stop camera stream immediately
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
   document.getElementById('cam-overlay').classList.remove('on');
   document.getElementById('preview-overlay').classList.add('on');
+  // Store for gallery
+  if(lastStopId) photoCollection[lastStopId] = {dataUrl, tip: lastTip, stopName: lastStopName};
 }
 function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
 function savePhoto(){
@@ -1287,6 +1337,20 @@ function savePhoto(){
   a.href=document.getElementById('preview-img').src;
   a.download='tonbi-rotterdam.jpg';
   a.click();
+  // Show brief feedback
+  const btn=document.querySelector('.preview-btn-save');
+  if(btn){ const orig=btn.innerHTML; btn.innerHTML='✓ Saved!'; setTimeout(()=>btn.innerHTML=orig,1500); }
+}
+
+function saveAndShare(){
+  // First save/download
+  savePhoto();
+  // Then open native share if available
+  setTimeout(()=>sharePhoto(), 300);
+}
+
+function closePreview(){
+  document.getElementById('preview-overlay').classList.remove('on');
 }
 
 async function sharePhoto(){
