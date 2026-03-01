@@ -48,13 +48,13 @@
   padding-bottom: 0;
 }
 #journey-screen.cf-fullscreen .card-bottom .card-prev-btn {
-  background: rgba(0,0,0,0.35);
-  color: rgba(255,255,255,0.85);
+  background: rgba(0,0,0,0.18);
+  color: rgba(255,255,255,0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 #journey-screen.cf-fullscreen .card-bottom .card-next-btn {
-  background: rgba(255,107,53,0.85);
+  background: rgba(255,107,53,0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -811,7 +811,7 @@ function renderCard(card,idx,total){
               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
                      background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
-              &#9654; Watch video instead</a>
+              <svg width="13" height="13" viewBox="0 0 12 12" fill="white" style="margin-right:0.3rem;flex-shrink:0;"><polygon points="2,1 11,6 2,11"/></svg> Watch video instead</a>
           </div>
         </div>
       </div>`;
@@ -1126,7 +1126,7 @@ function initStopMap(stopId){
     container: containerId,
     style: 'mapbox://styles/mapbox/streets-v12',
     center: destCoord,
-    zoom: 12,
+    zoom: 11,
     attributionControl: false,
     interactive: true
   });
@@ -1233,7 +1233,7 @@ function initStopMap(stopId){
 
       }, () => {
         // Location denied — center on destination
-        stopMap.flyTo({ center: destCoord, zoom: 12 });
+        stopMap.flyTo({ center: destCoord, zoom: 11 });
       });
     }
   });
@@ -1247,7 +1247,7 @@ function initMap(){
     container: 'mapbox-map',
     style: 'mapbox://styles/mapbox/light-v11',
     center: [4.4841, 51.9060],
-    zoom: 13,
+    zoom: 12,
     attributionControl: false
   });
 
