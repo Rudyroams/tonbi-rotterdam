@@ -1242,7 +1242,8 @@ function updateNavBtns(){
 
   // Next button label
   if(isLastCard){
-    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
+    const nextStop = stops.find(s=>s.id===currentStop.id+1);
+    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${nextStop ? nextStop.name : ''} →`;
     next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
   } else if(isNav){
     next.textContent = "I've Arrived ✓";
@@ -1382,32 +1383,33 @@ function handlePhotoInput(event, stopId, stopName, tip){
   lastStopId = stopId;
   lastStopName = stopName;
   const reader = new FileReader();
-  reader.onload = async function(e){
+  reader.onload = function(e){
     const dataUrl = e.target.result;
     document.getElementById('preview-img').src = dataUrl;
     // Store for gallery
     if(stopId) photoCollection[stopId] = {dataUrl, tip, stopName};
-    // Auto-trigger share/save sheet
-    try {
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
-      const file = new File([blob], 'tonbi-rotterdam-stop'+stopId+'.jpg', {type:'image/jpeg'});
-      if(navigator.share && navigator.canShare({files:[file]})){
-        await navigator.share({
-          files: [file],
-          title: 'My photo at ' + stopName,
-          text: 'Saved from Tonbi Rotterdam walking tour — your photo is on your phone!'
-        });
-      } else {
-        // Fallback: download
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = 'tonbi-rotterdam-stop'+stopId+'.jpg';
-        a.click();
-      }
-    } catch(err){ /* user cancelled share - that's fine */ }
-    // Show preview after share attempt
+    // Show preview immediately
     document.getElementById('preview-overlay').classList.add('on');
+    // Then try to trigger share/save in background
+    setTimeout(async function(){
+      try {
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        const file = new File([blob], 'tonbi-stop'+stopId+'.jpg', {type:'image/jpeg'});
+        if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+          await navigator.share({
+            files: [file],
+            title: 'My photo — ' + stopName,
+            text: 'Your photo has been saved to your phone!'
+          });
+        } else {
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = 'tonbi-stop'+stopId+'.jpg';
+          a.click();
+        }
+      } catch(err){ /* cancelled or not supported, that's fine */ }
+    }, 500);
   };
   reader.readAsDataURL(file);
 }
