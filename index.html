@@ -219,6 +219,18 @@
   color: var(--text2); font-size: 0.75rem; gap: 0.3rem;
 }
 
+
+/* ── Gallery card ── */
+.gallery-card { padding: 1.25rem; }
+.gallery-card-header { background: var(--orange); margin: -1.25rem -1.25rem 1.25rem; padding: 1.25rem; border-radius: var(--radius) var(--radius) 0 0; }
+.gallery-card-label { font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem; }
+.gallery-card-title { font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white; }
+.gallery-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:0.65rem;margin-bottom:1.25rem; }
+.gallery-cell { position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg);border:2px solid var(--border); }
+.gallery-cell img { width:100%;height:100%;object-fit:cover;display:block; }
+.gallery-cell-label { position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);color:white;font-size:0.65rem;font-weight:700;padding:0.4rem 0.5rem; }
+.gallery-cell-empty { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;color:var(--text2);font-size:0.75rem;height:100%; }
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -601,12 +613,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 <div id="preview-overlay">
-  <img id="preview-img" src="" alt="Your photo">
+  <img id="preview-img" src="" alt="Your photo" style="width:100%;height:100%;object-fit:cover;display:block;">
   <div class="preview-bottom">
     <div class="preview-actions">
-      <button class="preview-btn preview-btn-retake" onclick="retake()">↩ Retake</button>
-      <button class="preview-btn preview-btn-save" onclick="saveAndShare()">⬇ Save / Share</button>
-      <button class="preview-btn preview-btn-share" onclick="closePreview()" style="background:var(--orange);color:white;box-shadow:0 4px 12px rgba(255,107,53,0.4);">Use this ✓</button>
+      <button class="preview-btn preview-btn-retake" onclick="closePreview()">← Back</button>
+      <button class="preview-btn preview-btn-save" onclick="saveAndShare()">↗ Save / Share</button>
+      <button class="preview-btn preview-btn-share" onclick="closePreviewAndContinue()" style="background:var(--orange);color:white;box-shadow:0 4px 12px rgba(255,107,53,0.4);">Continue →</button>
     </div>
   </div>
 </div>
@@ -860,7 +872,10 @@ function setupVideoObserver(stopId){
 // ══ CARDS ══
 function buildCards(stop){
   const cardTypes=['transition','nav','desc','rudy','photo','quiz'];
-  return cardTypes.map(type=>({type,stop}));
+  const cards = cardTypes.map(type=>({type,stop}));
+  // Add gallery card after quiz on last stop
+  if(stop.id === stops.length) cards.push({type:'gallery', stop});
+  return cards;
 }
 
 function renderCard(card,idx,total){
@@ -1110,6 +1125,47 @@ function renderCard(card,idx,total){
       </div>
     </div>`;
   }
+
+  if(card.type==='gallery'){
+    const cells = stops.map(stop => {
+      const p = photoCollection[stop.id];
+      if(p) return `<div class="gallery-cell">
+        <img src="${p.dataUrl}" alt="${p.stopName}">
+        <div class="gallery-cell-label">${stop.name}</div>
+      </div>`;
+      return `<div class="gallery-cell">
+        <div class="gallery-cell-empty">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span>${stop.name}</span>
+        </div>
+      </div>`;
+    }).join('');
+    const photoCount = Object.keys(photoCollection).length;
+    const shareAllBtn = photoCount > 0 ? `
+      <button onclick="shareAllPhotos()" style="width:100%;background:var(--orange);color:white;border:none;
+        border-radius:var(--radius-sm);padding:0.75rem;font-family:'Nunito',sans-serif;
+        font-size:0.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;
+        justify-content:center;gap:0.5rem;box-shadow:0 4px 12px rgba(255,107,53,0.3);margin-bottom:0.6rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share all photos
+      </button>` : '';
+    return `<div class="card" data-stop="${s.id}" data-type="gallery">
+      <div class="gallery-card">
+        <div class="gallery-card-header">
+          <div class="gallery-card-label">Tour Complete 🎉</div>
+          <div class="gallery-card-title">Your Rotterdam Moments</div>
+        </div>
+        <p style="font-size:0.88rem;color:var(--text2);margin-bottom:1rem;line-height:1.6;">
+          ${photoCount > 0
+            ? `You captured ${photoCount} of ${stops.length} stops. Your photos were saved to your phone during the tour.`
+            : 'No photos taken yet — you can still go back and capture your favourite spots!'}
+        </p>
+        <div class="gallery-grid">${cells}</div>
+        ${shareAllBtn}
+      </div>
+    </div>`;
+  }
+
   return '<div class="card"></div>';
 }
 
@@ -1326,18 +1382,43 @@ function handlePhotoInput(event, stopId, stopName, tip){
   lastStopId = stopId;
   lastStopName = stopName;
   const reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = async function(e){
     const dataUrl = e.target.result;
     document.getElementById('preview-img').src = dataUrl;
-    document.getElementById('preview-overlay').classList.add('on');
     // Store for gallery
     if(stopId) photoCollection[stopId] = {dataUrl, tip, stopName};
+    // Auto-trigger share/save sheet
+    try {
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], 'tonbi-rotterdam-stop'+stopId+'.jpg', {type:'image/jpeg'});
+      if(navigator.share && navigator.canShare({files:[file]})){
+        await navigator.share({
+          files: [file],
+          title: 'My photo at ' + stopName,
+          text: 'Saved from Tonbi Rotterdam walking tour — your photo is on your phone!'
+        });
+      } else {
+        // Fallback: download
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = 'tonbi-rotterdam-stop'+stopId+'.jpg';
+        a.click();
+      }
+    } catch(err){ /* user cancelled share - that's fine */ }
+    // Show preview after share attempt
+    document.getElementById('preview-overlay').classList.add('on');
   };
   reader.readAsDataURL(file);
 }
 
 function closePreview(){
   document.getElementById('preview-overlay').classList.remove('on');
+}
+
+function closePreviewAndContinue(){
+  document.getElementById('preview-overlay').classList.remove('on');
+  nextCard();
 }
 
 function saveAndShare(){
@@ -1349,6 +1430,11 @@ function saveAndShare(){
 
 function closePreview(){
   document.getElementById('preview-overlay').classList.remove('on');
+}
+
+function closePreviewAndContinue(){
+  document.getElementById('preview-overlay').classList.remove('on');
+  nextCard();
 }
 
 async function sharePhoto(){
@@ -1641,6 +1727,30 @@ function getRudyBubble(isCorrect, stopId){
     + '<div class="rudy-avatar">' + svg + '</div>'
     + '<div class="rudy-bubble ' + cls + '"><strong>' + title + '</strong>' + body + '</div>'
     + '</div>';
+}
+
+
+async function shareAllPhotos(){
+  const files = [];
+  for(const stopId of Object.keys(photoCollection)){
+    const p = photoCollection[stopId];
+    const res = await fetch(p.dataUrl);
+    const blob = await res.blob();
+    files.push(new File([blob], 'tonbi-stop-'+stopId+'.jpg', {type:'image/jpeg'}));
+  }
+  if(files.length === 0) return;
+  if(navigator.share && navigator.canShare({files})){
+    try { await navigator.share({files, title:'My Tonbi Rotterdam Tour', text:'My photos from the Tonbi Rotterdam walking tour!'}); }
+    catch(e){}
+  } else {
+    // Fallback: download each
+    files.forEach((f,i) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(f);
+      a.download = f.name;
+      setTimeout(()=>a.click(), i*300);
+    });
+  }
 }
 
 </script>
