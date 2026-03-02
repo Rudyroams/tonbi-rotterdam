@@ -689,9 +689,10 @@ const stops = [
 
 // ══ STATE ══
 const photoCollection = {};
+const quizAnswered = {};
 let currentStop = null, currentCardIdx = 0, cards = [];
 let pendingPhotoStopId = null;
-let videoActivated = {};
+const videoActivated = {};
 
 // ══ PASSWORD ══
 function togglePw(){
@@ -830,7 +831,6 @@ function buildCards(stop){
 
 function renderCard(card,idx,total){
   const s=card.stop;
-  const quizAnswered = window.quizAnswered || {};
   
   if(card.type==='transition'){
     return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
@@ -1068,7 +1068,6 @@ function startJourney(stopId){
   currentCardIdx=0;
   cards=buildCards(currentStop);
   Object.keys(videoActivated).forEach(k=>delete videoActivated[k]);
-  if(!window.quizAnswered) window.quizAnswered = {};
   renderJourney();
   document.getElementById('journey-screen').classList.add('show');
   if(currentStop.youtubeId){
@@ -1189,10 +1188,9 @@ function prevCard(){
 function closeJourney(){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
-  if(!window.quizAnswered) window.quizAnswered = {};
-  const attempted=Object.keys(window.quizAnswered).length;
+  const attempted=Object.keys(quizAnswered).length;
   if(attempted===stops.length){
-    const scored=Object.entries(window.quizAnswered).filter(([sid,ans])=>{
+    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
       const st=stops.find(x=>x.id===parseInt(sid)); return st&&ans===st.quiz.correct;
     }).length;
     showFinalScore(scored, stops.length);
@@ -1242,8 +1240,7 @@ function showFinalScore(scored, total){
 
 // ══ QUIZ ══
 function answerQuiz(stopId,optIdx){
-  if(!window.quizAnswered) window.quizAnswered = {};
-  window.quizAnswered[stopId]=optIdx;
+  quizAnswered[stopId]=optIdx;
   const stop=stops.find(s=>s.id===stopId);
   const isCorrect = stop && optIdx===stop.quiz.correct;
   const pos=currentCardIdx;
@@ -1558,6 +1555,7 @@ function getRudyBubble(isCorrect, stopId){
 }
 
 </script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
 </body>
 </html>
