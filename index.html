@@ -219,24 +219,6 @@
 }
 
 /* ── Photo Challenge Instructions ── */
-.photo-instructions {
-  display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;
-}
-.instruction-box {
-  background: var(--orange-light); border-radius: var(--radius-sm);
-  padding: 1rem; display: flex; gap: 0.85rem; align-items: flex-start;
-}
-.instruction-number {
-  font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 900;
-  color: var(--orange); flex-shrink: 0; line-height: 1;
-}
-.instruction-text {
-  font-size: 0.9rem; line-height: 1.6; color: var(--text);
-}
-.instruction-text strong {
-  display: block; color: var(--text); font-weight: 800; margin-bottom: 0.2rem;
-}
-
 .photo-existing {
   background: var(--white); border-radius: var(--radius);
   padding: 1.25rem; box-shadow: var(--shadow); margin-bottom: 1.25rem;
@@ -458,10 +440,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; justify-content:center; align-items:center; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; }
-.card-next-btn { flex:1; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1.2rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; white-space:nowrap; }
+.card-next-btn { background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem 1.2rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; white-space:nowrap; flex-shrink:0; }
 .card-next-btn:hover { transform:translateY(-1px); }
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
 
@@ -598,13 +580,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <img id="preview-img" src="" alt="Your photo">
   <div class="preview-bottom">
     <div class="preview-challenge-title" id="preview-title"></div>
-    <div class="preview-tip-box">
-      <div style="flex-shrink:0;font-size:0.8rem;">💡</div>
-      <div>
-        <div class="preview-tip-label">Rudy's Tip</div>
-        <div class="preview-tip-text" id="preview-tip"></div>
-      </div>
-    </div>
     <div class="preview-actions">
       <button class="preview-btn preview-btn-retake" onclick="retakePhoto()">↩ Retake</button>
       <button class="preview-btn preview-btn-use" onclick="usePhoto()">Use this ✓</button>
@@ -903,7 +878,7 @@ function renderCard(card,idx,total){
           <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;">${s.tagline}</div>
         </div>
-        <div style="position:absolute;bottom:calc(131px + env(safe-area-inset-bottom));right:1.1rem;z-index:25;">
+        <div style="position:absolute;top:calc(1.5rem + env(safe-area-inset-top));right:1.1rem;z-index:25;">
           <a onclick="skipToTextFullscreen(${s.id})"
              style="cursor:pointer;display:inline-block;background:rgba(0,0,0,0.12);
                     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -978,18 +953,7 @@ function renderCard(card,idx,total){
         <div class="photo-existing-text">You've already taken a great shot here. Want to capture another angle?</div>
         <button class="photo-select-btn replace" onclick="openPhotoPicker(${s.id})">📷 Replace Photo</button>
       </div>
-    ` : `
-      <div class="photo-instructions">
-        <div class="instruction-box">
-          <div class="instruction-number">1️⃣</div>
-          <div class="instruction-text"><strong>Open your camera app</strong> and take the shot described below</div>
-        </div>
-        <div class="instruction-box">
-          <div class="instruction-number">2️⃣</div>
-          <div class="instruction-text"><strong>Come back here</strong> and tap the button to select from your camera roll</div>
-        </div>
-      </div>
-    `;
+    ` : ``;
 
     return `
     <div class="card" data-stop="${s.id}" data-type="photo">
@@ -1008,7 +972,7 @@ function renderCard(card,idx,total){
           ${!hasPhoto ? `
             <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
               <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
-                📷 Select Photo from Camera Roll
+                📷 Take your shot, then select from camera roll
               </button>
             </div>
           ` : ''}
@@ -1216,7 +1180,7 @@ function showFinalScore(scored, total){
 
   const hasPhotos = Object.keys(photoCollection).length > 0;
 
-  el.innerHTML = `<div class="final-score-card" style="max-width:360px;width:100%;max-height:90vh;overflow-y:auto;">
+  el.innerHTML = `<div class="final-score-card" style="max-width:420px;width:100%;max-height:90vh;overflow-y:auto;">
     <div style="font-size:2.2rem;margin-bottom:0.4rem;letter-spacing:0.1em;">🎉🏆🎉</div>
     <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Tour Complete!</div>
     <div class="final-score-num">${scored}/${total}</div>
@@ -1226,16 +1190,116 @@ function showFinalScore(scored, total){
     </div>
     <div style="font-size:0.72rem;color:var(--text2);margin-bottom:0.75rem;">${pct}%</div>
     <div style="margin:0.5rem 0 1rem;font-size:0.88rem;color:var(--text2);">${msg}</div>
-    ${hasPhotos ? `<div style="text-align:left;margin-bottom:0.5rem;">
-      <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📸 Your Photos</div>
-      <div class="photo-gallery-grid">${galleryHTML}</div>
-    </div>` : ''}
+    ${hasPhotos ? `
+      <div style="text-align:left;margin-bottom:1rem;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">📸 Your Photos</div>
+        <div class="photo-gallery-grid">${galleryHTML}</div>
+        <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.75rem;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;margin-top:1rem;box-shadow:0 4px 12px rgba(45,107,228,0.25);">
+          📥 Download Collage
+        </button>
+      </div>
+    ` : ''}
     <button onclick="document.getElementById('final-score-overlay').remove()"
       style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.65rem 1.8rem;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;width:100%;">
       Back to Tour 🗺️
     </button>
   </div>`;
   document.body.appendChild(el);
+}
+
+function downloadCollage(){
+  const photos = Object.entries(photoCollection).map(([stopId, photo]) => ({
+    id: stopId,
+    dataUrl: photo.dataUrl,
+    stopName: photo.stopName
+  }));
+
+  if(photos.length === 0){
+    alert('No photos to collage!');
+    return;
+  }
+
+  // Create canvas - 3 rows x 2 cols for 5 photos + title
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const photoSize = 350;
+  const cols = 2;
+  const rows = 3;
+  const padding = 20;
+  const titleHeight = 80;
+  
+  canvas.width = cols * photoSize + (cols + 1) * padding;
+  canvas.height = titleHeight + rows * photoSize + (rows + 1) * padding;
+
+  // Background
+  ctx.fillStyle = '#f8f7f5';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Title
+  ctx.fillStyle = '#ff6b35';
+  ctx.font = 'bold 48px Nunito';
+  ctx.textAlign = 'center';
+  ctx.fillText('Tonbi Rotterdam 🪁', canvas.width / 2, 50);
+
+  // Load and draw photos
+  let loadedCount = 0;
+  photos.forEach((photo, idx) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const row = Math.floor(idx / cols);
+      const col = idx % cols;
+      const x = padding + col * (photoSize + padding);
+      const y = titleHeight + padding + row * (photoSize + padding);
+
+      // Draw border
+      ctx.strokeStyle = '#e5e5ea';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x, y, photoSize, photoSize);
+
+      // Draw image
+      ctx.drawImage(img, x, y, photoSize, photoSize);
+
+      // Draw label
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(x, y + photoSize - 40, photoSize, 40);
+      ctx.fillStyle = '#fff';
+      ctx.font = '14px DM Sans';
+      ctx.textAlign = 'left';
+      ctx.fillText(photo.stopName, x + 10, y + photoSize - 12);
+
+      loadedCount++;
+      if(loadedCount === photos.length){
+        // Download the collage
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'tonbi-rotterdam-collage.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 'image/png');
+      }
+    };
+    img.onerror = () => {
+      loadedCount++;
+      if(loadedCount === photos.length){
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'tonbi-rotterdam-collage.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 'image/png');
+      }
+    };
+    img.src = photo.dataUrl;
+  });
 }
 
 // ══ QUIZ ══
@@ -1274,7 +1338,6 @@ function handlePhotoSelection(event){
     // Show preview
     document.getElementById('preview-img').src = dataUrl;
     document.getElementById('preview-title').textContent = stop.challenge.title;
-    document.getElementById('preview-tip').textContent = stop.challenge.tip;
     document.getElementById('preview-overlay').classList.add('on');
   };
   reader.readAsDataURL(file);
@@ -1333,7 +1396,7 @@ function initStopMap(stopId){
     container: containerId,
     style: 'mapbox://styles/mapbox/streets-v12',
     center: destCoord,
-    zoom: 11,
+    zoom: 10,
     attributionControl: false,
     interactive: true
   });
@@ -1428,7 +1491,7 @@ function initStopMap(stopId){
           .catch(() => {});
 
       }, () => {
-        stopMap.flyTo({ center: destCoord, zoom: 11 });
+        stopMap.flyTo({ center: destCoord, zoom: 10 });
       });
     }
   });
