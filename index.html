@@ -1045,26 +1045,18 @@ function renderCard(card,idx,total){
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
           <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
-            <button id="cam-btn-${s.id}" style="
-              background:var(--orange);color:white;border:none;
-              border-radius:16px;padding:1.1rem 2rem;
-              font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
-              cursor:pointer;display:inline-flex;align-items:center;gap:0.75rem;
-              box-shadow:0 4px 16px rgba(255,107,53,0.3);">
+            <button class="open-cam-btn" onclick="triggerCam(this)">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
               Take Photo
             </button>
+            <span class="cam-tip-store" style="display:none">${s.challenge.tip}</span>
           </div>
         </div>
       </div>
     </div>`;
-    document.addEventListener('click', function _camHandler(e){
-      const btn = e.target.closest('#cam-btn-${s.id}');
-      if(btn){ document.removeEventListener('click',_camHandler); openCam('${s.id}','${s.name}'); }
-    });
 
   if(card.type==='quiz'){
     const qa=quizAnswered[s.id];
@@ -1319,36 +1311,20 @@ function answerQuiz(stopId,optIdx){
 }
 
 // ══ CAMERA ══
-async function openCam(stopId, stopName){
-  const stop = stops.find(s=>s.id===parseInt(stopId));
-  const tip = stop ? stop.challenge.tip : '';
-  lastTip=tip;
-  lastStopId=stopId||null;
-  lastStopName=stopName||'';
-  document.getElementById('cam-tip').textContent=tip;
-  document.getElementById('preview-tip-text').textContent=tip;
+function triggerCam(btn){
+  const tip = btn.parentElement.querySelector('.cam-tip-store');
+  openCam(tip ? tip.textContent : '');
+}
+async function openCam(tip){
+  lastTip = tip || '';
+  document.getElementById('cam-tip').textContent = lastTip;
   document.getElementById('cam-overlay').classList.add('on');
-
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    alert('Camera not supported in this browser. Try opening the page in Safari (iPhone) or Chrome (Android).');
-    document.getElementById('cam-overlay').classList.remove('on');
-    return;
-  }
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    camStream = stream;
-    const vid = document.getElementById('cam-vid');
-    vid.srcObject = stream;
-    vid.play().catch(e=>console.warn('play error',e));
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
+    document.getElementById('cam-vid').srcObject = camStream;
   } catch(e){
+    alert('Camera access needed — please allow in your browser settings.');
     document.getElementById('cam-overlay').classList.remove('on');
-    if(e.name==='NotAllowedError'){
-      alert('Camera permission denied. Please allow camera access in your browser settings and try again.');
-    } else if(e.name==='NotFoundError'){
-      alert('No camera found on this device.');
-    } else {
-      alert('Camera error: ' + e.name + ' — ' + e.message);
-    }
   }
 }
 function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
@@ -1365,7 +1341,7 @@ function snap(){
   // Store for gallery
   if(lastStopId) photoCollection[lastStopId] = {dataUrl, tip: lastTip, stopName: lastStopName};
 }
-function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastStopId, lastStopName); }
+function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
 function savePhoto(){
   const a=document.createElement('a');
   a.href=document.getElementById('preview-img').src;
