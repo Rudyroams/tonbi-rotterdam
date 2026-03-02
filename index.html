@@ -590,7 +590,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <!-- CAMERA -->
 <div id="cam-overlay">
-  <video id="cam-vid" autoplay playsinline muted></video>
+  <video id="cam-vid" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
   <canvas id="cam-canvas" style="display:none"></canvas>
   <div class="cam-ui">
     <div class="cam-top">
@@ -1045,14 +1045,22 @@ function renderCard(card,idx,total){
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
           <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
-            <button class="open-cam-btn" onclick="triggerCam(this)">
+            <label style="
+              display:inline-flex;align-items:center;gap:0.75rem;
+              background:var(--orange);color:white;border:none;
+              border-radius:16px;padding:1.1rem 2rem;
+              font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
+              cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.3);">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
               Take Photo
-            </button>
-            <span class="cam-tip-store" style="display:none">${s.challenge.tip}</span>
+              <span class="tip-store" style="display:none">${s.challenge.tip}</span>
+              <input type="file" accept="image/*" capture="environment"
+                style="display:none"
+                onchange="handlePhotoInput(event,'${s.id}','${s.name}',this.closest('label').querySelector('.tip-store').textContent)">
+            </label>
           </div>
         </div>
       </div>
@@ -1311,45 +1319,25 @@ function answerQuiz(stopId,optIdx){
 }
 
 // ══ CAMERA ══
-function triggerCam(btn){
-  const tip = btn.parentElement.querySelector('.cam-tip-store');
-  openCam(tip ? tip.textContent : '');
+function handlePhotoInput(event, stopId, stopName, tip){
+  const file = event.target.files[0];
+  if(!file) return;
+  lastTip = tip;
+  lastStopId = stopId;
+  lastStopName = stopName;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const dataUrl = e.target.result;
+    document.getElementById('preview-img').src = dataUrl;
+    document.getElementById('preview-overlay').classList.add('on');
+    // Store for gallery
+    if(stopId) photoCollection[stopId] = {dataUrl, tip, stopName};
+  };
+  reader.readAsDataURL(file);
 }
-async function openCam(tip){
-  lastTip = tip || '';
-  document.getElementById('cam-tip').textContent = lastTip;
-  document.getElementById('cam-overlay').classList.add('on');
-  try {
-    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-    document.getElementById('cam-vid').srcObject = camStream;
-  } catch(e){
-    alert('Camera access needed — please allow in your browser settings.');
-    document.getElementById('cam-overlay').classList.remove('on');
-  }
-}
-function stopCam(){ if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;} document.getElementById('cam-overlay').classList.remove('on'); }
-function snap(){
-  const v=document.getElementById('cam-vid'),cv=document.getElementById('cam-canvas');
-  cv.width=v.videoWidth; cv.height=v.videoHeight;
-  cv.getContext('2d').drawImage(v,0,0);
-  const dataUrl = cv.toDataURL('image/jpeg',0.92);
-  document.getElementById('preview-img').src = dataUrl;
-  // Stop camera stream immediately
-  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
-  document.getElementById('cam-overlay').classList.remove('on');
-  document.getElementById('preview-overlay').classList.add('on');
-  // Store for gallery
-  if(lastStopId) photoCollection[lastStopId] = {dataUrl, tip: lastTip, stopName: lastStopName};
-}
-function retake(){ document.getElementById('preview-overlay').classList.remove('on'); openCam(lastTip); }
-function savePhoto(){
-  const a=document.createElement('a');
-  a.href=document.getElementById('preview-img').src;
-  a.download='tonbi-rotterdam.jpg';
-  a.click();
-  // Show brief feedback
-  const btn=document.querySelector('.preview-btn-save');
-  if(btn){ const orig=btn.innerHTML; btn.innerHTML='✓ Saved!'; setTimeout(()=>btn.innerHTML=orig,1500); }
+
+function closePreview(){
+  document.getElementById('preview-overlay').classList.remove('on');
 }
 
 function saveAndShare(){
