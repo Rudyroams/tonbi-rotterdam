@@ -1148,7 +1148,6 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
-  if(stopId===5) alert('startJourney stop 5 reached');
   currentStop=stops.find(s=>s.id===stopId);
   currentCardIdx=0;
   cards=buildCards(currentStop);
@@ -1162,7 +1161,6 @@ function startJourney(stopId){
 }
 
 function renderJourney(){
-  if(currentStop && currentStop.id===5) alert('renderJourney stop 5 called');
   try {
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
@@ -1182,7 +1180,7 @@ function renderJourney(){
 
   updateCardPosition(false);
   updateNavBtns();
-  } catch(err){ alert('renderJourney error: ' + err.message + ' | ' + err.stack.split('\n')[1]); }
+  } catch(err){ console.error("renderJourney error:", err); }
 }
 
 function updateCardPosition(animate=true){
@@ -1209,38 +1207,35 @@ function updateProgressDots(){
 
 function updateNavBtns(){
   if(!currentStop) return;
-  const prev=document.getElementById('prev-btn');
-  const next=document.getElementById('next-btn');
-  const currentCard = cards[currentCardIdx];
-  const isTransition = currentCard && currentCard.type==='transition';
-  const isNav = currentCard && currentCard.type==='nav';
-  const isLastCard = currentCardIdx===cards.length-1;
-  const isLastStop = currentStop.id===stops.length;
+  try {
+    const prev=document.getElementById('prev-btn');
+    const next=document.getElementById('next-btn');
+    const currentCard = cards[currentCardIdx];
+    const isTransition = currentCard && currentCard.type==='transition';
+    const isNav = currentCard && currentCard.type==='nav';
+    const isLastCard = currentCardIdx===cards.length-1;
+    const isLastStop = currentStop.id===stops.length;
 
-  // Hide back button on first card
-  prev.style.display = currentCardIdx===0 ? 'none' : 'block';
-  // "Back to Map" only on the desc card (index 2, right after nav)
-  prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
+    prev.style.display = currentCardIdx===0 ? 'none' : 'block';
+    prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
 
-  // Next button label
-  if(isLastCard){
-    const nextStop = stops.find(s=>s.id===currentStop.id+1);
-    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${nextStop ? nextStop.name : ''} →`;
-    next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
-  } else if(isNav){
-    next.textContent = "I've Arrived ✓";
-    next.className = 'card-next-btn';
-  } else {
-    next.textContent = 'Continue →';
-    next.className = 'card-next-btn';
-  }
+    if(isLastCard){
+      const nextStop = stops.find(s=>s.id===currentStop.id+1);
+      next.textContent = isLastStop ? '🎉 Finish Tour' : 'Next Stop: '+(nextStop ? nextStop.name : '')+' →';
+      next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
+    } else if(isNav){
+      next.textContent = "I've Arrived ✓";
+      next.className = 'card-next-btn';
+    } else {
+      next.textContent = 'Continue →';
+      next.className = 'card-next-btn';
+    }
 
-  // On transition card: hide prev/next buttons (card has its own inline button)
-  document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('card-bottom').style.display = 'flex';
-  // On nav card: make bottom bar semi-transparent so map shows through
-  document.getElementById('card-bottom').classList.toggle('on-map', isNav);
+    document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+    document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
+    document.getElementById('card-bottom').style.display = 'flex';
+    document.getElementById('card-bottom').classList.toggle('on-map', isNav);
+  } catch(err){ alert('Stop 5 error: ' + err.message); }
 }
 
 function stopCFVideo(){
