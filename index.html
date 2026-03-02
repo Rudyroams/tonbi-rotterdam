@@ -1163,6 +1163,7 @@ function startJourney(stopId){
 
 function renderJourney(){
   if(currentStop && currentStop.id===5) alert('renderJourney stop 5 called');
+  try {
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
   var _cur=cards[currentCardIdx];
@@ -1181,6 +1182,7 @@ function renderJourney(){
 
   updateCardPosition(false);
   updateNavBtns();
+  } catch(err){ alert('renderJourney error: ' + err.message + ' | ' + err.stack.split('\n')[1]); }
 }
 
 function updateCardPosition(animate=true){
