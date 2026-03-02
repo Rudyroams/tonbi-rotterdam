@@ -384,13 +384,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .photo-card-header { background:var(--orange); padding:1.25rem; }
 .photo-card-label { font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
 .photo-card-title { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; color:#fff; }
-.photo-card-body { padding:1.25rem; }
+.photo-card-body { padding:1.25rem; padding-bottom:calc(2rem + env(safe-area-inset-bottom)); }
 .photo-card-desc { font-size:0.9rem; line-height:1.75; color:var(--text); margin-bottom:1rem; }
 .photo-tip-box { background:var(--yellow-light); border-radius:var(--radius-sm); padding:0.9rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; margin-bottom:1.25rem; }
 .photo-tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; }
 .photo-tip-text { font-size:0.82rem; line-height:1.6; color:var(--text); }
 .photo-tip-text strong { color:#996600; font-weight:700; display:block; margin-bottom:0.15rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; }
-.open-cam-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.open-cam-btn { width:100%; margin-bottom:1rem; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.25); transition:transform 0.15s; }
 .open-cam-btn:hover { transform:translateY(-1px); }
 
 /* ── QUIZ ── */
