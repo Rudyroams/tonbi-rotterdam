@@ -1170,6 +1170,7 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
+  alert('startJourney called: stop ' + stopId);
   currentStop=stops.find(s=>s.id===stopId);
   currentCardIdx=0;
   cards=buildCards(currentStop);
@@ -1243,6 +1244,7 @@ function updateNavBtns(){
   // Next button label
   if(isLastCard){
     const nextStop = stops.find(s=>s.id===currentStop.id+1);
+    console.log('updateNavBtns: stop', currentStop.id, 'isLastCard', isLastCard, 'isLastStop', isLastStop, 'nextStop', nextStop ? nextStop.name : 'null');
     next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${nextStop ? nextStop.name : ''} →`;
     next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
   } else if(isNav){
@@ -1377,6 +1379,7 @@ function answerQuiz(stopId,optIdx){
 
 // ══ CAMERA ══
 function handlePhotoInput(event, stopId, stopName, tip){
+  alert('handlePhotoInput called, file: ' + (event.target.files[0] ? event.target.files[0].name : 'none'));
   const file = event.target.files[0];
   if(!file) return;
   lastTip = tip;
