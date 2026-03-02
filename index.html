@@ -1161,7 +1161,6 @@ function startJourney(stopId){
 }
 
 function renderJourney(){
-  try {
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
   var _cur=cards[currentCardIdx];
@@ -1180,7 +1179,6 @@ function renderJourney(){
 
   updateCardPosition(false);
   updateNavBtns();
-  } catch(err){ console.error("renderJourney error:", err); }
 }
 
 function updateCardPosition(animate=true){
@@ -1235,7 +1233,7 @@ function updateNavBtns(){
     document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
     document.getElementById('card-bottom').style.display = 'flex';
     document.getElementById('card-bottom').classList.toggle('on-map', isNav);
-  } catch(err){ alert('Stop 5 error: ' + err.message); }
+  } catch(err){ alert('Nav error: ' + err.message + '\n' + err.stack); }
 }
 
 function stopCFVideo(){
