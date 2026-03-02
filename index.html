@@ -859,6 +859,7 @@ function buildCards(stop){
 }
 
 function renderCard(card,idx,total){
+  try {
   const s=card.stop;
   if(card.type==='transition'){
     return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
@@ -1145,6 +1146,9 @@ function renderCard(card,idx,total){
   }
 
   return '<div class="card"></div>';
+  } catch(err){
+    return '<div class="card" style="padding:2rem;font-family:sans-serif;"><strong style=\"color:red\">Card error ('+card.type+'):</strong><br>'+err.message+'</div>';
+  }
 }
 
 function startJourney(stopId){
@@ -1175,7 +1179,10 @@ function renderJourney(){
   const contentIdx = currentCardIdx - 2;
   document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
     <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
-  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  document.getElementById('card-track').innerHTML=cards.map((card,i)=>{
+    try { return renderCard(card,i,cards.length); }
+    catch(err){ return '<div class="card" style="padding:1rem;color:red;">Card error ('+card.type+'): '+err.message+'</div>'; }
+  }).join('');
 
   updateCardPosition(false);
   updateNavBtns();
@@ -1337,7 +1344,10 @@ function answerQuiz(stopId,optIdx){
   const stop=stops.find(s=>s.id===stopId);
   const isCorrect = stop && optIdx===stop.quiz.correct;
   const pos=currentCardIdx;
-  document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
+  document.getElementById('card-track').innerHTML=cards.map((card,i)=>{
+    try { return renderCard(card,i,cards.length); }
+    catch(err){ return '<div class="card" style="padding:1rem;color:red;">Card error ('+card.type+'): '+err.message+'</div>'; }
+  }).join('');
 
   currentCardIdx=pos;
   updateCardPosition(false);
