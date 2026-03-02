@@ -601,28 +601,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </div>
 
 <!-- CAMERA -->
-<input type="file" id="global-photo-input" accept="image/*" capture="environment" style="display:none">
-<div id="cam-overlay">
-  <video id="cam-vid" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
-  <canvas id="cam-canvas" style="display:none"></canvas>
-  <div class="cam-ui">
-    <div class="cam-top">
-      <div class="cam-tip-box"><div class="cam-tip-lbl">Rudy's Tip</div><div class="cam-tip-txt" id="cam-tip"></div></div>
-      <button class="cam-x" onclick="stopCam()">✕</button>
-    </div>
-    <div class="cam-bottom"><button class="shutter" onclick="snap()"></button></div>
-  </div>
-</div>
-<div id="preview-overlay">
-  <img id="preview-img" src="" alt="Your photo" style="width:100%;height:100%;object-fit:cover;display:block;">
-  <div class="preview-bottom">
-    <div class="preview-actions">
-      <button class="preview-btn preview-btn-retake" onclick="closePreview()">← Back</button>
-      <button class="preview-btn preview-btn-save" onclick="saveAndShare()">↗ Save / Share</button>
-      <button class="preview-btn preview-btn-share" onclick="closePreviewAndContinue()" style="background:var(--orange);color:white;box-shadow:0 4px 12px rgba(255,107,53,0.4);">Continue →</button>
-    </div>
-  </div>
-</div>
+<input type="file" id="global-photo-input" accept="image/*" capture="environment" style="display:none;position:absolute;left:-9999px;pointer-events:none;">
 
 <script>
 // ══ DATA ══
@@ -1169,6 +1148,7 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
+  if(stopId===5) alert('startJourney stop 5 reached');
   currentStop=stops.find(s=>s.id===stopId);
   currentCardIdx=0;
   cards=buildCards(currentStop);
@@ -1182,6 +1162,7 @@ function startJourney(stopId){
 }
 
 function renderJourney(){
+  if(currentStop && currentStop.id===5) alert('renderJourney stop 5 called');
   document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
   var _cur=cards[currentCardIdx];
@@ -1399,14 +1380,11 @@ function handlePhotoInput(event, stopId, stopName, tip){
   const reader = new FileReader();
   reader.onload = function(e){
     const dataUrl = e.target.result;
-    alert('reader.onload fired, dataUrl length: ' + dataUrl.length);
     document.getElementById('preview-img').src = dataUrl;
     // Store for gallery
     if(stopId) photoCollection[stopId] = {dataUrl, tip, stopName};
     // Show preview immediately
-    const overlay = document.getElementById('preview-overlay');
-    alert('overlay found: ' + (overlay ? 'yes' : 'no') + ', classes: ' + overlay.className);
-    overlay.classList.add('on');
+    document.getElementById('preview-overlay').classList.add('on');
     // Then try to trigger share/save in background
     setTimeout(async function(){
       try {
@@ -1774,5 +1752,27 @@ async function shareAllPhotos(){
 
 </script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
+
+<div id="cam-overlay">
+  <video id="cam-vid" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
+  <canvas id="cam-canvas" style="display:none"></canvas>
+  <div class="cam-ui">
+    <div class="cam-top">
+      <div class="cam-tip-box"><div class="cam-tip-lbl">Rudy's Tip</div><div class="cam-tip-txt" id="cam-tip"></div></div>
+      <button class="cam-x" onclick="stopCam()">✕</button>
+    </div>
+    <div class="cam-bottom"><button class="shutter" onclick="snap()"></button></div>
+  </div>
+</div>
+<div id="preview-overlay">
+  <img id="preview-img" src="" alt="Your photo" style="width:100%;height:100%;object-fit:cover;display:block;">
+  <div class="preview-bottom">
+    <div class="preview-actions">
+      <button class="preview-btn preview-btn-retake" onclick="closePreview()">← Back</button>
+      <button class="preview-btn preview-btn-save" onclick="saveAndShare()">↗ Save / Share</button>
+      <button class="preview-btn preview-btn-share" onclick="closePreviewAndContinue()" style="background:var(--orange);color:white;box-shadow:0 4px 12px rgba(255,107,53,0.4);">Continue →</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
