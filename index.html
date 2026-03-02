@@ -601,6 +601,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </div>
 
 <!-- CAMERA -->
+<input type="file" id="global-photo-input" accept="image/*" capture="environment" style="display:none">
 <div id="cam-overlay">
   <video id="cam-vid" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>
   <canvas id="cam-canvas" style="display:none"></canvas>
@@ -1060,22 +1061,20 @@ function renderCard(card,idx,total){
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
           <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
-            <label style="
+            <button style="
               display:inline-flex;align-items:center;gap:0.75rem;
               background:var(--orange);color:white;border:none;
               border-radius:16px;padding:1.1rem 2rem;
               font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
-              cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.3);">
+              cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.3);"
+              onclick="openFileInput('${s.id}','${s.name}',this.nextElementSibling.textContent)">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
               Take Photo
-              <span class="tip-store" style="display:none">${s.challenge.tip}</span>
-              <input type="file" accept="image/*" capture="environment"
-                style="display:none"
-                onchange="handlePhotoInput(event,'${s.id}','${s.name}',this.closest('label').querySelector('.tip-store').textContent)">
-            </label>
+            </button>
+            <span style="display:none">${s.challenge.tip}</span>
           </div>
         </div>
       </div>
@@ -1170,7 +1169,6 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
-  alert('startJourney called: stop ' + stopId);
   currentStop=stops.find(s=>s.id===stopId);
   currentCardIdx=0;
   cards=buildCards(currentStop);
@@ -1244,7 +1242,6 @@ function updateNavBtns(){
   // Next button label
   if(isLastCard){
     const nextStop = stops.find(s=>s.id===currentStop.id+1);
-    console.log('updateNavBtns: stop', currentStop.id, 'isLastCard', isLastCard, 'isLastStop', isLastStop, 'nextStop', nextStop ? nextStop.name : 'null');
     next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${nextStop ? nextStop.name : ''} →`;
     next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
   } else if(isNav){
@@ -1378,21 +1375,38 @@ function answerQuiz(stopId,optIdx){
 }
 
 // ══ CAMERA ══
+
+function openFileInput(stopId, stopName, tip){
+  lastStopId = stopId;
+  lastStopName = stopName;
+  lastTip = tip || '';
+  const input = document.getElementById('global-photo-input');
+  input.value = '';
+  input.onchange = function(event){
+    handlePhotoInput(event, stopId, stopName, lastTip);
+    input.onchange = null;
+  };
+  input.click();
+}
+
 function handlePhotoInput(event, stopId, stopName, tip){
-  alert('handlePhotoInput called, file: ' + (event.target.files[0] ? event.target.files[0].name : 'none'));
   const file = event.target.files[0];
   if(!file) return;
+  event.target.value = ''; // Clear so it doesn't re-fire on re-render
   lastTip = tip;
   lastStopId = stopId;
   lastStopName = stopName;
   const reader = new FileReader();
   reader.onload = function(e){
     const dataUrl = e.target.result;
+    alert('reader.onload fired, dataUrl length: ' + dataUrl.length);
     document.getElementById('preview-img').src = dataUrl;
     // Store for gallery
     if(stopId) photoCollection[stopId] = {dataUrl, tip, stopName};
     // Show preview immediately
-    document.getElementById('preview-overlay').classList.add('on');
+    const overlay = document.getElementById('preview-overlay');
+    alert('overlay found: ' + (overlay ? 'yes' : 'no') + ', classes: ' + overlay.className);
+    overlay.classList.add('on');
     // Then try to trigger share/save in background
     setTimeout(async function(){
       try {
