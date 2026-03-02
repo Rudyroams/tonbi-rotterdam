@@ -1035,7 +1035,7 @@ function renderCard(card,idx,total){
     <div class="card" data-stop="${s.id}" data-type="photo">
       <div class="photo-card">
         <div class="photo-card-header">
-          <div class="photo-card-label">📸 Photo Challenge</div>
+          <div class="photo-card-label">Photo Challenge</div>
           <div class="photo-card-title">${s.challenge.title}</div>
         </div>
         <div class="photo-card-body">
@@ -1044,10 +1044,27 @@ function renderCard(card,idx,total){
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
-          <button class="open-cam-btn" onclick="openCam('${s.id}','${s.name}')">📷 Open Camera</button>
+          <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
+            <button id="cam-btn-${s.id}" style="
+              background:var(--orange);color:white;border:none;
+              border-radius:16px;padding:1.1rem 2rem;
+              font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;
+              cursor:pointer;display:inline-flex;align-items:center;gap:0.75rem;
+              box-shadow:0 4px 16px rgba(255,107,53,0.3);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              Take Photo
+            </button>
+          </div>
         </div>
       </div>
     </div>`;
+    document.addEventListener('click', function _camHandler(e){
+      const btn = e.target.closest('#cam-btn-${s.id}');
+      if(btn){ document.removeEventListener('click',_camHandler); openCam('${s.id}','${s.name}'); }
+    });
 
   if(card.type==='quiz'){
     const qa=quizAnswered[s.id];
