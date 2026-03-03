@@ -864,11 +864,11 @@ function renderCard(card,idx,total){
         <!-- Google Maps on top right -->
         <a href="${s.mapUrl}" target="_blank"
           style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-                 color:rgba(255,255,255,0.8);border-radius:20px;
+                 color:var(--orange);border-radius:20px;
                  padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
                  text-decoration:none;white-space:nowrap;
-                 border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;gap:0.4rem;margin-top:0.1rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
+                 border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;gap:0.4rem;margin-top:0.1rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
           Open in Google Maps
         </a>
       </div>
@@ -877,13 +877,13 @@ function renderCard(card,idx,total){
         height:100px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);"></div>
       <!-- Stop thumbnail with overlay text at bottom right -->
       <div style="position:absolute;bottom:14px;right:14px;z-index:11;">
-        <div style="position:relative;width:77px;height:77px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;">
+        <div style="width:77px;height:77px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;overflow:visible;">
           <img src="${s.img}" alt="${s.name}"
-            style="width:100%;height:100%;object-fit:cover;display:block;">
-          <!-- Route info overlay on image -->
+            style="width:100%;height:100%;object-fit:cover;display:block;border-radius:13px;">
+          <!-- Route info text below image -->
           <div id="route-info-${s.id}"
-            style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:white;
-                   font-size:0.65rem;font-weight:700;padding:0.4rem;text-align:center;white-space:nowrap;"></div>
+            style="display:none;background:rgba(0,0,0,0.7);color:white;
+                   font-size:0.65rem;font-weight:700;padding:0.5rem 0.8rem;text-align:center;white-space:nowrap;border-radius:12px;margin-top:0.5rem;"></div>
         </div>
       </div>
     </div>`;
