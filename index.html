@@ -968,6 +968,14 @@ function renderCard(card,idx,total){
 
   if(card.type==='photo'){
     const hasPhoto = photoCollection[s.id];
+    const photoUI = hasPhoto ? `
+      <div class="photo-existing">
+        <img src="${photoCollection[s.id].dataUrl}" alt="Your photo" class="photo-existing-thumb">
+        <div class="photo-existing-label">✓ Photo Captured</div>
+        <div class="photo-existing-text">You've already taken a great shot here. Want to capture another angle?</div>
+        <button class="photo-select-btn replace" onclick="openPhotoPicker(${s.id})">📷 Replace Photo</button>
+      </div>
+    ` : ``;
     
     return `
     <div class="card" data-stop="${s.id}" data-type="photo">
@@ -982,37 +990,14 @@ function renderCard(card,idx,total){
             <div class="photo-tip-icon">💡</div>
             <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
           </div>
+          ${photoUI}
           ${!hasPhoto ? `
             <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
               <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right:0.4rem;"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="white" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white"/><path d="M21 15l-5-5L5 21" stroke="white" stroke-width="2" fill="none"/></svg>
-                Take your shot, then select from camera roll
+                📷 Take your shot, then select from camera roll
               </button>
             </div>
           ` : ''}
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(card.type==='photo-result'){
-    const photoData = photoCollection[s.id];
-    const compliments = [
-      "Stunning shot! This captures the essence perfectly.",
-      "Brilliant framing! You've got a great eye for composition.",
-      "Absolutely gorgeous! This tells the story beautifully.",
-      "Exceptional capture! The timing and angle are perfect.",
-      "What a moment! You've really nailed the atmosphere here."
-    ];
-    const compliment = compliments[s.id % compliments.length];
-
-    return `
-    <div class="card" data-stop="${s.id}" data-type="photo-result">
-      <div class="photo-result-card">
-        <img src="${photoData.dataUrl}" alt="Your photo" class="photo-result-img">
-        <div class="photo-result-body">
-          <div class="photo-result-compliment">${compliment}</div>
-          <div class="photo-result-congrats">Your photo has been saved to your gallery. Ready to move on?</div>
         </div>
       </div>
     </div>`;
