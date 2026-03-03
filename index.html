@@ -27,17 +27,7 @@
 @keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
 @keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
 
-/* ── Confetti animation ── */
-@keyframes confettiFall0  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
-@keyframes confettiFall1  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-380deg);opacity:0} }
-@keyframes confettiFall2  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(420deg);opacity:0} }
-@keyframes confettiFall3  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(-300deg);opacity:0} }
-@keyframes confettiFall4  { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(340deg);opacity:0} }
-#confetti-overlay { pointer-events:none; }
-.confetti-piece {
-  position:absolute; width:12px; height:12px; border-radius:2px; opacity:0;
-}
-
+/* ── Fullscreen video style ── */
 #journey-screen.cf-fullscreen .card-bottom {
   position: fixed;
   bottom: calc(83px + env(safe-area-inset-bottom));
@@ -437,7 +427,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .photo-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .photo-card-header { background:var(--orange); padding:1.25rem; }
 .photo-card-label { font-size:0.95rem; font-weight:700; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
-.photo-card-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:#fff; }
+.photo-card-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:#fff; }
 .photo-card-body { padding:1.25rem; padding-bottom:calc(2rem + env(safe-area-inset-bottom)); }
 .photo-card-desc { font-size:0.9rem; line-height:1.75; color:var(--text); margin-bottom:1rem; }
 .photo-tip-box { background:var(--yellow-light); border-radius:var(--radius-sm); padding:0.9rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; margin-bottom:1.25rem; }
@@ -459,17 +449,20 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-o-icon { width:22px; height:22px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; font-weight:700; }
 .quiz-o.correct .quiz-o-icon { background:var(--green); color:#fff; }
 .quiz-o.wrong .quiz-o-icon { background:var(--red); color:#fff; }
-.quiz-result-box { border-radius:var(--radius-sm); padding:1rem; font-size:0.85rem; line-height:1.65; display:none; }
+.quiz-result-box { border-radius:var(--radius-sm); padding:1rem; font-size:1rem; line-height:1.75; display:none; }
 .quiz-result-box.show { display:block; }
 .quiz-result-box.correct-res { background:var(--green-light); color:#1a6b2f; }
 .quiz-result-box.wrong-res { background:var(--red-light); color:#b31c13; }
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; justify-content:center; align-items:center; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1.2rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex-shrink:0; white-space:nowrap; }
-.card-next-btn { background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem 1.2rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; white-space:nowrap; flex-shrink:0; }
+/* Video cards - centered with side space */
+.cf-fullscreen .card-bottom { padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; justify-content:center; align-items:center; }
+/* Regular cards - longer buttons */
+.card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1.5rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex:1; white-space:nowrap; }
+.card-next-btn { background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem 1.5rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; white-space:nowrap; flex:1; }
 .card-next-btn:hover { transform:translateY(-1px); }
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
 
@@ -574,17 +567,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <!-- JOURNEY -->
 <div id="journey-screen">
-  <!-- Confetti overlay — shown on correct quiz answer -->
-  <div id="confetti-overlay" style="display:none;position:fixed;inset:0;z-index:999;pointer-events:none;">
-    <lottie-player
-      id="confetti-lottie"
-      src="https://assets2.lottiefiles.com/packages/lf20_u4yrau84.json"
-      background="transparent"
-      speed="1"
-      style="width:100%;height:100%;">
-    </lottie-player>
-  </div>
-  <div class="jt-bar" id="jt-bar">
+<div class="jt-bar" id="jt-bar">
     <div class="jt-bar-top">
       <div id="dp-prog" style="margin-left:0;min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#ff6b35;letter-spacing:-0.01em;"></div>
       <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;font-size:1.05rem;"></div>
@@ -800,33 +783,9 @@ function setupVideoObserver(stopId){
 
 // ══ CONFETTI & ANIMATIONS ══
 const CONFETTI_COLORS = ['#ff6b35','#2d6be4','#ffcc00','#34c759','#e8295c','#af52de'];
-function showConfetti(){
-  const overlay = document.getElementById('confetti-overlay');
-  const container = document.getElementById('confetti-lottie');
-  if(!overlay || !container) return;
-  container.innerHTML = '';
-  overlay.style.display = 'block';
-  const pieces = 28;
-  for(let i=0; i<pieces; i++){
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.cssText = `
-      left:${5 + (i * 3.3) % 90}vw;
-      top:-20px;
-      background:${CONFETTI_COLORS[i % CONFETTI_COLORS.length]};
-      width:${8 + i%5}px;
-      height:${8 + i%4}px;
-      border-radius:${i%3===0?'50%':'2px'};
-      animation:confettiFall${i%5} ${1.5 + (i%5)*0.2}s ease-in ${i*0.07}s forwards;
-    `;
-    container.appendChild(el);
-  }
-  setTimeout(()=>{ overlay.style.display='none'; container.innerHTML=''; }, 3500);
-}
-
 // ══ CARDS ══
 function buildCards(stop){
-  const cardTypes=['transition','nav','desc','rudy','photo','photo-result','quiz'];
+  const cardTypes=['transition','nav','desc','rudy','photo','quiz'];
   return cardTypes.map(type=>({type,stop}));
 }
 
@@ -865,24 +824,24 @@ function renderCard(card,idx,total){
           <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
         </div>
         <a href="${s.mapUrl}" target="_blank"
-          style="background:white;color:var(--blue);border-radius:20px;
+          style="background:white;color:var(--orange);border-radius:20px;
                  padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
                  text-decoration:none;white-space:nowrap;
                  box-shadow:0 3px 12px rgba(0,0,0,0.18);display:flex;align-items:center;gap:0.4rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--blue)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
-          Google Maps
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
+          Open in Google Maps
         </a>
       </div>
       <div style="position:absolute;bottom:14px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
-        <img src="${s.img}" alt="${s.name}"
-          style="width:77px;height:77px;border-radius:16px;object-fit:cover;
-                 box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
-                 pointer-events:none;display:block;">
         <div id="route-info-${s.id}"
           style="display:none;background:white;border-radius:20px;padding:0.28rem 0.7rem;
                  font-size:0.72rem;font-weight:700;color:var(--orange);
                  box-shadow:0 3px 12px rgba(0,0,0,0.18);
                  white-space:nowrap;border:2px solid white;"></div>
+        <img src="${s.img}" alt="${s.name}"
+          style="width:77px;height:77px;border-radius:16px;object-fit:cover;
+                 box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
+                 pointer-events:none;display:block;">
       </div>
     </div>`;
   }
@@ -895,6 +854,20 @@ function renderCard(card,idx,total){
           style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;object-position:bottom;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen></iframe>
+        <!-- Mute button overlay -->
+        <div style="position:absolute;bottom:12px;left:12px;z-index:20;display:flex;align-items:center;gap:0.5rem;
+          background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+          padding:0.5rem 0.85rem;border-radius:20px;border:1px solid rgba(255,255,255,0.2);
+          cursor:pointer;pointer-events:auto;" onclick="document.getElementById('cf-vid-${s.id}').focus();">
+          <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+            background:rgba(255,255,255,0.2);border-radius:50%;transition:all 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="pointer-events:none;">
+              <polygon points="3,6 3,18 7,18 13,24 13,0 7,6"/>
+              <path d="M16 7 L22 13 M22 7 L16 13" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <span style="color:rgba(255,255,255,0.7);font-size:0.7rem;font-weight:600;white-space:nowrap;pointer-events:none;">click</span>
+        </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(2.35rem + env(safe-area-inset-top)) 1.25rem 2rem;
           background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.95) 25%,rgba(0,0,0,0.6) 55%,transparent 100%);
@@ -964,6 +937,7 @@ function renderCard(card,idx,total){
         <div class="story-from">Rudy's Note</div>
         <div class="story-text">${s.rudy}</div>
       </div>
+      <img src="${s.img}" alt="${s.name}" style="width:100%;border-radius:var(--radius);object-fit:cover;aspect-ratio:4/3;margin-top:1rem;box-shadow:var(--shadow);">
     </div>`;
 
   if(card.type==='photo'){
@@ -1028,8 +1002,8 @@ function renderCard(card,idx,total){
 
     const rudyBubble=answered?getRudyBubble(qa===s.quiz.correct,s.id):'';
     const didYouKnow=answered&&qa!==s.quiz.correct
-      ?`<div style="margin-top:0.6rem;font-size:0.8rem;color:var(--text2);"><strong style="color:var(--text);">💡 Did you know?</strong><br>${s.quiz.explanation}</div>`
-      :(answered?`<div style="margin-top:0.6rem;font-size:0.8rem;color:#1a6b2f;">${s.quiz.explanation}</div>`:'');
+      ?`<div style="margin-top:0.6rem;font-size:1rem;color:var(--text2);line-height:1.75;"><strong style="color:var(--text);">💡 Did you know?</strong><br>${s.quiz.explanation}</div>`
+      :(answered?`<div style="margin-top:0.6rem;font-size:1rem;color:#1a6b2f;line-height:1.75;">${s.quiz.explanation}</div>`:'');
 
     return `
     <div class="card" data-stop="${s.id}" data-type="quiz">
@@ -1348,7 +1322,6 @@ function answerQuiz(stopId,optIdx){
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   currentCardIdx=pos;
   updateCardPosition(false);
-  if(isCorrect) setTimeout(()=>showConfetti(), 300);
   setTimeout(()=>{
     const card=document.querySelectorAll('.card')[pos];
     const target=card?.querySelector('.rudy-bubble-wrap') || card?.querySelector('.quiz-opts');
@@ -1402,12 +1375,11 @@ function usePhoto(){
   document.getElementById('preview-overlay').classList.remove('on');
   pendingPhotoStopId = null;
 
-  // Move to photo-result card (next card is photo-result)
-  currentCardIdx++;
+  // Re-render current card to show "Photo Captured" state
+  const pos = currentCardIdx;
   document.getElementById('card-track').innerHTML = cards.map((c,i) => renderCard(c,i,cards.length)).join('');
-  updateCardPosition();
-  updateProgressDots();
-  updateNavBtns();
+  currentCardIdx = pos;
+  updateCardPosition(false);
 }
 
 // ══ STOP NAV MINI MAP ══
@@ -1656,7 +1628,6 @@ function getRudyBubble(isCorrect, stopId){
 }
 
 </script>
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
 </body>
 </html>
