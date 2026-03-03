@@ -61,6 +61,32 @@
 }
 .quiz-o.answered { animation: quizBounce 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
 
+/* ── Typewriter effect ── */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+.quiz-typewriter { 
+  overflow: hidden;
+  display: inline-block;
+  animation: typewriter 0.8s ease-out forwards;
+}
+
+/* ── Pop-in effect ── */
+@keyframes popIn {
+  0% { 
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.quiz-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
 /* ── Rudy speech bubble ── */
 .rudy-bubble-wrap {
   display: flex;
@@ -439,10 +465,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .quiz-card-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
 .quiz-card-body { padding:1.25rem; }
-.quiz-card-label { font-size:0.65rem; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.6rem; }
-.quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; line-height:1.4; margin-bottom:1.1rem; }
+.quiz-card-label { font-size:1.1rem; font-weight:900; color:var(--blue); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.8rem; }
+.quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:800; line-height:1.5; margin-bottom:1.3rem; }
 .quiz-opts { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
-.quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.85rem 1rem; font-size:0.88rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.75rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
+.quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.95rem 1.1rem; font-size:1rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.75rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
 .quiz-o:hover:not([disabled]) { border-color:var(--blue); background:var(--blue-light); }
 .quiz-o.correct { background:var(--green-light); border-color:var(--green); }
 .quiz-o.wrong { background:var(--red-light); border-color:var(--red); }
@@ -854,19 +880,19 @@ function renderCard(card,idx,total){
           style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;object-position:bottom;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen></iframe>
-        <!-- Mute button overlay -->
-        <div style="position:absolute;bottom:12px;left:12px;z-index:20;display:flex;align-items:center;gap:0.5rem;
-          background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-          padding:0.5rem 0.85rem;border-radius:20px;border:1px solid rgba(255,255,255,0.2);
-          cursor:pointer;pointer-events:auto;" onclick="document.getElementById('cf-vid-${s.id}').focus();">
-          <div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-            background:rgba(255,255,255,0.2);border-radius:50%;transition:all 0.2s;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="pointer-events:none;">
+        <!-- Sound button overlay - non-functional, just visual affordance -->
+        <div style="position:absolute;bottom:12px;left:12px;z-index:5;display:flex;align-items:center;gap:0.5rem;
+          background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+          padding:0.5rem 0.85rem;border-radius:20px;border:1px solid rgba(255,255,255,0.15);
+          pointer-events:none;">
+          <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+            background:rgba(255,255,255,0.15);border-radius:50%;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
               <polygon points="3,6 3,18 7,18 13,24 13,0 7,6"/>
-              <path d="M16 7 L22 13 M22 7 L16 13" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <path d="M16 8 L20 12 M20 8 L16 12" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
             </svg>
           </div>
-          <span style="color:rgba(255,255,255,0.7);font-size:0.7rem;font-weight:600;white-space:nowrap;pointer-events:none;">click</span>
+          <span style="color:rgba(255,255,255,0.75);font-size:0.68rem;font-weight:600;white-space:nowrap;">click for sound</span>
         </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(2.35rem + env(safe-area-inset-top)) 1.25rem 2rem;
@@ -986,7 +1012,7 @@ function renderCard(card,idx,total){
       const st=stops.find(x=>x.id===parseInt(sid));
       return st&&ans===st.quiz.correct;
     }).length;
-    const scorePill=attempted>0?`<div class="quiz-score-pill">🏆 Score <span>${scored}/${attempted}</span> so far</div>`:'';
+    const scoreText=`🏆 ${scored}/${attempted}`;
 
     const opts=s.quiz.opts.map((opt,i)=>{
       let cls='',icon='○';
@@ -995,7 +1021,9 @@ function renderCard(card,idx,total){
         else if(i===qa){cls='wrong';icon='✗';}
       }
       const bounce=answered?' answered':'';
-      return `<button class="quiz-o ${cls}${bounce}" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>
+      const delay=`${i * 0.15}s`;
+      const popClass=attempted>0?'quiz-pop-in':'';
+      return `<button class="quiz-o ${cls}${bounce} ${popClass}" style="animation-delay:${delay};" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>
         <span class="quiz-o-icon">${icon}</span><span>${opt}</span>
       </button>`;
     }).join('');
@@ -1006,17 +1034,19 @@ function renderCard(card,idx,total){
       :(answered?`<div style="margin-top:0.6rem;font-size:1rem;color:#1a6b2f;line-height:1.75;">${s.quiz.explanation}</div>`:'');
 
     return `
-    <div class="card" data-stop="${s.id}" data-type="quiz">
-      <div class="quiz-card">
+    <div class="card" data-stop="${s.id}" data-type="quiz" style="position:relative;display:flex;flex-direction:column;">
+      <div class="quiz-card" style="flex:1;display:flex;flex-direction:column;">
         <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
-        <div class="quiz-card-body">
-          ${scorePill}
-          <div class="quiz-card-label">❓ Quiz Time</div>
-          <div class="quiz-card-q">${s.quiz.q}</div>
+        <div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;">
+          <div class="quiz-card-label">🎯 Quiz Time!</div>
+          <div class="quiz-card-q quiz-typewriter">${s.quiz.q}</div>
           <div class="quiz-opts">${opts}</div>
           ${rudyBubble}
           ${didYouKnow}
         </div>
+      </div>
+      <div style="padding:1.25rem;text-align:center;border-top:1px solid var(--border);background:var(--white);">
+        <div style="font-size:0.95rem;font-weight:700;color:var(--orange);">${scoreText}</div>
       </div>
     </div>`;
   }
