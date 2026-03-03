@@ -67,18 +67,20 @@
   to { width: 100%; }
 }
 .quiz-typewriter { 
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typewriter 1s ease-out forwards;
-  border-right: 2px solid var(--text);
-  animation-delay: 0.3s;
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+  animation: typewriterFade 1.2s ease-out 0.4s forwards;
   opacity: 0;
-  animation: typewriter 1s ease-out 0.3s forwards, fadeIn 0.1s ease-out 0.3s forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes typewriterFade {
+  from { 
+    opacity: 0;
+  }
+  to { 
+    opacity: 1;
+  }
 }
 
 /* ── Pop-in effect ── */
@@ -474,7 +476,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .quiz-card-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
 .quiz-card-body { padding:1.25rem; }
-.quiz-card-label { font-size:1.4rem; font-weight:900; color:var(--orange); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.8rem; }
+.quiz-card-label { font-size:1.5rem; font-weight:800; color:var(--orange); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.8rem; }
 .quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:800; line-height:1.5; margin-bottom:1.3rem; }
 .quiz-opts { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
 .quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.95rem 1.1rem; font-size:1rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.75rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
@@ -859,35 +861,31 @@ function renderCard(card,idx,total){
           <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
           <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
         </div>
-        <button onclick="closeJourney()" style="background:white;border:1.5px solid rgba(0,0,0,0.12);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,0.12);font-weight:700;margin-top:0.1rem;">✕</button>
-      </div>
-      <!-- Bottom gradient overlay + route info -->
-      <div style="position:absolute;bottom:0;left:0;right:0;z-index:10;
-        height:120px;background:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.5) 100%);
-        display:flex;align-items:flex-end;justify-content:space-between;padding:1rem;">
-        <!-- Route info on left -->
-        <div id="route-info-${s.id}"
-          style="display:none;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-                 border-radius:20px;padding:0.4rem 0.85rem;
-                 font-size:0.75rem;font-weight:700;color:white;
-                 white-space:nowrap;border:1px solid rgba(255,255,255,0.2);"></div>
-        <!-- Google Maps on right -->
+        <!-- Google Maps on top right -->
         <a href="${s.mapUrl}" target="_blank"
           style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
                  color:rgba(255,255,255,0.8);border-radius:20px;
                  padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
                  text-decoration:none;white-space:nowrap;
-                 border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;gap:0.4rem;">
+                 border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;gap:0.4rem;margin-top:0.1rem;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
           Open in Google Maps
         </a>
       </div>
-      <!-- Stop thumbnail -->
-      <img src="${s.img}" alt="${s.name}"
-        style="position:absolute;top:58px;right:14px;z-index:11;
-               width:77px;height:77px;border-radius:16px;object-fit:cover;
-               box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;
-               pointer-events:none;display:block;">
+      <!-- Bottom white gradient -->
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
+        height:100px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);"></div>
+      <!-- Stop thumbnail with overlay text at bottom right -->
+      <div style="position:absolute;bottom:14px;right:14px;z-index:11;">
+        <div style="position:relative;width:77px;height:77px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;">
+          <img src="${s.img}" alt="${s.name}"
+            style="width:100%;height:100%;object-fit:cover;display:block;">
+          <!-- Route info overlay on image -->
+          <div id="route-info-${s.id}"
+            style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:white;
+                   font-size:0.65rem;font-weight:700;padding:0.4rem;text-align:center;white-space:nowrap;"></div>
+        </div>
+      </div>
     </div>`;
   }
 
@@ -900,13 +898,17 @@ function renderCard(card,idx,total){
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen></iframe>
         <!-- Sound button overlay - non-functional, just visual affordance -->
-        <div style="position:absolute;bottom:12px;left:12px;z-index:5;
-          cursor:pointer;display:inline-block;background:rgba(0,0,0,0.12);
-          backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-          color:rgba(255,255,255,0.35);font-size:0.72rem;font-weight:500;
-          padding:0.3rem 0.9rem;border-radius:99px;
-          border:1px solid rgba(255,255,255,0.08);text-decoration:none;
-          pointer-events:none;">click for sound</div>
+        <div style="position:absolute;bottom:17px;left:50%;transform:translateX(-50%);z-index:5;
+          display:flex;align-items:center;gap:0.5rem;
+          color:rgba(255,255,255,0.6);font-size:0.72rem;font-weight:500;
+          padding:0.4rem 0.9rem;border-radius:99px;
+          border:1px solid rgba(255,255,255,0.2);
+          pointer-events:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M15 19l-7-7 7-7"/>
+          </svg>
+          click for sound
+        </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
           padding:calc(2.35rem + env(safe-area-inset-top)) 1.25rem 2rem;
           background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.95) 25%,rgba(0,0,0,0.6) 55%,transparent 100%);
@@ -1033,7 +1035,10 @@ function renderCard(card,idx,total){
       if(answered){
         if(i===s.quiz.correct){
           cls='correct';icon='✓';
-          rudyStamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 8px rgba(52,199,89,0.4);transform:rotate(15deg);">😊</div>`;
+          // Only show stamp if this was the selected answer
+          if(i===qa){
+            rudyStamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 8px rgba(52,199,89,0.4);transform:rotate(15deg);">😊</div>`;
+          }
         }
         else if(i===qa){
           cls='wrong';icon='✗';
@@ -1041,14 +1046,13 @@ function renderCard(card,idx,total){
         }
       }
       const bounce=answered?' answered':'';
-      const delay=`${i * 0.15}s`;
+      const delay=`${i * 0.25}s`;
       return `<button class="quiz-o ${cls}${bounce} quiz-pop-in" style="animation-delay:${delay};position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>
         ${rudyStamp}
         <span class="quiz-o-icon">${icon}</span><span>${opt}</span>
       </button>`;
     }).join('');
 
-    const rudyResponse=answered?getRudyBubble(qa===s.quiz.correct,s.id):'';
     const explanation=answered?s.quiz.explanation:'';
     const combinedText=answered?`<div style="margin-top:1rem;padding:1rem;background:white;border:1.5px solid var(--border);border-radius:var(--radius-sm);">
       <div style="font-size:0.9rem;line-height:1.8;color:var(--text);">${explanation}</div>
@@ -1059,17 +1063,14 @@ function renderCard(card,idx,total){
       <div class="quiz-card" style="flex:1;display:flex;flex-direction:column;">
         <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
         <div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:0.8rem;">
-            <div class="quiz-card-label" style="margin-bottom:0;">🎯 Quiz Time!</div>
-            <div style="font-size:0.9rem;font-weight:700;color:var(--orange);white-space:nowrap;">${scoreText}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
+            <div class="quiz-card-label" style="margin-bottom:0;margin-top:0;">🎯 Quiz Time!</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--orange);white-space:nowrap;">${scoreText}</div>
           </div>
-          <div class="quiz-card-q quiz-typewriter">${s.quiz.q}</div>
-          <div class="quiz-opts">${opts}</div>
+          <div class="quiz-card-q quiz-typewriter" style="width:100%;">${s.quiz.q}</div>
+          <div class="quiz-opts" style="margin-top:1rem;">${opts}</div>
           ${combinedText}
         </div>
-      </div>
-      <div style="padding:1.25rem;text-align:center;border-top:1px solid var(--border);background:var(--white);">
-        <div style="font-size:0.95rem;font-weight:700;color:var(--orange);">${scoreText}</div>
       </div>
     </div>`;
   }
