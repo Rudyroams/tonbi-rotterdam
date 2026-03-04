@@ -482,7 +482,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-card-img { width:100%; height:155px; object-fit:cover; display:block; }
 .quiz-card-body { padding:0.75rem 1rem; }
 .quiz-card-label { font-size:1rem; font-weight:800; color:var(--orange); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0; }
-.quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; line-height:1.4; margin-bottom:0.5rem; }
+.quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:800; line-height:1.45; margin-bottom:0.5rem; }
 .quiz-opts { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.4rem; }
 .quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.6rem 0.9rem; font-size:0.9rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.6rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
 .quiz-o:hover:not([disabled]) { border-color:var(--blue); background:var(--blue-light); }
@@ -975,20 +975,25 @@ function renderCard(card,idx,total){
       <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
         height:120px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);pointer-events:none;"></div>
       <!-- Bottom-right: route info + Google Maps button stacked -->
-      <div style="position:absolute;bottom:16px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <!-- Route info + Google Maps — grouped frosted card, bottom right -->
+      <div style="position:absolute;bottom:16px;right:14px;z-index:11;
+        background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+        border:1px solid rgba(255,107,53,0.2);border-radius:22px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.14);
+        overflow:hidden;display:flex;flex-direction:column;">
+        <!-- Time remaining row — hidden until route loads -->
         <div id="route-info-${s.id}"
           style="display:none;
-                 background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                 color:white;font-size:0.62rem;font-weight:700;padding:0.28rem 0.75rem;
-                 border-radius:20px;white-space:nowrap;line-height:1.3;
-                 box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>
+                 padding:0.3rem 0.85rem 0.22rem;
+                 font-size:0.62rem;font-weight:700;color:var(--text);
+                 border-bottom:1px solid rgba(255,107,53,0.15);
+                 white-space:nowrap;line-height:1.3;text-align:center;"></div>
+        <!-- Google Maps row — always visible -->
         <a href="${s.mapUrl}" target="_blank"
-          style="background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-                 color:var(--orange);border-radius:20px;
-                 padding:0.28rem 0.75rem;font-size:0.62rem;font-weight:700;
+          style="padding:0.3rem 0.85rem 0.3rem;
+                 color:var(--orange);font-size:0.62rem;font-weight:700;
                  text-decoration:none;white-space:nowrap;
-                 border:1px solid rgba(255,107,53,0.25);display:flex;align-items:center;gap:0.35rem;
-                 box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+                 display:flex;align-items:center;justify-content:center;gap:0.35rem;">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
           Open in Google Maps
         </a>
@@ -1016,18 +1021,14 @@ function renderCard(card,idx,total){
           <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);line-height:1.5;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
           <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin-top:0.4rem;">Tap to dismiss</div>
         </div>
+        <!-- Title + tagline — no background bar, just padding -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(2.35rem + env(safe-area-inset-top)) 1.25rem 2rem;
-          background:linear-gradient(to bottom,#000 0%,rgba(0,0,0,0.95) 25%,rgba(0,0,0,0.6) 55%,transparent 100%);
+          padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 0;
           pointer-events:none;">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);margin-top:0.2rem;margin-bottom:0.5rem;">${s.tagline}</div>
-          <a onclick="skipToTextFullscreen(${s.id})"
-             style="cursor:pointer;display:inline-block;background:rgba(0,0,0,0.12);
-                    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                    color:rgba(255,255,255,0.35);font-size:0.72rem;font-weight:500;
-                    padding:0.3rem 0.9rem;border-radius:99px;
-                    border:1px solid rgba(255,255,255,0.08);text-decoration:none;">Read text only</a>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;
+            text-shadow:0 1px 6px rgba(0,0,0,0.55);">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;
+            text-shadow:0 1px 4px rgba(0,0,0,0.5);">${s.tagline}</div>
         </div>
         <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);
           z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
@@ -1284,13 +1285,20 @@ function renderCard(card,idx,total){
           <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
           <!-- dark gradient over image -->
           <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);border-radius:0;pointer-events:none;"></div>
-          <!-- Quiz Time! label centered on image with pop-in -->
+          <!-- Quiz Time! frosted pill centered on image -->
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-            <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;
-              color:var(--orange);letter-spacing:0.03em;line-height:1;text-align:center;
-              text-shadow:0 0 20px rgba(0,0,0,0.8),0 2px 8px rgba(0,0,0,0.6);
+            <div style="
+              background:rgba(255,255,255,0.18);
+              backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+              border:1.5px solid rgba(255,255,255,0.35);
+              border-radius:22px;
+              padding:0.55rem 1.2rem;
+              display:flex;flex-direction:column;align-items:center;gap:0.1rem;
               animation:quizTitlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;">
-              🎯 Quiz Time!
+              <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;
+                color:var(--orange);letter-spacing:0.02em;line-height:1;text-align:center;">
+                🎯 Quiz Time!
+              </div>
             </div>
           </div>
           <!-- Score badge top-right of image -->
@@ -1414,7 +1422,7 @@ function updateNavBtns(){
       textBtn = document.createElement('button');
       textBtn.id = 'read-text-btn';
       textBtn.className = 'card-prev-btn';
-      textBtn.style.cssText = 'flex:1;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2);';
+      textBtn.style.cssText = 'flex:1;';
       document.getElementById('card-bottom').insertBefore(textBtn, document.getElementById('next-btn'));
     }
     textBtn.textContent = '📄 Read text';
@@ -1434,19 +1442,10 @@ function updateNavBtns(){
   document.getElementById('card-bottom').style.display = 'flex';
   document.getElementById('card-bottom').classList.toggle('on-map', isNav);
   // On video card the bar is dark/transparent to match video
-  const isDesc = currentCard && currentCard.type==='desc';
-  document.getElementById('card-bottom').style.background = isDesc
-    ? 'rgba(0,0,0,0.55)' : '';
-  document.getElementById('card-bottom').style.borderTopColor = isDesc
-    ? 'rgba(255,255,255,0.1)' : '';
-  if(isDesc){
-    document.getElementById('prev-btn').style.color = 'rgba(255,255,255,0.7)';
-    document.getElementById('next-btn').style.background = 'rgba(255,107,53,0.75)';
-  } else {
-    document.getElementById('prev-btn').style.color = '';
-    document.getElementById('next-btn').style.background = '';
-    document.getElementById('next-btn').className = document.getElementById('next-btn').className;
-  }
+  // No special background on desc card nav bar
+  // Reset any inline overrides
+  document.getElementById('prev-btn').style.color = '';
+  document.getElementById('next-btn').style.background = '';
 }
 
 function stopCFVideo(){
