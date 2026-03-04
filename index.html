@@ -1296,6 +1296,7 @@ function updateNavBtns(){
   if(isLastCard){
     next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
     next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
+    if(isLastStop) next.onclick = function(){ closeJourney(true); };
   } else if(isNav){
     next.textContent = "I've Arrived ✓";
     next.className = 'card-next-btn';
@@ -1319,7 +1320,7 @@ function nextCard(){
   stopCFVideo();
   const isLastCard=currentCardIdx===cards.length-1;
   if(isLastCard){
-    currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney();
+    currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney(true);
   } else {
     currentCardIdx++;
     updateCardPosition();
@@ -1349,10 +1350,10 @@ function prevCard(){
   }
 }
 
-function closeJourney(){
+function closeJourney(showEnd){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
-  showEndScreen();
+  if(showEnd) showEndScreen();
 }
 
 function closeEndScreen(){
