@@ -641,6 +641,71 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 <!-- HIDDEN FILE INPUT -->
 <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="handlePhotoSelection(event)">
 
+<!-- END SCREEN -->
+<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+  <div style="max-width:480px;margin:0 auto;padding:calc(2rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
+
+    <!-- Rudy sign-off hero -->
+    <div style="text-align:center;margin-bottom:1.75rem;">
+      <div style="font-size:2.8rem;margin-bottom:0.5rem;">🪁</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1.15;margin-bottom:0.65rem;letter-spacing:-0.02em;">Tour Complete!</div>
+      <div style="font-size:0.95rem;color:var(--text2);line-height:1.7;max-width:320px;margin:0 auto;">Thanks for exploring Rotterdam with me. You've walked the same streets my family has walked for generations — I hope the city showed you something real.</div>
+      <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text2);font-style:italic;">— Rudy</div>
+    </div>
+
+    <!-- Quiz score card -->
+    <div id="end-score-card" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.25rem;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:3rem;font-weight:900;color:var(--orange);line-height:1;"></div>
+        <div style="font-size:0.65rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.1rem;">correct</div>
+      </div>
+      <div style="flex:1;">
+        <div style="height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:0.5rem;">
+          <div id="end-score-bar" style="height:100%;background:var(--orange);border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+        </div>
+        <div id="end-score-msg" style="font-size:0.85rem;color:var(--text);font-weight:600;line-height:1.4;"></div>
+      </div>
+    </div>
+
+    <!-- Static Mapbox map -->
+    <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:1.25rem;">
+      <div style="padding:0.85rem 1rem 0.5rem;border-bottom:1px solid var(--border);">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;margin-top:0.1rem;">5 Stops · Rotterdam</div>
+      </div>
+      <div id="end-map" style="width:100%;height:220px;"></div>
+    </div>
+
+    <!-- Photos section -->
+    <div id="end-photos-section" style="display:none;margin-bottom:1.25rem;">
+      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
+        <div style="padding:0.85rem 1rem 0.75rem;border-bottom:1px solid var(--border);">
+          <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Your Photos</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;margin-top:0.1rem;" id="end-photos-count"></div>
+        </div>
+        <div id="end-photos-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:3px;"></div>
+        <div style="padding:0.85rem 1rem;">
+          <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 12px rgba(45,107,228,0.2);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Photo Collage
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No photos message -->
+    <div id="end-no-photos" style="display:none;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;text-align:center;margin-bottom:1.25rem;color:var(--text2);font-size:0.88rem;line-height:1.6;">
+      📷 No photos captured this time.<br>Next time try the photo challenges — they're worth it!
+    </div>
+
+    <!-- Back to tour button -->
+    <button onclick="closeEndScreen()" style="width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+      Back to Tour 🗺️
+    </button>
+    <div style="height:1rem;"></div>
+  </div>
+</div>
+
 <script>
 // ══ DATA ══
 // NOTE: Replace the youtubeId values with your actual unlisted YouTube video IDs.
@@ -1287,61 +1352,92 @@ function prevCard(){
 function closeJourney(){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
+  showEndScreen();
+}
+
+function closeEndScreen(){
+  document.getElementById('end-screen').style.display='none';
+}
+
+function showEndScreen(){
   const attempted=Object.keys(quizAnswered).length;
-  if(attempted===stops.length){
-    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
-      const st=stops.find(x=>x.id===parseInt(sid)); return st&&ans===st.quiz.correct;
-    }).length;
-    showFinalScore(scored, stops.length);
+  const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
+    const st=stops.find(x=>x.id===parseInt(sid)); return st&&ans===st.quiz.correct;
+  }).length;
+  const total=stops.length;
+  const pct=attempted>0?Math.round((scored/attempted)*100):0;
+
+  // Score
+  document.getElementById('end-score-num').textContent=`${scored}/${attempted||'—'}`;
+  const msgs=[
+    [1.0,"Perfect score! You're a Rotterdam expert! 🏆"],
+    [0.6,"Great knowledge of Rotterdam! 🌟"],
+    [0.0,"Keep exploring — Rotterdam has more secrets! 🗺️"]
+  ];
+  const msg=msgs.find(([t])=>pct/100>=t)[1];
+  document.getElementById('end-score-msg').textContent=attempted>0?msg:'Complete more quizzes next time!';
+  setTimeout(()=>{ document.getElementById('end-score-bar').style.width=pct+'%'; },200);
+
+  // Photos
+  const photoEntries=Object.entries(photoCollection);
+  if(photoEntries.length>0){
+    document.getElementById('end-photos-section').style.display='block';
+    document.getElementById('end-no-photos').style.display='none';
+    document.getElementById('end-photos-count').textContent=`${photoEntries.length} photo${photoEntries.length>1?'s':''} captured`;
+    const grid=document.getElementById('end-photos-grid');
+    grid.innerHTML=photoEntries.map(([stopId,photo])=>`
+      <div style="position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;">
+        <img src="${photo.dataUrl}" alt="${photo.stopName}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.3rem 0.4rem;
+          background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);
+          color:white;font-size:0.58rem;font-weight:700;">${photo.stopName}</div>
+      </div>`).join('');
+  } else {
+    document.getElementById('end-photos-section').style.display='none';
+    document.getElementById('end-no-photos').style.display='block';
   }
+
+  // Show screen
+  const screen=document.getElementById('end-screen');
+  screen.style.display='block';
+  screen.scrollTop=0;
+
+  // Init static map
+  setTimeout(()=>initEndMap(),150);
 }
 
-function showFinalScore(scored, total){
-  const pct = Math.round((scored/total)*100);
-  const msg = scored===total ? "Perfect score! You're a Rotterdam expert! 🏆"
-    : scored>=total*0.6 ? "Great knowledge of Rotterdam! 🌟"
-    : "Keep exploring — Rotterdam has more secrets! 🗺️";
-  const el = document.createElement('div');
-  el.id = 'final-score-overlay';
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:1.5rem;';
-  const galleryHTML = stops.map(stop => {
-    const p = photoCollection[stop.id];
-    if(p) return `<div class="gallery-thumb">
-      <img src="${p.dataUrl}" alt="${p.stopName}">
-      <div class="gallery-thumb-label">${stop.name}</div>
-    </div>`;
-    return `<div class="gallery-empty"><span style="font-size:1.5rem;">📷</span><span>${stop.name}</span></div>`;
-  }).join('');
-
-  const hasPhotos = Object.keys(photoCollection).length > 0;
-
-  el.innerHTML = `<div class="final-score-card" style="max-width:420px;width:100%;max-height:90vh;overflow-y:auto;">
-    <div style="font-size:2.2rem;margin-bottom:0.4rem;letter-spacing:0.1em;">🎉🏆🎉</div>
-    <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Tour Complete!</div>
-    <div class="final-score-num">${scored}/${total}</div>
-    <div class="final-score-label">quiz questions correct</div>
-    <div style="margin:0.75rem auto 0.4rem;width:80%;height:10px;background:var(--bg);border-radius:99px;overflow:hidden;">
-      <div style="height:100%;width:${pct}%;background:var(--orange);border-radius:99px;transition:width 1s ease;"></div>
-    </div>
-    <div style="font-size:0.72rem;color:var(--text2);margin-bottom:0.75rem;">${pct}%</div>
-    <div style="margin:0.5rem 0 1rem;font-size:0.88rem;color:var(--text2);">${msg}</div>
-    ${hasPhotos ? `
-      <div style="text-align:left;margin-bottom:1rem;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">📸 Your Photos</div>
-        <div class="photo-gallery-grid">${galleryHTML}</div>
-        <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.75rem;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;margin-top:1rem;box-shadow:0 4px 12px rgba(45,107,228,0.25);display:flex;align-items:center;justify-content:center;gap:0.5rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Collage
-        </button>
-      </div>
-    ` : ''}
-    <button onclick="document.getElementById('final-score-overlay').remove()"
-      style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.65rem 1.8rem;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;width:100%;">
-      Back to Tour 🗺️
-    </button>
-  </div>`;
-  document.body.appendChild(el);
+function initEndMap(){
+  if(!window.mapboxgl||document.getElementById('end-map')._mapInitialized) return;
+  document.getElementById('end-map')._mapInitialized=true;
+  mapboxgl.accessToken=MAPBOX_TOKEN;
+  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  const endMap=new mapboxgl.Map({
+    container:'end-map',
+    style:'mapbox://styles/mapbox/streets-v12',
+    center:[4.4890,51.9150],
+    zoom:13.5,
+    interactive:false,
+    attributionControl:false
+  });
+  endMap.on('load',()=>{
+    // Dotted route line
+    endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
+    endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',
+      paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
+    // Numbered pins
+    stops.forEach((stop,i)=>{
+      const el=document.createElement('div');
+      el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;'+
+        'display:flex;align-items:center;justify-content:center;'+
+        'font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;'+
+        'border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';
+      el.textContent=stop.id;
+      new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coords[i]).addTo(endMap);
+    });
+  });
 }
+
+// showFinalScore replaced by showEndScreen
 
 function downloadCollage(){
   const photos = Object.entries(photoCollection).map(([stopId, photo]) => ({
