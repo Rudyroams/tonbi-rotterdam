@@ -98,6 +98,11 @@
   animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity:0.7; }
+  50% { transform: translateX(-50%) translateY(5px); opacity:1; }
+}
+
 /* ── Rudy speech bubble ── */
 .rudy-bubble-wrap {
   display: flex;
@@ -474,7 +479,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 /* ── QUIZ ── */
 .quiz-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
-.quiz-card-img { width:100%; height:90px; object-fit:cover; display:block; }
+.quiz-card-img { width:100%; height:155px; object-fit:cover; display:block; }
 .quiz-card-body { padding:0.75rem 1rem; }
 .quiz-card-label { font-size:1rem; font-weight:800; color:var(--orange); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0; }
 .quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; line-height:1.4; margin-bottom:0.5rem; }
@@ -804,6 +809,16 @@ function skipToText(stopId){
   if(skipLink){ skipLink.style.display='none'; }
 }
 
+function setupRudyScrollHint(stopId){
+  // hide scroll hint once user scrolls down
+  const card = document.querySelector(`.card[data-stop="${stopId}"][data-type="rudy"]`);
+  const hint = document.getElementById(`rudy-scroll-hint-${stopId}`);
+  if(!card || !hint) return;
+  card.addEventListener('scroll', function(){
+    if(card.scrollTop > 60) hint.style.display = 'none';
+  }, {passive:true});
+}
+
 function setupVideoObserver(stopId){
   const wrap=document.getElementById(`yt-wrap-${stopId}`);
   if(!wrap) return;
@@ -852,38 +867,39 @@ function renderCard(card,idx,total){
   if(card.type==='nav'){
     return `<div class="card nav-card" data-stop="${s.id}" data-type="nav">
       <div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
-      <!-- Top gradient + header -->
+      <!-- Top gradient + header (title only, no gmaps here) -->
       <div style="position:absolute;top:0;left:0;right:0;z-index:10;
         padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
         background:linear-gradient(to bottom, rgba(255,255,255,0.90) 45%, rgba(255,255,255,0));
-        display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;">
-        <div style="flex:1;min-width:0;">
+        pointer-events:none;">
+        <div style="pointer-events:none;">
           <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
           <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
         </div>
-        <!-- Google Maps on top right -->
-        <a href="${s.mapUrl}" target="_blank"
-          style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-                 color:var(--orange);border-radius:20px;
-                 padding:0.4rem 0.9rem;font-size:0.72rem;font-weight:700;
-                 text-decoration:none;white-space:nowrap;
-                 border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;gap:0.4rem;margin-top:0.1rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
-          Open in Google Maps
-        </a>
       </div>
       <!-- Bottom white gradient -->
       <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
-        height:100px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);"></div>
-      <!-- Stop thumbnail + route info pill at bottom right -->
-      <div style="position:absolute;bottom:14px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-        <div id="route-info-${s.id}"
-          style="display:none;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                 color:white;font-size:0.62rem;font-weight:700;padding:0.3rem 0.7rem;
-                 border-radius:20px;white-space:nowrap;line-height:1.3;
-                 box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>
-        <div style="width:77px;height:77px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;overflow:hidden;">
+        height:120px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);pointer-events:none;"></div>
+      <!-- Google Maps button — bottom left, smaller, semi-transparent -->
+      <a href="${s.mapUrl}" target="_blank" style="position:absolute;bottom:18px;left:14px;z-index:11;
+        background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+        color:var(--orange);border-radius:16px;
+        padding:0.3rem 0.7rem;font-size:0.65rem;font-weight:700;
+        text-decoration:none;white-space:nowrap;
+        border:1px solid rgba(255,107,53,0.25);display:flex;align-items:center;gap:0.35rem;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
+        Google Maps
+      </a>
+      <!-- Stop thumbnail + route info overlapping bottom-right of image -->
+      <div style="position:absolute;bottom:14px;right:14px;z-index:11;">
+        <div style="position:relative;width:80px;height:80px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;overflow:hidden;">
           <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <!-- Route info overlaid on bottom of image -->
+          <div id="route-info-${s.id}"
+            style="display:none;position:absolute;bottom:0;left:0;right:0;
+                   background:rgba(0,0,0,0.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+                   color:white;font-size:0.52rem;font-weight:700;padding:0.22rem 0.3rem;
+                   text-align:center;white-space:nowrap;line-height:1.3;"></div>
         </div>
       </div>
     </div>`;
@@ -898,7 +914,7 @@ function renderCard(card,idx,total){
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen></iframe>
         <!-- Sound button overlay - non-functional, just visual affordance -->
-        <div style="position:absolute;bottom:17px;left:50%;transform:translateX(-50%);z-index:5;
+        <div style="position:absolute;bottom:17px;left:35%;transform:translateX(-50%);z-index:5;
           display:flex;align-items:center;gap:0.5rem;
           color:rgba(255,255,255,0.6);font-size:0.72rem;font-weight:500;
           padding:0.4rem 0.9rem;border-radius:99px;
@@ -972,13 +988,49 @@ function renderCard(card,idx,total){
   }
 
   if(card.type==='rudy') return `
-    <div class="card" data-stop="${s.id}" data-type="rudy">
-      <div class="story-card-inner">
-        <div class="story-avatar">R</div>
-        <div class="story-from">Rudy's Note</div>
-        <div class="story-text">${s.rudy}</div>
+    <div class="card" data-stop="${s.id}" data-type="rudy" style="padding-bottom:3rem;">
+      <!-- Scroll hint arrow -->
+      <div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;
+        display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;
+        animation:scrollBounce 1.6s ease-in-out infinite;">
+        <span style="font-size:0.6rem;font-weight:700;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;">scroll</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
-      <img src="${s.img}" alt="${s.name}" style="width:100%;border-radius:var(--radius);object-fit:cover;aspect-ratio:4/3;margin-top:1rem;box-shadow:var(--shadow);">
+      <div class="story-card-inner" style="margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+          <div class="story-avatar" style="margin-bottom:0;flex-shrink:0;">R</div>
+          <div>
+            <div class="story-from" style="margin-bottom:0.1rem;">Rudy's Note</div>
+            <div style="font-size:0.72rem;color:var(--text2);">Local filmmaker &amp; guide</div>
+          </div>
+        </div>
+        <div class="story-text">${s.rudy}</div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:0.88rem;line-height:1.75;color:var(--text);">${s.rudyExtra || "Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look. No other city in the world has this combination of 19th-century remnants and bold 21st-century architecture side by side."}</div>
+      </div>
+      <!-- Placeholder image 1 -->
+      <div style="width:100%;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:var(--shadow);position:relative;background:linear-gradient(135deg,#e8e8e8,#d0d0d0);">
+        <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;
+          background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);
+          color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div>
+      </div>
+      <!-- Extra text block -->
+      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:0.75rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">📷 Filmmaker's Eye</div>
+        <div style="font-size:0.88rem;line-height:1.75;color:var(--text);">${s.rudyFilm || "When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think — just find something close to your lens, even a railing or a leaf, and let it fall slightly out of focus. Suddenly your photo has dimension."}</div>
+      </div>
+      <!-- Placeholder image 2 -->
+      <div style="width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:var(--shadow);position:relative;background:linear-gradient(135deg,#d8e8f0,#c0d4e0);">
+        <img src="${s.img}" alt="${s.name} detail" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.1)contrast(1.05);">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.08);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;
+          background:linear-gradient(to top,rgba(0,0,0,0.55),transparent);
+          color:white;font-size:0.7rem;font-weight:600;">🎥 Placeholder — your video/photo here</div>
+      </div>
+      <div style="background:var(--white);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow);margin-bottom:1rem;">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">🗺️ Local Knowledge</div>
+        <div style="font-size:0.88rem;line-height:1.75;color:var(--text);">${s.rudyLocal || "Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere. Morning gives you soft diffused tones; late afternoon brings long shadows and golden warmth. That's when I do my best work."}</div>
+      </div>
     </div>`;
 
   if(card.type==='photo'){
@@ -1009,7 +1061,11 @@ function renderCard(card,idx,total){
           ${!hasPhoto ? `
             <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
               <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
-                📷 Take your shot, then select from camera roll
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                Take your shot
               </button>
             </div>
           ` : ''}
@@ -1061,13 +1117,27 @@ function renderCard(card,idx,total){
     return `
     <div class="card" data-stop="${s.id}" data-type="quiz" style="position:relative;display:flex;flex-direction:column;">
       <div class="quiz-card" style="flex:1;display:flex;flex-direction:column;">
-        <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
-        <div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
-            <div class="quiz-card-label" style="margin-bottom:0;margin-top:0;">🎯 Quiz Time!</div>
-            <div style="font-size:0.85rem;font-weight:700;color:var(--orange);white-space:nowrap;">${scoreText}</div>
+        <!-- Quiz image with overlaid title + score -->
+        <div style="position:relative;">
+          <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
+          <!-- dark gradient over image -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);border-radius:0;pointer-events:none;"></div>
+          <!-- Quiz Time! label bottom-left of image -->
+          <div style="position:absolute;bottom:10px;left:12px;z-index:3;">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;letter-spacing:0.04em;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.4);">🎯 Quiz Time!</div>
           </div>
-          <div class="quiz-card-q quiz-typewriter" style="width:100%;">${s.quiz.q}</div>
+          <!-- Score badge top-right of image -->
+          <div style="position:absolute;top:10px;right:10px;z-index:3;
+            background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+            border-radius:20px;padding:0.25rem 0.6rem;
+            display:flex;align-items:center;gap:0.3rem;
+            border:1px solid rgba(255,255,255,0.15);">
+            <span style="font-size:0.85rem;">🏆</span>
+            <span style="font-size:0.75rem;font-weight:800;color:white;">${scored}/${attempted}</span>
+          </div>
+        </div>
+        <div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;">
+          <div class="quiz-card-q quiz-typewriter" style="width:100%;margin-top:0.25rem;">${s.quiz.q}</div>
           <div class="quiz-opts" style="margin-top:0.5rem;">${opts}</div>
           ${combinedText}
         </div>
@@ -1195,9 +1265,10 @@ function nextCard(){
       if(scrollTarget) scrollTarget.scrollTop=0;
       const activeCard=cards[currentCardIdx];
       if(activeCard && activeCard.type==='nav'){
-        setTimeout(()=>{
-          initStopMap(activeCard.stop.id);
-        }, 100);
+        setTimeout(()=>{ initStopMap(activeCard.stop.id); }, 100);
+      }
+      if(activeCard && activeCard.type==='rudy'){
+        setTimeout(()=>{ setupRudyScrollHint(activeCard.stop.id); }, 300);
       }
     },400);
   }
