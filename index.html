@@ -1430,7 +1430,7 @@ function initEndMap(){
       const el=document.createElement('div');
       el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;'+
         'display:flex;align-items:center;justify-content:center;'+
-        'font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;'+
+        'font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;'+
         'border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';
       el.textContent=stop.id;
       new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coords[i]).addTo(endMap);
