@@ -859,11 +859,14 @@ function activateVideo(stopId){
 }
 
 function skipToTextFullscreen(stopId){
-  // Stop the video
   const iframe = document.getElementById('cf-vid-'+stopId);
   if(iframe) iframe.src = '';
-  // Jump to the text card (index 3 = text card)
-  currentCardIdx = 3;
+  skipToCard(3);
+}
+
+function skipToCard(idx){
+  stopCFVideo();
+  currentCardIdx = idx;
   updateCardPosition();
   updateProgressDots();
   updateNavBtns();
@@ -971,27 +974,24 @@ function renderCard(card,idx,total){
       <!-- Bottom white gradient -->
       <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
         height:120px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);pointer-events:none;"></div>
-      <!-- Google Maps button — bottom left, smaller, semi-transparent -->
-      <a href="${s.mapUrl}" target="_blank" style="position:absolute;bottom:18px;left:14px;z-index:11;
-        background:rgba(255,255,255,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-        color:var(--orange);border-radius:16px;
-        padding:0.3rem 0.7rem;font-size:0.65rem;font-weight:700;
-        text-decoration:none;white-space:nowrap;
-        border:1px solid rgba(255,107,53,0.25);display:flex;align-items:center;gap:0.35rem;">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
-        Google Maps
-      </a>
-      <!-- Stop thumbnail + route info pill floating above image -->
-      <div style="position:absolute;bottom:14px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <!-- Bottom-right: route info + Google Maps button stacked -->
+      <div style="position:absolute;bottom:16px;right:14px;z-index:11;display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <div id="route-info-${s.id}"
           style="display:none;
                  background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-                 color:white;font-size:0.62rem;font-weight:700;padding:0.28rem 0.65rem;
+                 color:white;font-size:0.62rem;font-weight:700;padding:0.28rem 0.75rem;
                  border-radius:20px;white-space:nowrap;line-height:1.3;
                  box-shadow:0 2px 8px rgba(0,0,0,0.35);"></div>
-        <div style="width:80px;height:80px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.22);border:3px solid white;overflow:hidden;flex-shrink:0;">
-          <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        </div>
+        <a href="${s.mapUrl}" target="_blank"
+          style="background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+                 color:var(--orange);border-radius:20px;
+                 padding:0.28rem 0.75rem;font-size:0.62rem;font-weight:700;
+                 text-decoration:none;white-space:nowrap;
+                 border:1px solid rgba(255,107,53,0.25);display:flex;align-items:center;gap:0.35rem;
+                 box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
+          Open in Google Maps
+        </a>
       </div>
     </div>`;
   }
@@ -1006,7 +1006,7 @@ function renderCard(card,idx,total){
           allowfullscreen></iframe>
         <!-- Sound info popup — tappable, dismisses itself -->
         <div id="sound-popup-${s.id}" onclick="this.style.display='none'"
-          style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:15;
+          style="position:absolute;bottom:calc(72px + env(safe-area-inset-bottom) + 56px);left:50%;transform:translateX(-50%);z-index:15;
             background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
             border:1px solid rgba(255,255,255,0.15);border-radius:16px;
             padding:0.75rem 1rem;width:80%;max-width:280px;text-align:center;
@@ -1137,19 +1137,13 @@ function renderCard(card,idx,total){
       <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;letter-spacing:-0.02em;margin-bottom:0.35rem;">${s.name}</div>
       <div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div>
       <div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.desc}</div>
-      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-bottom:1rem;">
+      <div style="padding-bottom:1rem;">
         <a onclick="jumpToDescCard(${s.id})"
           style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
                  background:var(--orange);color:white;font-weight:700;font-size:0.88rem;
                  padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;">
           <svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
           Watch video
-        </a>
-        <a onclick="nextCard()"
-          style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                 background:var(--bg);border:1.5px solid var(--border);color:var(--text);font-weight:700;font-size:0.88rem;
-                 padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;">
-          Continue →
         </a>
       </div>
     </div>`;
@@ -1169,28 +1163,69 @@ function renderCard(card,idx,total){
     return `
     <div class="card" data-stop="${s.id}" data-type="photo">
       <div class="photo-card">
-        <div class="photo-card-header">
-          <div class="photo-card-label">Photo Challenge</div>
-          <div class="photo-card-title">${s.challenge.title}</div>
+        <!-- Header: title BIG, subtitle small above it -->
+        <div class="photo-card-header" style="padding:1.5rem 1.25rem 1.25rem;">
+          <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">${s.challenge.title}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-0.02em;">📸 Photo<br>Challenge!</div>
         </div>
-        <div class="photo-card-body">
-          <p class="photo-card-desc">${s.challenge.desc}</p>
-          <div class="photo-tip-box">
-            <div class="photo-tip-icon">💡</div>
-            <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
+        <div class="photo-card-body" style="padding:0;">
+          <!-- Example photo placeholder -->
+          <div style="position:relative;width:100%;aspect-ratio:4/3;background:#e0e0e0;overflow:hidden;">
+            <img src="${s.img}" alt="Example shot" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.92);">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);"></div>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+              color:white;font-size:0.6rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:20px;
+              text-transform:uppercase;letter-spacing:0.08em;">📷 Example shot</div>
+            <div style="position:absolute;bottom:12px;left:12px;right:12px;font-size:0.85rem;color:white;font-weight:500;line-height:1.5;">${s.challenge.desc}</div>
           </div>
-          ${photoUI}
-          ${!hasPhoto ? `
-            <div style="text-align:center;margin-top:1.5rem;padding-bottom:2rem;">
-              <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
-                </svg>
-                Take your shot
-              </button>
+          <!-- Map: where to stand -->
+          <div style="padding:1rem 1.25rem 0;">
+            <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 Where to stand</div>
+            <div id="photo-map-${s.id}" style="width:100%;height:140px;border-radius:var(--radius-sm);overflow:hidden;background:#e8e8e8;"></div>
+          </div>
+          <!-- Tips -->
+          <div style="padding:1rem 1.25rem 0;">
+            <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem;">💡 Tips</div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              ${(s.challenge.tips || [
+                'Get low — crouch down to change the perspective dramatically.',
+                'Shoot into the light for drama. Silhouettes beat a flat, correctly exposed shot.',
+                'Take 5–10 shots and pick the best one. Professional photographers always shoot in bursts.'
+              ]).map((tip,i) => '<div style="display:flex;gap:0.6rem;align-items:flex-start;background:var(--bg);border-radius:10px;padding:0.55rem 0.75rem;"><span style=\'font-size:0.75rem;font-weight:800;color:var(--orange);flex-shrink:0;margin-top:0.05rem;\'>' + (i+1) + '.</span><span style=\'font-size:0.85rem;line-height:1.55;color:var(--text);\'>' + tip + '</span></div>').join('')}
             </div>
-          ` : ''}
+          </div>
+          <!-- Selfie option -->
+          <div style="margin:1rem 1.25rem 0;background:var(--blue-light);border-radius:var(--radius-sm);padding:0.85rem 1rem;display:flex;gap:0.85rem;align-items:center;">
+            <div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#c8d8f0;">
+              <img src="${s.img}" alt="selfie spot" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.7)brightness(1.1);">
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem;">🤳 Selfie Spot</div>
+              <div style="font-size:0.82rem;line-height:1.5;color:var(--text);">${s.challenge.selfie || 'Stand here with the landmark behind you. Turn slightly sideways — it looks better than full-face-on.'}</div>
+            </div>
+          </div>
+          <!-- Rudy tip -->
+          <div style="margin:0.85rem 1.25rem 0;">
+            <div class="photo-tip-box">
+              <div class="photo-tip-icon">💡</div>
+              <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
+            </div>
+          </div>
+          <!-- Existing photo or take shot -->
+          <div style="padding:0 1.25rem 1.5rem;">
+            ${photoUI}
+            ${!hasPhoto ? `
+              <div style="text-align:center;margin-top:1.25rem;">
+                <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  Take your shot
+                </button>
+              </div>
+            ` : ''}
+          </div>
         </div>
       </div>
     </div>`;
@@ -1223,7 +1258,8 @@ function renderCard(card,idx,total){
           rudyStamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 8px rgba(179,28,19,0.4);transform:rotate(-15deg);">😕</div>`;
         }
       }
-      const bounce=answered?' answered':'';
+      // bounce only on the answered option (correct or wrong), not all options
+      const bounce=(answered && (i===s.quiz.correct || i===qa))?' answered':'';
       const delay=`${i * 0.25}s`;
       return `<button class="quiz-o ${cls}${bounce} quiz-pop-in" style="animation-delay:${delay};position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>
         ${rudyStamp}
@@ -1232,8 +1268,12 @@ function renderCard(card,idx,total){
     }).join('');
 
     const explanation=answered?s.quiz.explanation:'';
-    const combinedText=answered?`<div style="margin-top:1rem;padding:1rem;background:white;border:1.5px solid var(--border);border-radius:var(--radius-sm);">
-      <div style="font-size:0.9rem;line-height:1.8;color:var(--text);">${explanation}</div>
+    const wasCorrect = answered && qa===s.quiz.correct;
+    const combinedText=answered?`<div style="margin-top:1rem;padding:1rem;
+      background:${wasCorrect?'var(--green-light)':'var(--red-light)'};
+      border:1.5px solid ${wasCorrect?'var(--green)':'var(--red)'};
+      border-radius:var(--radius-sm);">
+      <div style="font-size:0.9rem;line-height:1.8;color:${wasCorrect?'#1a6b2f':'#b31c13'};">${explanation}</div>
     </div>`:'';
 
     return `
@@ -1362,15 +1402,51 @@ function updateNavBtns(){
   } else if(isNav){
     next.textContent = "I've Arrived ✓";
     next.className = 'card-next-btn';
+    next.onclick = nextCard;
+  } else if(currentCard && currentCard.type==='desc'){
+    // On video card: Continue skips text card → goes straight to rudy (idx 4)
+    next.textContent = 'Continue →';
+    next.className = 'card-next-btn';
+    next.onclick = function(){ skipToCard(4); };
+    // Add "Read text only" between back and continue
+    let textBtn = document.getElementById('read-text-btn');
+    if(!textBtn){
+      textBtn = document.createElement('button');
+      textBtn.id = 'read-text-btn';
+      textBtn.className = 'card-prev-btn';
+      textBtn.style.cssText = 'flex:1;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.2);';
+      document.getElementById('card-bottom').insertBefore(textBtn, document.getElementById('next-btn'));
+    }
+    textBtn.textContent = '📄 Read text';
+    textBtn.onclick = function(){ skipToTextFullscreen(currentStop.id); };
+    textBtn.style.display = 'block';
   } else {
     next.textContent = 'Continue →';
     next.className = 'card-next-btn';
+    next.onclick = nextCard;
+    // Remove read-text-btn if present
+    const tb = document.getElementById('read-text-btn');
+    if(tb) tb.style.display = 'none';
   }
 
   document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
   document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
   document.getElementById('card-bottom').style.display = 'flex';
   document.getElementById('card-bottom').classList.toggle('on-map', isNav);
+  // On video card the bar is dark/transparent to match video
+  const isDesc = currentCard && currentCard.type==='desc';
+  document.getElementById('card-bottom').style.background = isDesc
+    ? 'rgba(0,0,0,0.55)' : '';
+  document.getElementById('card-bottom').style.borderTopColor = isDesc
+    ? 'rgba(255,255,255,0.1)' : '';
+  if(isDesc){
+    document.getElementById('prev-btn').style.color = 'rgba(255,255,255,0.7)';
+    document.getElementById('next-btn').style.background = 'rgba(255,107,53,0.75)';
+  } else {
+    document.getElementById('prev-btn').style.color = '';
+    document.getElementById('next-btn').style.background = '';
+    document.getElementById('next-btn').className = document.getElementById('next-btn').className;
+  }
 }
 
 function stopCFVideo(){
@@ -1400,6 +1476,9 @@ function nextCard(){
       }
       if(activeCard && activeCard.type==='desc'){
         setTimeout(()=>{ setupSoundPopup(activeCard.stop.id); }, 600);
+      }
+      if(activeCard && activeCard.type==='photo'){
+        setTimeout(()=>{ initPhotoMap(activeCard.stop.id); }, 200);
       }
     },400);
   }
@@ -1470,6 +1549,26 @@ function showEndScreen(){
 
   // Init static map
   setTimeout(()=>initEndMap(),150);
+}
+
+function initPhotoMap(stopId){
+  const container = document.getElementById('photo-map-'+stopId);
+  if(!container || container._mapInitialized || !window.mapboxgl) return;
+  container._mapInitialized = true;
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+  const coords = [[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  const coord = coords[stopId-1];
+  const m = new mapboxgl.Map({
+    container:'photo-map-'+stopId,
+    style:'mapbox://styles/mapbox/streets-v12',
+    center:coord, zoom:16, interactive:false, attributionControl:false
+  });
+  m.on('load',()=>{
+    const el = document.createElement('div');
+    el.style.cssText = 'width:36px;height:36px;border-radius:50%;background:var(--orange);border:3px solid white;box-shadow:0 2px 10px rgba(255,107,53,0.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;';
+    el.textContent = '📷';
+    new mapboxgl.Marker({element:el}).setLngLat(coord).addTo(m);
+  });
 }
 
 function initEndMap(){
