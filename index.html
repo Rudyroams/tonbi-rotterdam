@@ -566,6 +566,78 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .photo-card-body { padding:1.25rem; padding-bottom:calc(2rem + env(safe-area-inset-bottom)); }
 .photo-card-desc { font-size:0.9rem; line-height:1.75; color:var(--text); margin-bottom:1rem; }
 .photo-tip-box { background:var(--yellow-light); border-radius:var(--radius-sm); padding:0.9rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; margin-bottom:1.25rem; }
+
+/* ── PARTNER CARD ── */
+.partner-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.partner-hero { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#e8e8e8; }
+.partner-hero img { width:100%; height:100%; object-fit:cover; display:block; }
+.partner-type-pill {
+  position:absolute; top:12px; left:12px;
+  background:rgba(0,0,0,0.55); backdrop-filter:blur(8px);
+  color:white; font-size:0.6rem; font-weight:700;
+  padding:0.25rem 0.65rem; border-radius:20px;
+  text-transform:uppercase; letter-spacing:0.1em;
+}
+.partner-body { padding:1.1rem 1.25rem 0; }
+.partner-name { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; line-height:1.1; margin-bottom:0.2rem; }
+.partner-desc { font-size:0.88rem; line-height:1.7; color:var(--text2); margin-bottom:0.85rem; }
+.partner-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+.partner-meta-item { display:flex; align-items:center; gap:0.35rem; font-size:0.75rem; color:var(--text2); font-weight:500; }
+/* Offer ticket */
+.partner-offer {
+  margin:0 1.25rem 1.25rem;
+  background:linear-gradient(135deg, #fff8f5 0%, #fff3ee 100%);
+  border:2px dashed var(--orange);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+}
+.partner-offer-header {
+  background:var(--orange); color:white;
+  padding:0.4rem 1rem;
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
+}
+.partner-offer-body { padding:0.85rem 1rem; }
+.partner-offer-text { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; color:var(--text); line-height:1.35; margin-bottom:0.5rem; }
+.partner-offer-small { font-size:0.72rem; color:var(--text2); line-height:1.5; }
+.partner-offer-code {
+  margin-top:0.65rem; padding:0.5rem 0.85rem;
+  background:white; border-radius:8px;
+  border:1.5px solid rgba(255,107,53,0.25);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.partner-offer-code-label { font-size:0.6rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.08em; }
+.partner-offer-code-value { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:var(--orange); letter-spacing:0.12em; }
+/* Show offer overlay */
+#offer-overlay {
+  position:fixed; inset:0; z-index:9100;
+  background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  display:none; align-items:center; justify-content:center; padding:2rem;
+}
+#offer-overlay.show { display:flex; }
+.offer-modal {
+  background:white; border-radius:24px; overflow:hidden;
+  width:100%; max-width:360px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  animation:quizTitlePop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.offer-modal-header {
+  background:var(--orange); padding:1.25rem 1.5rem;
+  text-align:center;
+}
+.offer-modal-icon { font-size:2.2rem; margin-bottom:0.3rem; }
+.offer-modal-title { font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.15em; }
+.offer-modal-body { padding:1.5rem; text-align:center; }
+.offer-modal-offer { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; line-height:1.25; margin-bottom:0.5rem; color:var(--text); }
+.offer-modal-note { font-size:0.78rem; color:var(--text2); line-height:1.6; margin-bottom:1.25rem; }
+.offer-modal-code-box {
+  background:var(--bg); border-radius:16px; padding:1rem;
+  margin-bottom:1.25rem;
+  border:2px dashed var(--orange);
+}
+.offer-modal-code-lbl { font-size:0.6rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
+.offer-modal-code-val { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:var(--orange); letter-spacing:0.18em; }
+.offer-modal-close { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:99px; padding:0.7rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; }
 .photo-tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; }
 .photo-tip-text { font-size:0.82rem; line-height:1.6; color:var(--text); }
 .photo-tip-text strong { color:#996600; font-weight:700; display:block; margin-bottom:0.15rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; }
@@ -677,7 +749,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 
   <!-- CLASSIC LIST HOME (hidden by default) -->
-  <div id="home-screen" style="display:none;">
+  <div id="home-screen">
     <div class="home-header">
       <div class="home-header-top">
         <div class="home-logo">
@@ -687,12 +759,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         <div class="home-city-tag">Rotterdam 🇳🇱</div>
       </div>
     </div>
-    <!-- Back to map link -->
-    <div style="padding:0 1.25rem 0.5rem;text-align:right;">
-      <a onclick="showScreen('overworld')" style="font-size:0.9rem;font-weight:700;color:var(--orange);cursor:pointer;text-decoration:none;">
-        ← Back to map view
-      </a>
-    </div>
+
     <div class="hero-card">
       <img class="hero-img" src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" alt="Rotterdam">
       <div class="hero-overlay">
@@ -767,6 +834,25 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <!-- HIDDEN FILE INPUT -->
 <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="handlePhotoSelection(event)">
+
+<!-- OFFER OVERLAY -->
+<div id="offer-overlay" onclick="closeOffer(event)">
+  <div class="offer-modal" onclick="event.stopPropagation()">
+    <div class="offer-modal-header">
+      <div class="offer-modal-icon">🎟️</div>
+      <div class="offer-modal-title" id="offer-modal-partner-name">Partner Offer</div>
+    </div>
+    <div class="offer-modal-body">
+      <div class="offer-modal-offer" id="offer-modal-offer-text"></div>
+      <div class="offer-modal-note" id="offer-modal-note"></div>
+      <div class="offer-modal-code-box">
+        <div class="offer-modal-code-lbl">Today's code</div>
+        <div class="offer-modal-code-val" id="offer-modal-code"></div>
+      </div>
+      <button class="offer-modal-close" onclick="closeOffer()">Done</button>
+    </div>
+  </div>
+</div>
 
 <!-- END SCREEN -->
 <div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;">
@@ -901,7 +987,21 @@ const stops = [
     desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>. Walk in, look up, and let your jaw drop. Then eat something — I insist.",
     rudy:"The ceiling artwork is extraordinary but most people walk in and look at the stalls. Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",
     challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork. Try a slow panorama sweep, or take a regular shot and experiment with the fisheye effect in editing.",tip:"The ceiling is brightly lit but the market below is darker — tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."}
+    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."},
+    partners:[
+      {
+        name:"Markthal Herring Stand",
+        type:"Street Food",
+        img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
+        desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. This is non-negotiable Rotterdam food culture.",
+        hours:"Tue–Sat 10:00–18:00, Sun 11:00–17:00",
+        location:"Inside Markthal, central aisle",
+        offer:"Free soft drink with any purchase",
+        offerNote:"Show this screen to the staff at the counter. One offer per tour code.",
+        code:"TBR-001",
+        emoji:"🐟"
+      }
+    ]
   }
 ];
 
@@ -928,7 +1028,7 @@ function unlock(){
     setTimeout(()=>{
       pw.style.display='none';
       document.getElementById('app').classList.add('show');
-      try { showScreen('overworld'); setTimeout(()=>initOverworldMap(), 100); } catch(e){ console.error('showScreen error:', e); }
+      try { showScreen('home'); } catch(e){ console.error('showScreen error:', e); }
     },500);
   } else {
     document.getElementById('pw-err').textContent='Incorrect code — try again.';
@@ -1163,8 +1263,15 @@ function setupVideoObserver(stopId){
 const CONFETTI_COLORS = ['#ff6b35','#2d6be4','#ffcc00','#34c759','#e8295c','#af52de'];
 // ══ CARDS ══
 function buildCards(stop){
-  const cardTypes=['transition','nav','desc','text','rudy','photo','quiz'];
-  return cardTypes.map(type=>({type,stop}));
+  const base=['transition','nav','desc','text','rudy','photo','quiz'];
+  const cards = base.map(type=>({type,stop}));
+  // Inject a partner card for each partner after quiz
+  if(stop.partners && stop.partners.length>0){
+    stop.partners.forEach(partner=>{
+      cards.push({type:'partner', stop, partner});
+    });
+  }
+  return cards;
 }
 
 function renderCard(card,idx,total){
@@ -1573,6 +1680,58 @@ function renderCard(card,idx,total){
       </div>
     </div>`;
   }
+  if(card.type==='partner'){
+    const p = card.partner;
+    return `
+    <div class="card" data-stop="${s.id}" data-type="partner" style="padding-bottom:1.5rem;">
+      <div class="partner-card">
+        <!-- Hero image -->
+        <div class="partner-hero">
+          <img src="${p.img}" alt="${p.name}">
+          <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
+        </div>
+        <!-- Body -->
+        <div class="partner-body">
+          <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
+          <div class="partner-name">${p.name}</div>
+          <div class="partner-desc">${p.desc}</div>
+          <div class="partner-meta">
+            <div class="partner-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ${p.hours}
+            </div>
+            <div class="partner-meta-item">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${p.location}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Offer ticket -->
+      ${p.offer ? `
+      <div class="partner-offer" style="margin-top:0.85rem;">
+        <div class="partner-offer-header">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Your exclusive offer
+        </div>
+        <div class="partner-offer-body">
+          <div class="partner-offer-text">${p.offer}</div>
+          <div class="partner-offer-small">${p.offerNote || 'Show this screen to staff. Valid today only.'}</div>
+          <div class="partner-offer-code">
+            <div>
+              <div class="partner-offer-code-label">Today's code</div>
+              <div class="partner-offer-code-value">${p.code || 'TBR-001'}</div>
+            </div>
+            <button onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
+              style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.5rem 1rem;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(255,107,53,0.3);">
+              Show offer
+            </button>
+          </div>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }
+
   return '<div class="card"></div>';
 }
 
@@ -1804,6 +1963,21 @@ function showEndScreen(){
   setTimeout(()=>initEndMap(),150);
 }
 
+function showOffer(name, offer, note, code, emoji){
+  document.getElementById('offer-modal-partner-name').textContent = name;
+  document.getElementById('offer-modal-offer-text').textContent = offer;
+  document.getElementById('offer-modal-note').textContent = note;
+  document.getElementById('offer-modal-code').textContent = code;
+  document.querySelector('.offer-modal-icon').textContent = emoji || '🎟️';
+  document.getElementById('offer-overlay').classList.add('show');
+}
+
+function closeOffer(e){
+  if(!e || e.target === document.getElementById('offer-overlay')){
+    document.getElementById('offer-overlay').classList.remove('show');
+  }
+}
+
 function initPhotoMap(stopId){
   const container = document.getElementById('photo-map-'+stopId);
   if(!container || container._mapInitialized || !window.mapboxgl) return;
@@ -1813,9 +1987,8 @@ function initPhotoMap(stopId){
   const coord = coords[stopId-1];
   const m = new mapboxgl.Map({
     container:'photo-map-'+stopId,
-    style:'mapbox://styles/mapbox/standard',
-    config:{ basemap:{ lightPreset:'dawn', showPlaceLabels:true, showRoadLabels:false, showPointOfInterestLabels:false } },
-    center:coord, zoom:16, pitch:75, bearing:-25,
+    style:'mapbox://styles/mapbox/streets-v12',
+    center:coord, zoom:16,
     interactive:false, attributionControl:false
   });
   m.on('load',()=>{
@@ -1833,8 +2006,7 @@ function initEndMap(){
   const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
   const endMap=new mapboxgl.Map({
     container:'end-map',
-    style:'mapbox://styles/mapbox/standard',
-    config:{ basemap:{ lightPreset:'dawn', showPlaceLabels:true, showRoadLabels:false, showPointOfInterestLabels:false } },
+    style:'mapbox://styles/mapbox/streets-v12',
     center:[4.4890,51.9150],
     zoom:11,
     interactive:false,
@@ -2049,12 +2221,9 @@ function initStopMap(stopId){
 
   const stopMap = new mapboxgl.Map({
     container: containerId,
-    style: 'mapbox://styles/mapbox/standard',
-    config: { basemap: { lightPreset: 'dawn', showPlaceLabels: true, showRoadLabels: false, showPointOfInterestLabels: false } },
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: destCoord,
     zoom: 10,
-    pitch: 75,
-    bearing: -30,
     attributionControl: false,
     interactive: true
   });
@@ -2184,12 +2353,9 @@ function initMap(){
 
   const map = new mapboxgl.Map({
     container: 'mapbox-map',
-    style: 'mapbox://styles/mapbox/standard',
-    config: { basemap: { lightPreset: 'dawn', showPlaceLabels: true, showRoadLabels: false, showPointOfInterestLabels: false } },
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: [4.4841, 51.9060],
     zoom: 12,
-    pitch: 60,
-    bearing: -25,
     attributionControl: false
   });
 
