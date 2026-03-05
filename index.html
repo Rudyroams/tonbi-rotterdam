@@ -1209,8 +1209,8 @@ function renderCard(card,idx,total){
       <!-- Bottom-right: route info + Google Maps button stacked -->
       <!-- Route info + Google Maps — frosted pill, bottom-center -->
       <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;
-        background:rgba(255,255,255,0.38);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-        border:1px solid rgba(255,255,255,0.55);border-radius:22px;
+        background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+        border:1px solid rgba(255,255,255,0.35);border-radius:22px;
         box-shadow:0 2px 12px rgba(0,0,0,0.10);
         overflow:hidden;display:flex;flex-direction:column;min-width:160px;">
         <!-- Time remaining row — hidden until route loads -->
@@ -1815,7 +1815,8 @@ function initPhotoMap(stopId){
     container:'photo-map-'+stopId,
     style:'mapbox://styles/mapbox/standard',
     config:{ basemap:{ lightPreset:'dawn' } },
-    center:coord, zoom:16, interactive:false, attributionControl:false
+    center:coord, zoom:16, pitch:50, bearing:-15,
+    interactive:false, attributionControl:false
   });
   m.on('load',()=>{
     const el = document.createElement('div');
@@ -2052,6 +2053,8 @@ function initStopMap(stopId){
     config: { basemap: { lightPreset: 'dawn' } },
     center: destCoord,
     zoom: 10,
+    pitch: 45,
+    bearing: -20,
     attributionControl: false,
     interactive: true
   });
@@ -2185,6 +2188,8 @@ function initMap(){
     config: { basemap: { lightPreset: 'dawn' } },
     center: [4.4841, 51.9060],
     zoom: 12,
+    pitch: 40,
+    bearing: -15,
     attributionControl: false
   });
 
