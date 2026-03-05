@@ -356,7 +356,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 #app.show { display:block; }
 
 /* ── HOME ── */
-#home-screen { min-height:100svh; padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+#home-screen { min-height:100svh; padding-bottom:1rem; }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:var(--white); }
 
 /* ── OVERWORLD MAP HOME ── */
@@ -602,7 +602,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
 
 /* ── MAP ── */
-#map-screen { display:none; min-height:100svh; padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+#map-screen { display:none; min-height:100svh; padding-bottom:1rem; }
 #map-screen.show { display:block; }
 .map-top { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1rem; background:var(--white); border-bottom:1px solid var(--border); }
 .map-top-title { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; margin-bottom:0.2rem; }
@@ -717,8 +717,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
   <div id="map-screen">
     <div class="map-top">
-      <div class="map-top-title">Route Map</div>
-      <div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div class="map-top-title">Route Map</div>
+          <div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div>
+        </div>
+        <a onclick="showScreen('overworld')" style="font-size:0.75rem;font-weight:700;color:var(--orange);cursor:pointer;white-space:nowrap;">← Tour</a>
+      </div>
     </div>
     <div id="mapbox-map"></div>
     <div class="map-stops-title" style="margin-top:1.25rem">Navigate to stops</div>
@@ -726,10 +731,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div style="height:1rem"></div>
   </div>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="showScreen('overworld')"><span class="nav-icon" style="display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="nav-lbl">Tour</span></button>
-    <button class="nav-btn" id="nav-map" onclick="showScreen('map')"><span class="nav-icon" style="display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="nav-lbl">Map</span></button>
-  </nav>
+
 </div>
 
 <!-- JOURNEY -->
@@ -940,8 +942,6 @@ function showScreen(name){
   document.getElementById('home-screen').style.display=name==='home'?'block':'none';
   const mapEl=document.getElementById('map-screen');
   name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('nav-'+name).classList.add('active');
 }
 
 // ══ LISTS ══
