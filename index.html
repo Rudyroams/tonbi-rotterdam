@@ -498,7 +498,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.6rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1.25rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.5rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
 /* Video cards - centered with side space */
 .cf-fullscreen .card-bottom { padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; justify-content:center; align-items:center; }
@@ -898,9 +898,20 @@ function skipToText(stopId){
   if(skipLink){ skipLink.style.display='none'; }
 }
 
-function setupSoundPopup(stopId){
+function startVideoAfterPopup(stopId){
   const popup = document.getElementById('sound-popup-'+stopId);
-  if(popup) setTimeout(()=>{ popup.style.display='none'; }, 4000);
+  if(popup) popup.style.display = 'none';
+  const thumb = document.getElementById('cf-thumb-'+stopId);
+  if(thumb) thumb.style.display = 'none';
+  const iframe = document.getElementById('cf-vid-'+stopId);
+  if(iframe && iframe.dataset.src){
+    iframe.src = iframe.dataset.src;
+    iframe.style.zIndex = '3';
+  }
+}
+
+function setupSoundPopup(stopId){
+  // Popup is now shown by default, no auto-dismiss needed
 }
 
 function setupRudyScrollHint(stopId){
@@ -1004,22 +1015,33 @@ function renderCard(card,idx,total){
   if(card.type==='desc'){
     if(s.cloudflareId && s.cfStyle==='fullscreen'){
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;">
+        <!-- Thumbnail shown while popup is up, replaced by iframe after -->
+        <img id="cf-thumb-${s.id}" src="${s.img}"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;">
         <iframe id="cf-vid-${s.id}"
-          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto"
-          style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;object-position:bottom;"
+          src=""
+          data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto"
+          style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;object-position:bottom;z-index:1;"
           allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
           allowfullscreen></iframe>
-        <!-- Sound info popup — tappable, dismisses itself -->
-        <div id="sound-popup-${s.id}" onclick="this.style.display='none'"
-          style="position:absolute;bottom:calc(72px + env(safe-area-inset-bottom) + 56px);left:50%;transform:translateX(-50%);z-index:15;
-            background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-            border:1px solid rgba(255,255,255,0.15);border-radius:16px;
-            padding:0.75rem 1rem;width:80%;max-width:280px;text-align:center;
-            animation:fadeInUp 0.4s ease forwards;">
-          <div style="font-size:1.1rem;margin-bottom:0.3rem;">🔇</div>
-          <div style="font-size:0.78rem;font-weight:700;color:white;margin-bottom:0.2rem;">Video starts muted</div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);line-height:1.5;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
-          <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin-top:0.4rem;">Tap to dismiss</div>
+        <!-- Sound info popup — shown first, starts video when dismissed -->
+        <div id="sound-popup-${s.id}"
+          style="position:absolute;inset:0;z-index:15;
+            display:flex;align-items:center;justify-content:center;
+            background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);">
+          <div onclick="startVideoAfterPopup('${s.id}')"
+            style="background:rgba(20,20,20,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+              border:1px solid rgba(255,255,255,0.18);border-radius:20px;
+              padding:1.25rem 1.5rem;width:82%;max-width:300px;text-align:center;cursor:pointer;
+              animation:fadeInUp 0.35s ease forwards;">
+            <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔇</div>
+            <div style="font-size:0.92rem;font-weight:800;color:white;margin-bottom:0.4rem;">Video starts muted</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:0.85rem;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
+            <div style="background:var(--orange);color:white;border-radius:99px;padding:0.55rem 1.4rem;
+              font-weight:800;font-size:0.9rem;display:inline-block;">
+              ▶ Play video
+            </div>
+          </div>
         </div>
         <!-- Title + tagline — no background bar, just padding -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
@@ -1288,7 +1310,7 @@ function renderCard(card,idx,total){
           <!-- Quiz Time! frosted pill centered on image -->
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
             <div style="
-              background:rgba(255,255,255,0.18);
+              background:rgba(255,255,255,0.72);
               backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
               border:1.5px solid rgba(255,255,255,0.35);
               border-radius:22px;
@@ -1296,7 +1318,8 @@ function renderCard(card,idx,total){
               display:flex;flex-direction:column;align-items:center;gap:0.1rem;
               animation:quizTitlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;
-                color:var(--orange);letter-spacing:0.02em;line-height:1;text-align:center;">
+                color:var(--orange);letter-spacing:0.02em;line-height:1;text-align:center;
+                text-shadow:none;">
                 🎯 Quiz Time!
               </div>
             </div>
@@ -1425,7 +1448,7 @@ function updateNavBtns(){
       textBtn.style.cssText = 'flex:1;';
       document.getElementById('card-bottom').insertBefore(textBtn, document.getElementById('next-btn'));
     }
-    textBtn.textContent = '📄 Read text';
+    textBtn.textContent = 'Text only';
     textBtn.onclick = function(){ skipToTextFullscreen(currentStop.id); };
     textBtn.style.display = 'block';
   } else {
@@ -1449,8 +1472,8 @@ function updateNavBtns(){
 }
 
 function stopCFVideo(){
-  var iframe = document.querySelector('.card[data-type="desc"] iframe[src*="cloudflarestream"]');
-  if(iframe){ iframe.src = iframe.src; }
+  var iframe = document.querySelector('.card[data-type="desc"] iframe[id^="cf-vid"]');
+  if(iframe){ iframe.src = ''; }
 }
 
 function nextCard(){
@@ -1799,11 +1822,36 @@ function initStopMap(stopId){
   // Destination marker: circular photo of the stop
   const stop = stops.find(x => x.id === stopId);
   const destEl = document.createElement('div');
-  destEl.style.cssText = 'width:54px;height:54px;border-radius:50%;border:3px solid #ff6b35;box-shadow:0 2px 16px rgba(255,107,53,0.5);overflow:hidden;background:#ff6b35;';
+  destEl.style.cssText = 'width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;transition:transform 0.2s;';
   const destImg = document.createElement('img');
   destImg.src = stop ? stop.img : '';
   destImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';
   destEl.appendChild(destImg);
+  // Tap to enlarge
+  destEl.addEventListener('click', function(){
+    let overlay = document.getElementById('dest-img-overlay');
+    if(!overlay){
+      overlay = document.createElement('div');
+      overlay.id = 'dest-img-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px);';
+      overlay.onclick = function(){ overlay.style.display='none'; };
+      const imgWrap = document.createElement('div');
+      imgWrap.style.cssText = 'border-radius:20px;overflow:hidden;max-width:340px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+      const bigImg = document.createElement('img');
+      bigImg.id = 'dest-img-big';
+      bigImg.style.cssText = 'width:100%;display:block;object-fit:cover;';
+      const caption = document.createElement('div');
+      caption.id = 'dest-img-caption';
+      caption.style.cssText = 'background:#111;color:white;padding:0.75rem 1rem;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;';
+      imgWrap.appendChild(bigImg);
+      imgWrap.appendChild(caption);
+      overlay.appendChild(imgWrap);
+      document.body.appendChild(overlay);
+    }
+    document.getElementById('dest-img-big').src = stop ? stop.img : '';
+    document.getElementById('dest-img-caption').textContent = stop ? stop.name : '';
+    overlay.style.display = 'flex';
+  });
   new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
 
   stopMap.on('load', () => {
