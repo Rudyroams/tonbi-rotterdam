@@ -1814,7 +1814,7 @@ function initPhotoMap(stopId){
   const m = new mapboxgl.Map({
     container:'photo-map-'+stopId,
     style:'mapbox://styles/mapbox/standard',
-    config:{ basemap:{ lightPreset:'dawn' } },
+    config:{ basemap:{ lightPreset:'dawn', showPlaceLabels:true, showRoadLabels:false, showPointOfInterestLabels:false } },
     center:coord, zoom:16, pitch:75, bearing:-25,
     interactive:false, attributionControl:false
   });
@@ -1834,7 +1834,7 @@ function initEndMap(){
   const endMap=new mapboxgl.Map({
     container:'end-map',
     style:'mapbox://styles/mapbox/standard',
-    config:{ basemap:{ lightPreset:'dawn' } },
+    config:{ basemap:{ lightPreset:'dawn', showPlaceLabels:true, showRoadLabels:false, showPointOfInterestLabels:false } },
     center:[4.4890,51.9150],
     zoom:11,
     interactive:false,
@@ -2050,7 +2050,7 @@ function initStopMap(stopId){
   const stopMap = new mapboxgl.Map({
     container: containerId,
     style: 'mapbox://styles/mapbox/standard',
-    config: { basemap: { lightPreset: 'dawn' } },
+    config: { basemap: { lightPreset: 'dawn', showPlaceLabels: true, showRoadLabels: false, showPointOfInterestLabels: false } },
     center: destCoord,
     zoom: 10,
     pitch: 75,
@@ -2185,7 +2185,7 @@ function initMap(){
   const map = new mapboxgl.Map({
     container: 'mapbox-map',
     style: 'mapbox://styles/mapbox/standard',
-    config: { basemap: { lightPreset: 'dawn' } },
+    config: { basemap: { lightPreset: 'dawn', showPlaceLabels: true, showRoadLabels: false, showPointOfInterestLabels: false } },
     center: [4.4841, 51.9060],
     zoom: 12,
     pitch: 60,
