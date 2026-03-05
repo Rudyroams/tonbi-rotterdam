@@ -1688,111 +1688,93 @@ function renderCard(card,idx,total){
     const p = card.partner;
     const pid = s.id + '-' + card.partnerIdx;
 
-    // Video block — vertical player in own section, small with fullscreen option
-    const videoBlock = p.cloudflareId ? `
-      <div style="padding:1rem 1.25rem 0;">
-        <!-- Section label -->
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Meet the owner</div>
+    return `
+    <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
+
+      <!-- Hero image — shorter 16/9, name overlay, no type pill -->
+      <div class="partner-hero" style="aspect-ratio:16/9;">
+        <img src="${p.img}" alt="${p.name}">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.08) 55%,transparent 100%);"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.85rem 1.25rem;">
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.2rem;">Local Food Tip</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">${p.name}</div>
         </div>
-        <!-- Vertical video player — compact, 9:16 capped at 200px wide, centered -->
-        <div style="display:flex;align-items:flex-start;gap:0.85rem;">
-          <div style="position:relative;width:110px;flex-shrink:0;border-radius:12px;overflow:hidden;background:#111;aspect-ratio:9/16;cursor:pointer;"
-               id="pvid-wrap-${pid}" onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
-            <img src="${p.img}" alt="${p.name}"
+      </div>
+
+      <!-- Partner info body -->
+      <div class="partner-body">
+        <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
+        <div class="partner-name">${p.name}</div>
+        <div class="partner-desc">${p.desc}</div>
+        <div class="partner-meta">
+          <div class="partner-meta-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ${p.hours}
+          </div>
+          ${p.mapUrl ? `
+          <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${p.location} ↗
+          </a>` : `
+          <div class="partner-meta-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${p.location}
+          </div>`}
+        </div>
+      </div>
+
+      <!-- Meet the owner + offer side by side -->
+      ${p.cloudflareId || p.offer ? `
+      <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:stretch;">
+
+        <!-- Video thumbnail (playable inline) -->
+        ${p.cloudflareId ? `
+        <div style="flex-shrink:0;width:120px;display:flex;flex-direction:column;gap:0.4rem;">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;display:flex;align-items:center;gap:0.3rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Meet the owner
+          </div>
+          <div style="position:relative;width:120px;border-radius:10px;overflow:hidden;background:#111;aspect-ratio:9/16;"
+               id="pvid-wrap-${pid}">
+            <img id="pvid-thumb-${pid}" src="${p.img}" alt="${p.name}"
               style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.7);">
-            <!-- Play button -->
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-              <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.92);
+            <div id="pvid-playbtn-${pid}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+                 onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
+              <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.92);
                 display:flex;align-items:center;justify-content:center;
-                box-shadow:0 3px 14px rgba(0,0,0,0.3);">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+                box-shadow:0 3px 12px rgba(0,0,0,0.3);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
               </div>
             </div>
-            <!-- Iframe loads on tap -->
             <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=1&muted=1&controls=1&preload=auto"
               style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
               allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
           </div>
-          <!-- Text beside video -->
-          <div style="flex:1;padding-top:0.2rem;">
-            <div style="font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.3rem;">${p.ownerName || 'The owner'}</div>
-            <div style="font-size:0.78rem;color:var(--text2);line-height:1.55;margin-bottom:0.65rem;">${p.ownerDesc || 'A short intro from the person behind this place — in their own words.'}</div>
-            <a onclick="openPartnerVideoFullscreen('${p.cloudflareId}')"
-              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.35rem;
-                font-size:0.72rem;font-weight:700;color:var(--orange);text-decoration:none;">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-              Watch full screen
-            </a>
+          <a onclick="openPartnerVideoFullscreen('${p.cloudflareId}')"
+            style="cursor:pointer;display:inline-flex;align-items:center;gap:0.3rem;font-size:0.65rem;font-weight:700;color:var(--orange);text-decoration:none;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            Full screen
+          </a>
+        </div>` : ''}
+
+        <!-- Offer — compact, tappable to expand -->
+        ${p.offer ? `
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.3rem;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            Your offer
           </div>
-        </div>
-      </div>` : '';
-
-    return `
-    <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
-      <div class="partner-card">
-        <!-- Hero image with big title overlay -->
-        <div class="partner-hero" style="aspect-ratio:4/3;">
-          <img src="${p.img}" alt="${p.name}">
-          <!-- dark gradient -->
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
-          <!-- type pill top-left -->
-          <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
-          <!-- Partner name bottom-left -->
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.25rem;">
-            <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Local Food Tip</div>
-            <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">${p.name}</div>
-          </div>
-        </div>
-
-        <!-- Video (if any) -->
-        ${videoBlock}
-
-        <!-- Body -->
-        <div class="partner-body">
-          <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
-          <div class="partner-name">${p.name}</div>
-          <div class="partner-desc">${p.desc}</div>
-          <div class="partner-meta">
-            <div class="partner-meta-item">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ${p.hours}
+          <div onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
+            style="cursor:pointer;background:linear-gradient(135deg,#fff8f5,#fff3ee);border:2px dashed var(--orange);border-radius:12px;padding:0.7rem 0.85rem;height:100%;box-sizing:border-box;">
+            <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.35rem;">${p.offer}</div>
+            <div style="background:rgba(255,107,53,0.08);border-radius:8px;padding:0.3rem 0.5rem;display:inline-flex;align-items:center;gap:0.4rem;">
+              <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+              <div style="font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
             </div>
-            ${p.mapUrl ? `
-            <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              ${p.location} ↗
-            </a>` : `
-            <div class="partner-meta-item">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              ${p.location}
-            </div>`}
+            <div style="font-size:0.6rem;color:var(--text2);margin-top:0.4rem;">Tap to show full offer →</div>
           </div>
-        </div>
-      </div>
+        </div>` : ''}
 
-      <!-- Offer ticket -->
-      ${p.offer ? `
-      <div class="partner-offer" style="margin:0.85rem 1.25rem 0;">
-        <div class="partner-offer-header">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Your exclusive offer
-        </div>
-        <div class="partner-offer-body">
-          <div class="partner-offer-text">${p.offer}</div>
-          <div class="partner-offer-small">${p.offerNote || 'Show this screen to staff. Valid today only.'}</div>
-          <div class="partner-offer-code">
-            <div>
-              <div class="partner-offer-code-label">Today's code</div>
-              <div class="partner-offer-code-value">${p.code || 'TBR-001'}</div>
-            </div>
-            <button onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
-              style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.5rem 1rem;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(255,107,53,0.3);">
-              Show offer
-            </button>
-          </div>
-        </div>
       </div>` : ''}
     </div>`;
   }
@@ -2048,17 +2030,14 @@ function openPartnerVideoFullscreen(cfId){
 }
 
 function openPartnerVideo(pid, cfId){
-  const wrap = document.getElementById('pvid-wrap-'+pid);
   const iframe = document.getElementById('pvid-'+pid);
-  if(!iframe || iframe.src) return; // already playing
+  if(!iframe || iframe.src) return;
   iframe.src = iframe.dataset.src;
   iframe.style.display = 'block';
-  // hide thumbnail/play button overlay
-  const img = wrap.querySelector('img');
-  const playBtn = wrap.querySelector('div');
-  if(img) img.style.display='none';
-  wrap.querySelectorAll('div').forEach(d=>{ if(d!==iframe) d.style.display='none'; });
-  wrap.onclick = null;
+  const thumb = document.getElementById('pvid-thumb-'+pid);
+  const playBtn = document.getElementById('pvid-playbtn-'+pid);
+  if(thumb) thumb.style.display = 'none';
+  if(playBtn) playBtn.style.display = 'none';
 }
 
 function showOffer(name, offer, note, code, emoji){
