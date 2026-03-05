@@ -498,7 +498,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
 
 /* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1.25rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.5rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1.6rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.5rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
 /* Video cards - centered with side space */
 .cf-fullscreen .card-bottom { padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; justify-content:center; align-items:center; }
@@ -986,18 +986,18 @@ function renderCard(card,idx,total){
       <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
         height:120px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);pointer-events:none;"></div>
       <!-- Bottom-right: route info + Google Maps button stacked -->
-      <!-- Route info + Google Maps — grouped frosted card, bottom right -->
-      <div style="position:absolute;bottom:16px;right:14px;z-index:11;
-        background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-        border:1px solid rgba(255,107,53,0.2);border-radius:22px;
-        box-shadow:0 2px 12px rgba(0,0,0,0.14);
-        overflow:hidden;display:flex;flex-direction:column;">
+      <!-- Route info + Google Maps — frosted pill, bottom-center -->
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;
+        background:rgba(255,255,255,0.38);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+        border:1px solid rgba(255,255,255,0.55);border-radius:22px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.10);
+        overflow:hidden;display:flex;flex-direction:column;min-width:160px;">
         <!-- Time remaining row — hidden until route loads -->
         <div id="route-info-${s.id}"
           style="display:none;
                  padding:0.3rem 0.85rem 0.22rem;
-                 font-size:0.62rem;font-weight:700;color:var(--text);
-                 border-bottom:1px solid rgba(255,107,53,0.15);
+                 font-size:0.62rem;font-weight:700;color:var(--orange);
+                 border-bottom:1px solid rgba(255,255,255,0.4);
                  white-space:nowrap;line-height:1.3;text-align:center;"></div>
         <!-- Google Maps row — always visible -->
         <a href="${s.mapUrl}" target="_blank"
@@ -1027,30 +1027,40 @@ function renderCard(card,idx,total){
         <!-- Sound info popup — shown first, starts video when dismissed -->
         <div id="sound-popup-${s.id}"
           style="position:absolute;inset:0;z-index:15;
-            display:flex;align-items:center;justify-content:center;
-            background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);">
+            display:flex;align-items:center;justify-content:center;padding-top:20%;
+            background:rgba(0,0,0,0.3);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);">
           <div onclick="startVideoAfterPopup('${s.id}')"
-            style="background:rgba(20,20,20,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-              border:1px solid rgba(255,255,255,0.18);border-radius:20px;
-              padding:1.25rem 1.5rem;width:82%;max-width:300px;text-align:center;cursor:pointer;
+            style="background:rgba(0,0,0,0.45);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+              border:1px solid rgba(255,255,255,0.2);border-radius:24px;
+              padding:1.5rem 1.75rem;width:82%;max-width:300px;text-align:center;cursor:pointer;
               animation:fadeInUp 0.35s ease forwards;">
-            <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔇</div>
+            <!-- Speaker-off icon: clean minimal lines, no phone feel -->
+            <div style="margin-bottom:0.75rem;display:flex;justify-content:center;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3 L7 8 H3 V16 H7 L12 21 Z"/>
+                <line x1="20" y1="8" x2="14" y2="14"/>
+                <line x1="14" y1="8" x2="20" y2="14"/>
+              </svg>
+            </div>
             <div style="font-size:0.92rem;font-weight:800;color:white;margin-bottom:0.4rem;">Video starts muted</div>
-            <div style="font-size:0.78rem;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:0.85rem;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
-            <div style="background:var(--orange);color:white;border-radius:99px;padding:0.55rem 1.4rem;
-              font-weight:800;font-size:0.9rem;display:inline-block;">
-              ▶ Play video
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:1rem;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
+            <!-- Play button: clean circle with triangle -->
+            <div style="background:var(--orange);color:white;border-radius:99px;padding:0.6rem 1.5rem;
+              font-weight:800;font-size:0.88rem;display:inline-flex;align-items:center;gap:0.6rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="none">
+                <path d="M5 3 L19 12 L5 21 Z"/>
+              </svg>
+              Play video
             </div>
           </div>
         </div>
-        <!-- Title + tagline — no background bar, just padding -->
+        <!-- Top gradient + title/tagline -->
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 0;
+          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;
+          background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);
           pointer-events:none;">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;
-            text-shadow:0 1px 6px rgba(0,0,0,0.55);">${s.name}</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;
-            text-shadow:0 1px 4px rgba(0,0,0,0.5);">${s.tagline}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div>
         </div>
         <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);
           z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
@@ -1061,7 +1071,7 @@ function renderCard(card,idx,total){
           <div style="text-align:center;padding-bottom:1rem;">
             <a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'"
               style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                     background:var(--orange);color:white;font-weight:700;font-size:0.85rem;
+                     background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;
                      padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
               <svg width="13" height="13" viewBox="0 0 12 12" fill="white" style="margin-right:0.3rem;flex-shrink:0;"><polygon points="2,1 11,6 2,11"/></svg> Watch video instead</a>
           </div>
@@ -1310,22 +1320,22 @@ function renderCard(card,idx,total){
           <!-- Quiz Time! frosted pill centered on image -->
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
             <div style="
-              background:rgba(255,255,255,0.72);
+              background:var(--orange);
               backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-              border:1.5px solid rgba(255,255,255,0.35);
+              border:2px solid rgba(255,255,255,0.4);
               border-radius:22px;
-              padding:0.55rem 1.2rem;
+              padding:0.55rem 1.3rem;
               display:flex;flex-direction:column;align-items:center;gap:0.1rem;
+              box-shadow:0 4px 20px rgba(255,107,53,0.45);
               animation:quizTitlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;
-                color:var(--orange);letter-spacing:0.02em;line-height:1;text-align:center;
-                text-shadow:none;">
+                color:white;letter-spacing:0.02em;line-height:1;text-align:center;">
                 🎯 Quiz Time!
               </div>
             </div>
           </div>
-          <!-- Score badge top-right of image -->
-          <div style="position:absolute;top:10px;right:10px;z-index:3;
+          <!-- Score badge bottom-right of image -->
+          <div style="position:absolute;bottom:10px;right:10px;z-index:3;
             background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
             border-radius:20px;padding:0.25rem 0.6rem;
             display:flex;align-items:center;gap:0.3rem;
@@ -1602,11 +1612,14 @@ function initEndMap(){
     container:'end-map',
     style:'mapbox://styles/mapbox/streets-v12',
     center:[4.4890,51.9150],
-    zoom:13.5,
+    zoom:11,
     interactive:false,
     attributionControl:false
   });
   endMap.on('load',()=>{
+    // Fit all stops into view
+    const bounds = coords.reduce((b,c)=>b.extend(c), new mapboxgl.LngLatBounds(coords[0],coords[0]));
+    endMap.fitBounds(bounds, {padding:45, animate:false, maxZoom:14});
     // Dotted route line
     endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
     endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',
