@@ -1001,7 +1001,9 @@ const stops = [
         offer:"Free soft drink with any purchase",
         offerNote:"Show this screen to the staff at the counter. One offer per tour code.",
         code:"TBR-001",
-        emoji:"🐟"
+        emoji:"🐟",
+        ownerName:"Jan van der Berg",
+        ownerDesc:"Third-generation herring fishmonger. Jan will tell you exactly why Rotterdam herring tastes different from anywhere else."
       }
     ]
   }
@@ -1686,29 +1688,45 @@ function renderCard(card,idx,total){
     const p = card.partner;
     const pid = s.id + '-' + card.partnerIdx;
 
-    // Video block — Cloudflare thumbnail + expandable iframe
+    // Video block — vertical player in own section, small with fullscreen option
     const videoBlock = p.cloudflareId ? `
-      <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer;"
-           id="pvid-wrap-${pid}" onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
-        <img src="${p.img}" alt="${p.name}"
-          style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.75);">
-        <!-- Play button -->
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-          <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);
-            display:flex;align-items:center;justify-content:center;
-            box-shadow:0 4px 20px rgba(0,0,0,0.35);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+      <div style="padding:1rem 1.25rem 0;">
+        <!-- Section label -->
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Meet the owner</div>
+        </div>
+        <!-- Vertical video player — compact, 9:16 capped at 200px wide, centered -->
+        <div style="display:flex;align-items:flex-start;gap:0.85rem;">
+          <div style="position:relative;width:110px;flex-shrink:0;border-radius:12px;overflow:hidden;background:#111;aspect-ratio:9/16;cursor:pointer;"
+               id="pvid-wrap-${pid}" onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
+            <img src="${p.img}" alt="${p.name}"
+              style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.7);">
+            <!-- Play button -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.92);
+                display:flex;align-items:center;justify-content:center;
+                box-shadow:0 3px 14px rgba(0,0,0,0.3);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+              </div>
+            </div>
+            <!-- Iframe loads on tap -->
+            <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=1&muted=1&controls=1&preload=auto"
+              style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
+              allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <!-- Text beside video -->
+          <div style="flex:1;padding-top:0.2rem;">
+            <div style="font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.3rem;">${p.ownerName || 'The owner'}</div>
+            <div style="font-size:0.78rem;color:var(--text2);line-height:1.55;margin-bottom:0.65rem;">${p.ownerDesc || 'A short intro from the person behind this place — in their own words.'}</div>
+            <a onclick="openPartnerVideoFullscreen('${p.cloudflareId}')"
+              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.35rem;
+                font-size:0.72rem;font-weight:700;color:var(--orange);text-decoration:none;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              Watch full screen
+            </a>
           </div>
         </div>
-        <div style="position:absolute;bottom:10px;left:12px;
-          background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
-          color:white;font-size:0.62rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:20px;">
-          ▶ Watch video
-        </div>
-        <!-- Iframe loads on tap -->
-        <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=1&muted=1&controls=1&preload=auto"
-          style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
-          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
       </div>` : '';
 
     return `
@@ -1721,10 +1739,10 @@ function renderCard(card,idx,total){
           <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
           <!-- type pill top-left -->
           <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
-          <!-- Big title bottom-left -->
+          <!-- Partner name bottom-left -->
           <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.25rem;">
-            <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">Local Tip</div>
-            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">🍽️ Food &amp;<br>Drinks</div>
+            <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Local Food Tip</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">${p.name}</div>
           </div>
         </div>
 
@@ -2008,6 +2026,25 @@ function showEndScreen(){
 
   // Init static map
   setTimeout(()=>initEndMap(),150);
+}
+
+function openPartnerVideoFullscreen(cfId){
+  // Reuse the journey fullscreen pattern — open a floating fullscreen video
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9500;background:#000;display:flex;align-items:center;justify-content:center;';
+  overlay.onclick = function(){ document.body.removeChild(overlay); };
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://customer-umijtu8zknmpubqb.cloudflarestream.com/'+cfId+'/iframe?autoplay=1&muted=0&controls=1';
+  iframe.style.cssText = 'width:100%;height:100%;border:0;';
+  iframe.allow = 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture';
+  iframe.allowFullscreen = true;
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:calc(1rem + env(safe-area-inset-top));right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1rem;font-weight:700;cursor:pointer;z-index:1;';
+  closeBtn.onclick = function(e){ e.stopPropagation(); document.body.removeChild(overlay); };
+  overlay.appendChild(iframe);
+  overlay.appendChild(closeBtn);
+  document.body.appendChild(overlay);
 }
 
 function openPartnerVideo(pid, cfId){
