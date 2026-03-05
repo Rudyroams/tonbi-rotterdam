@@ -1815,7 +1815,7 @@ function initPhotoMap(stopId){
     container:'photo-map-'+stopId,
     style:'mapbox://styles/mapbox/standard',
     config:{ basemap:{ lightPreset:'dawn' } },
-    center:coord, zoom:16, pitch:50, bearing:-15,
+    center:coord, zoom:16, pitch:75, bearing:-25,
     interactive:false, attributionControl:false
   });
   m.on('load',()=>{
@@ -2053,8 +2053,8 @@ function initStopMap(stopId){
     config: { basemap: { lightPreset: 'dawn' } },
     center: destCoord,
     zoom: 10,
-    pitch: 45,
-    bearing: -20,
+    pitch: 75,
+    bearing: -30,
     attributionControl: false,
     interactive: true
   });
@@ -2188,8 +2188,8 @@ function initMap(){
     config: { basemap: { lightPreset: 'dawn' } },
     center: [4.4841, 51.9060],
     zoom: 12,
-    pitch: 40,
-    bearing: -15,
+    pitch: 60,
+    bearing: -25,
     attributionControl: false
   });
 
