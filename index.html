@@ -993,9 +993,11 @@ const stops = [
         name:"Markthal Herring Stand",
         type:"Street Food",
         img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
+        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",
         desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. This is non-negotiable Rotterdam food culture.",
         hours:"Tue–Sat 10:00–18:00, Sun 11:00–17:00",
         location:"Inside Markthal, central aisle",
+        mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
         offer:"Free soft drink with any purchase",
         offerNote:"Show this screen to the staff at the counter. One offer per tour code.",
         code:"TBR-001",
@@ -1267,8 +1269,8 @@ function buildCards(stop){
   const cards = base.map(type=>({type,stop}));
   // Inject a partner card for each partner after quiz
   if(stop.partners && stop.partners.length>0){
-    stop.partners.forEach(partner=>{
-      cards.push({type:'partner', stop, partner});
+    stop.partners.forEach((partner, pi)=>{
+      cards.push({type:'partner', stop, partner, partnerIdx: pi});
     });
   }
   return cards;
@@ -1682,14 +1684,53 @@ function renderCard(card,idx,total){
   }
   if(card.type==='partner'){
     const p = card.partner;
-    return `
-    <div class="card" data-stop="${s.id}" data-type="partner" style="padding-bottom:1.5rem;">
-      <div class="partner-card">
-        <!-- Hero image -->
-        <div class="partner-hero">
-          <img src="${p.img}" alt="${p.name}">
-          <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
+    const pid = s.id + '-' + card.partnerIdx;
+
+    // Video block — Cloudflare thumbnail + expandable iframe
+    const videoBlock = p.cloudflareId ? `
+      <div style="position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer;"
+           id="pvid-wrap-${pid}" onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
+        <img src="${p.img}" alt="${p.name}"
+          style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.75);">
+        <!-- Play button -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 4px 20px rgba(0,0,0,0.35);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
         </div>
+        <div style="position:absolute;bottom:10px;left:12px;
+          background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+          color:white;font-size:0.62rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:20px;">
+          ▶ Watch video
+        </div>
+        <!-- Iframe loads on tap -->
+        <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=1&muted=1&controls=1&preload=auto"
+          style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
+          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+      </div>` : '';
+
+    return `
+    <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
+      <div class="partner-card">
+        <!-- Hero image with big title overlay -->
+        <div class="partner-hero" style="aspect-ratio:4/3;">
+          <img src="${p.img}" alt="${p.name}">
+          <!-- dark gradient -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
+          <!-- type pill top-left -->
+          <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
+          <!-- Big title bottom-left -->
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.25rem;">
+            <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">Local Tip</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">🍽️ Food &amp;<br>Drinks</div>
+          </div>
+        </div>
+
+        <!-- Video (if any) -->
+        ${videoBlock}
+
         <!-- Body -->
         <div class="partner-body">
           <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
@@ -1700,16 +1741,22 @@ function renderCard(card,idx,total){
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               ${p.hours}
             </div>
+            ${p.mapUrl ? `
+            <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${p.location} ↗
+            </a>` : `
             <div class="partner-meta-item">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               ${p.location}
-            </div>
+            </div>`}
           </div>
         </div>
       </div>
+
       <!-- Offer ticket -->
       ${p.offer ? `
-      <div class="partner-offer" style="margin-top:0.85rem;">
+      <div class="partner-offer" style="margin:0.85rem 1.25rem 0;">
         <div class="partner-offer-header">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
           Your exclusive offer
@@ -1961,6 +2008,20 @@ function showEndScreen(){
 
   // Init static map
   setTimeout(()=>initEndMap(),150);
+}
+
+function openPartnerVideo(pid, cfId){
+  const wrap = document.getElementById('pvid-wrap-'+pid);
+  const iframe = document.getElementById('pvid-'+pid);
+  if(!iframe || iframe.src) return; // already playing
+  iframe.src = iframe.dataset.src;
+  iframe.style.display = 'block';
+  // hide thumbnail/play button overlay
+  const img = wrap.querySelector('img');
+  const playBtn = wrap.querySelector('div');
+  if(img) img.style.display='none';
+  wrap.querySelectorAll('div').forEach(d=>{ if(d!==iframe) d.style.display='none'; });
+  wrap.onclick = null;
 }
 
 function showOffer(name, offer, note, code, emoji){
