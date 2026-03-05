@@ -672,7 +672,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
         Start Tour
       </button>
-      <a class="ow-list-link" onclick="showScreen('home')">☰ View as list of stops</a>
+      <a class="ow-list-link" onclick="showScreen('home')" style="font-size:0.9rem;font-weight:700;color:rgba(255,255,255,0.65);padding:0.5rem;">☰ View as list of stops</a>
     </div>
   </div>
 
@@ -689,7 +689,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     </div>
     <!-- Back to map link -->
     <div style="padding:0 1.25rem 0.5rem;text-align:right;">
-      <a onclick="showScreen('overworld')" style="font-size:0.75rem;font-weight:600;color:var(--orange);cursor:pointer;text-decoration:none;">
+      <a onclick="showScreen('overworld')" style="font-size:0.9rem;font-weight:700;color:var(--orange);cursor:pointer;text-decoration:none;">
         ← Back to map view
       </a>
     </div>
@@ -722,7 +722,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
           <div class="map-top-title">Route Map</div>
           <div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div>
         </div>
-        <a onclick="showScreen('overworld')" style="font-size:0.75rem;font-weight:700;color:var(--orange);cursor:pointer;white-space:nowrap;">← Tour</a>
+        <a onclick="showScreen('overworld')" style="font-size:0.9rem;font-weight:700;color:var(--orange);cursor:pointer;white-space:nowrap;">← Tour</a>
       </div>
     </div>
     <div id="mapbox-map"></div>
@@ -1813,7 +1813,8 @@ function initPhotoMap(stopId){
   const coord = coords[stopId-1];
   const m = new mapboxgl.Map({
     container:'photo-map-'+stopId,
-    style:'mapbox://styles/mapbox/streets-v12',
+    style:'mapbox://styles/mapbox/standard',
+    config:{ basemap:{ lightPreset:'dawn' } },
     center:coord, zoom:16, interactive:false, attributionControl:false
   });
   m.on('load',()=>{
@@ -1831,7 +1832,8 @@ function initEndMap(){
   const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
   const endMap=new mapboxgl.Map({
     container:'end-map',
-    style:'mapbox://styles/mapbox/streets-v12',
+    style:'mapbox://styles/mapbox/standard',
+    config:{ basemap:{ lightPreset:'dawn' } },
     center:[4.4890,51.9150],
     zoom:11,
     interactive:false,
@@ -2046,7 +2048,8 @@ function initStopMap(stopId){
 
   const stopMap = new mapboxgl.Map({
     container: containerId,
-    style: 'mapbox://styles/mapbox/streets-v12',
+    style: 'mapbox://styles/mapbox/standard',
+    config: { basemap: { lightPreset: 'dawn' } },
     center: destCoord,
     zoom: 10,
     attributionControl: false,
@@ -2178,7 +2181,8 @@ function initMap(){
 
   const map = new mapboxgl.Map({
     container: 'mapbox-map',
-    style: 'mapbox://styles/mapbox/light-v11',
+    style: 'mapbox://styles/mapbox/standard',
+    config: { basemap: { lightPreset: 'dawn' } },
     center: [4.4841, 51.9060],
     zoom: 12,
     attributionControl: false
