@@ -1691,13 +1691,21 @@ function renderCard(card,idx,total){
     return `
     <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
 
-      <!-- Hero image — shorter 16/9, name overlay, no type pill -->
+      <!-- Hero image — 16/9, "Local Food Tip!" centered big, no partner name -->
       <div class="partner-hero" style="aspect-ratio:16/9;">
         <img src="${p.img}" alt="${p.name}">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.08) 55%,transparent 100%);"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.85rem 1.25rem;">
-          <div style="font-size:0.58rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.2rem;">Local Food Tip</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.05;letter-spacing:-0.02em;">${p.name}</div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.38);"></div>
+        <!-- Centered big title -->
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;">
+          <div style="font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
+            background:linear-gradient(135deg,#ffdd57 0%,#ff6b35 55%,#ff3b7a 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(0,0,0,0.45));">
+            Local Food Tip!
+          </div>
+          <div style="margin-top:0.4rem;font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.8);letter-spacing:0.1em;text-transform:uppercase;">
+            ${p.emoji || '🍽️'} ${p.type}
+          </div>
         </div>
       </div>
 
@@ -1714,7 +1722,7 @@ function renderCard(card,idx,total){
           ${p.mapUrl ? `
           <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            ${p.location} ↗
+            ${p.location}
           </a>` : `
           <div class="partner-meta-item">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -1725,9 +1733,9 @@ function renderCard(card,idx,total){
 
       <!-- Meet the owner + offer side by side -->
       ${p.cloudflareId || p.offer ? `
-      <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:stretch;">
+      <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:flex-start;">
 
-        <!-- Video thumbnail (playable inline) -->
+        <!-- Video: playable inside thumbnail, no autoplay -->
         ${p.cloudflareId ? `
         <div style="flex-shrink:0;width:120px;display:flex;flex-direction:column;gap:0.4rem;">
           <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;display:flex;align-items:center;gap:0.3rem;">
@@ -1746,7 +1754,8 @@ function renderCard(card,idx,total){
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
               </div>
             </div>
-            <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=1&muted=1&controls=1&preload=auto"
+            <!-- iframe with autoplay=0 so it loads but waits for user to press play -->
+            <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=0&muted=0&controls=1&preload=auto"
               style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
               allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
           </div>
@@ -1757,21 +1766,26 @@ function renderCard(card,idx,total){
           </a>
         </div>` : ''}
 
-        <!-- Offer — compact, tappable to expand -->
+        <!-- Offer coupon — compact, slightly tilted, tappable -->
         ${p.offer ? `
         <div style="flex:1;min-width:0;">
-          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.3rem;">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:0.55rem;display:flex;align-items:center;gap:0.3rem;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             Your offer
           </div>
+          <!-- Tilted coupon -->
           <div onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
-            style="cursor:pointer;background:linear-gradient(135deg,#fff8f5,#fff3ee);border:2px dashed var(--orange);border-radius:12px;padding:0.7rem 0.85rem;height:100%;box-sizing:border-box;">
-            <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.35rem;">${p.offer}</div>
-            <div style="background:rgba(255,107,53,0.08);border-radius:8px;padding:0.3rem 0.5rem;display:inline-flex;align-items:center;gap:0.4rem;">
-              <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+            style="cursor:pointer;transform:rotate(2.5deg);transform-origin:center;display:block;
+              background:linear-gradient(135deg,#fff8f5,#fff3ee);
+              border:2px dashed var(--orange);border-radius:10px;
+              padding:0.6rem 0.75rem;
+              box-shadow:2px 3px 10px rgba(255,107,53,0.2);">
+            <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.3rem;">${p.offer}</div>
+            <div style="display:flex;align-items:center;gap:0.35rem;">
+              <div style="font-size:0.56rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Code</div>
               <div style="font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
             </div>
-            <div style="font-size:0.6rem;color:var(--text2);margin-top:0.4rem;">Tap to show full offer →</div>
+            <div style="font-size:0.58rem;color:var(--text2);margin-top:0.3rem;">Tap to enlarge →</div>
           </div>
         </div>` : ''}
 
