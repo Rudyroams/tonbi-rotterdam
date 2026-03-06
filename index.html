@@ -1002,7 +1002,7 @@ const stops = [
         type:"Street Food",
         img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
         cloudflareId:"cdf7ca48be25d626e763da55c81765b8",
-        desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. This is non-negotiable Rotterdam food culture.",
+        desc:"The most authentic raw herring in Rotterdam, served the old-fashioned way since 1978. Order the broodje haring — chopped raw herring piled high with onion and pickles on a soft white roll. The herring is delivered fresh every morning straight from the North Sea. This is non-negotiable Rotterdam food culture, and Jan will make sure you eat it correctly.",
         hours:"Tue–Sat 10:00–18:00, Sun 11:00–17:00",
         location:"Inside Markthal, central aisle",
         mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
@@ -1744,8 +1744,8 @@ function renderCard(card,idx,total){
             </div>
           </div>
           ${p.cloudflareId ? `
-          <div style="flex-shrink:0;width:108px;">
-            <div style="position:relative;width:108px;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;"
+          <div style="flex-shrink:0;width:108px;margin-bottom:-44px;z-index:2;position:relative;">
+            <div style="position:relative;width:108px;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);"
                  onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
               <img src="${p.img}" alt="${p.name}"
                 style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);">
