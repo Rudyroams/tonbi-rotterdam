@@ -1708,9 +1708,9 @@ function renderCard(card,idx,total){
                       : [p.img, p.img, p.img, p.img];
 
     return `
-    <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
+    <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;">
 
-      <!-- Hero: 21/9, bright, orange pill behind "Local Food Tip!" in near-white -->
+      <!-- ① HERO: 21/9 cinematic, orange pill title -->
       <div class="partner-hero" style="aspect-ratio:21/9;">
         <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(1.05);">
         <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);"></div>
@@ -1725,10 +1725,9 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Partner info body: name + desc left, video thumbnail right -->
-      <div class="partner-body" style="padding-bottom:0;">
+      <!-- ② PARTNER BODY: name + desc left, video thumbnail right -->
+      <div class="partner-body" style="padding:1rem 1.25rem 0;">
         <div style="display:flex;gap:0.75rem;align-items:flex-start;">
-          <!-- Text column -->
           <div style="flex:1;min-width:0;">
             <div class="partner-name">${p.name}</div>
             <div class="partner-desc">${p.desc}</div>
@@ -1744,7 +1743,6 @@ function renderCard(card,idx,total){
               </a>` : ''}
             </div>
           </div>
-          <!-- Video thumbnail beside description -->
           ${p.cloudflareId ? `
           <div style="flex-shrink:0;width:90px;">
             <div style="position:relative;width:90px;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;"
@@ -1767,10 +1765,11 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Full-width 4-photo gallery + coupon overlay -->
-      <div style="padding:0.85rem 1.25rem 0;">
+      <!-- ③ 2×2 PHOTO GALLERY + coupon centred on top -->
+      <div style="padding:1rem 1.25rem 0;">
         <div style="position:relative;">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;border-radius:9px;overflow:hidden;">
+          <!-- 2×2 grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4px;border-radius:10px;overflow:hidden;">
             <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
               <img src="${collageImgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
@@ -1784,6 +1783,7 @@ function renderCard(card,idx,total){
               <img src="${collageImgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
           </div>
+          <!-- Coupon centred over gallery -->
           ${p.offer ? `
           <div class="partner-coupon"
             data-name="${p.name}"
@@ -1791,30 +1791,30 @@ function renderCard(card,idx,total){
             data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}"
             data-code="${p.code||'TBR-001'}"
             onclick="couponTap(this)">
-          <div style="background:#fffdf9;border-radius:6px;
-            box-shadow:0 5px 20px rgba(0,0,0,0.3),0 1px 4px rgba(0,0,0,0.1);
-            overflow:hidden;border:1px solid rgba(0,0,0,0.07);">
-            <div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;">
-              <div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                <line x1="7" y1="7" x2="7.01" y2="7"/>
-              </svg>
-            </div>
-            <div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div>
-            <div style="padding:0.5rem 0.7rem 0.45rem;">
-              <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div>
-              <div style="display:flex;align-items:center;gap:0.4rem;">
-                <div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
-                <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
+            <div style="background:#fffdf9;border-radius:6px;
+              box-shadow:0 5px 20px rgba(0,0,0,0.3),0 1px 4px rgba(0,0,0,0.1);
+              overflow:hidden;border:1px solid rgba(0,0,0,0.07);">
+              <div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+              </div>
+              <div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div>
+              <div style="padding:0.5rem 0.7rem 0.45rem;">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div>
+                <div style="display:flex;align-items:center;gap:0.4rem;">
+                  <div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+                  <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
+                </div>
+              </div>
+              <div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div>
+              <div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                <div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div>
               </div>
             </div>
-            <div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div>
-            <div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-              <div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div>
-            </div>
-          </div>
           </div>` : ''}
         </div>
       </div>
