@@ -1003,7 +1003,12 @@ const stops = [
         code:"TBR-001",
         emoji:"🐟",
         ownerName:"Jan van der Berg",
-        ownerDesc:"Third-generation herring fishmonger. Jan will tell you exactly why Rotterdam herring tastes different from anywhere else."
+        ownerDesc:"Third-generation herring fishmonger. Jan will tell you exactly why Rotterdam herring tastes different from anywhere else.",
+        gallery:[
+          "https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
+          "https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
+          "https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg"
+        ]
       }
     ]
   }
@@ -1688,23 +1693,22 @@ function renderCard(card,idx,total){
     const p = card.partner;
     const pid = s.id + '-' + card.partnerIdx;
 
+    // photo collage images — use partner gallery if provided, else repeat hero
+    const collageImgs = p.gallery && p.gallery.length>=3 ? p.gallery : [p.img, p.img, p.img];
+
     return `
     <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
 
-      <!-- Hero image — 16/9, "Local Food Tip!" centered big, no partner name -->
-      <div class="partner-hero" style="aspect-ratio:16/9;">
+      <!-- Hero: shorter 21/9 cinematic, "Local Food Tip!" centered, no type pill -->
+      <div class="partner-hero" style="aspect-ratio:21/9;">
         <img src="${p.img}" alt="${p.name}">
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.38);"></div>
-        <!-- Centered big title -->
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.42);"></div>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;">
-          <div style="font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
+          <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
             background:linear-gradient(135deg,#ffdd57 0%,#ff6b35 55%,#ff3b7a 100%);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-            filter:drop-shadow(0 2px 8px rgba(0,0,0,0.45));">
+            filter:drop-shadow(0 2px 10px rgba(0,0,0,0.5));">
             Local Food Tip!
-          </div>
-          <div style="margin-top:0.4rem;font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.8);letter-spacing:0.1em;text-transform:uppercase;">
-            ${p.emoji || '🍽️'} ${p.type}
           </div>
         </div>
       </div>
@@ -1731,65 +1735,89 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Meet the owner + offer side by side -->
-      ${p.cloudflareId || p.offer ? `
+      <!-- Video left + collage+coupon right -->
       <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:flex-start;">
 
-        <!-- Video: playable inside thumbnail, no autoplay -->
+        <!-- Video thumbnail — tapping opens fullscreen, label inside -->
         ${p.cloudflareId ? `
-        <div style="flex-shrink:0;width:120px;display:flex;flex-direction:column;gap:0.4rem;">
-          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;display:flex;align-items:center;gap:0.3rem;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            Meet the owner
-          </div>
-          <div style="position:relative;width:120px;border-radius:10px;overflow:hidden;background:#111;aspect-ratio:9/16;"
-               id="pvid-wrap-${pid}">
-            <img id="pvid-thumb-${pid}" src="${p.img}" alt="${p.name}"
-              style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.7);">
-            <div id="pvid-playbtn-${pid}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;"
-                 onclick="openPartnerVideo('${pid}','${p.cloudflareId}')">
-              <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.92);
+        <div style="flex-shrink:0;width:110px;">
+          <div style="position:relative;width:110px;border-radius:10px;overflow:hidden;background:#111;aspect-ratio:9/16;cursor:pointer;"
+               onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+            <img src="${p.img}" alt="${p.name}"
+              style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.62);">
+            <!-- Label inside thumbnail bottom -->
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:0.4rem 0.5rem;
+              background:linear-gradient(to top,rgba(0,0,0,0.75),transparent);">
+              <div style="font-size:0.52rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;line-height:1.2;">Meet the<br>owner</div>
+            </div>
+            <!-- Play circle -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.9);
                 display:flex;align-items:center;justify-content:center;
-                box-shadow:0 3px 12px rgba(0,0,0,0.3);">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+                box-shadow:0 3px 12px rgba(0,0,0,0.35);">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
               </div>
             </div>
-            <!-- iframe with autoplay=0 so it loads but waits for user to press play -->
-            <iframe id="pvid-${pid}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${p.cloudflareId}/iframe?autoplay=0&muted=0&controls=1&preload=auto"
-              style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0;"
-              allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
           </div>
-          <a onclick="openPartnerVideoFullscreen('${p.cloudflareId}')"
-            style="cursor:pointer;display:inline-flex;align-items:center;gap:0.3rem;font-size:0.65rem;font-weight:700;color:var(--orange);text-decoration:none;">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-            Full screen
-          </a>
         </div>` : ''}
 
-        <!-- Offer coupon — compact, slightly tilted, tappable -->
-        ${p.offer ? `
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:0.58rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:0.55rem;display:flex;align-items:center;gap:0.3rem;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            Your offer
-          </div>
-          <!-- Tilted coupon -->
-          <div onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
-            style="cursor:pointer;transform:rotate(2.5deg);transform-origin:center;display:block;
-              background:linear-gradient(135deg,#fff8f5,#fff3ee);
-              border:2px dashed var(--orange);border-radius:10px;
-              padding:0.6rem 0.75rem;
-              box-shadow:2px 3px 10px rgba(255,107,53,0.2);">
-            <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:0.3rem;">${p.offer}</div>
-            <div style="display:flex;align-items:center;gap:0.35rem;">
-              <div style="font-size:0.56rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Code</div>
-              <div style="font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
+        <!-- Right column: photo collage with coupon overlapping centre -->
+        <div style="flex:1;min-width:0;position:relative;">
+          <!-- 3-photo collage grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:3px;border-radius:10px;overflow:hidden;">
+            <!-- Large top-left -->
+            <div style="grid-row:1/3;aspect-ratio:1/1.4;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
-            <div style="font-size:0.58rem;color:var(--text2);margin-top:0.3rem;">Tap to enlarge →</div>
+            <!-- Top-right -->
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <!-- Bottom-right -->
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
           </div>
-        </div>` : ''}
 
-      </div>` : ''}
+          <!-- Coupon overlapping the collage, centred, tilted -->
+          ${p.offer ? `
+          <div style="position:absolute;top:50%;left:50%;
+            transform:translate(-50%,-50%) rotate(-5deg);
+            z-index:10;width:90%;cursor:pointer;"
+            onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')">
+            <!-- Paper coupon look: white card with serrated left/right edges via SVG mask, subtle grain -->
+            <div style="
+              background:#fffdf9;
+              border-radius:6px;
+              box-shadow:0 4px 18px rgba(0,0,0,0.28),0 1px 3px rgba(0,0,0,0.15);
+              overflow:hidden;
+              border:1px solid rgba(0,0,0,0.06);">
+              <!-- Orange header strip -->
+              <div style="background:var(--orange);padding:0.28rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.12em;">Your Offer</div>
+                <div style="font-size:0.75rem;">${p.emoji||'🎟️'}</div>
+              </div>
+              <!-- Dotted divider -->
+              <div style="border-top:1.5px dashed rgba(255,107,53,0.35);margin:0 0.65rem;"></div>
+              <!-- Body -->
+              <div style="padding:0.45rem 0.75rem 0.5rem;">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:900;color:#1a1a1a;line-height:1.3;margin-bottom:0.3rem;">${p.offer}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div style="display:flex;align-items:center;gap:0.3rem;">
+                    <div style="font-size:0.5rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+                    <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.12em;">${p.code||'TBR-001'}</div>
+                  </div>
+                  <div style="font-size:0.5rem;color:#aaa;font-style:italic;">tap to enlarge</div>
+                </div>
+              </div>
+              <!-- Bottom dotted tear line -->
+              <div style="border-top:1.5px dashed rgba(0,0,0,0.12);margin:0 0.65rem;"></div>
+              <div style="padding:0.22rem 0.75rem;font-size:0.48rem;color:#bbb;text-align:center;letter-spacing:0.04em;">VALID TODAY ONLY · TONBI ROTTERDAM</div>
+            </div>
+          </div>` : ''}
+        </div>
+
+      </div>
     </div>`;
   }
 
