@@ -1007,7 +1007,8 @@ const stops = [
         gallery:[
           "https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
           "https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
-          "https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg"
+          "https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",
+          "https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"
         ]
       }
     ]
@@ -1694,28 +1695,31 @@ function renderCard(card,idx,total){
     const pid = s.id + '-' + card.partnerIdx;
 
     // photo collage images — use partner gallery if provided, else repeat hero
-    const collageImgs = p.gallery && p.gallery.length>=3 ? p.gallery : [p.img, p.img, p.img];
+    const collageImgs = p.gallery && p.gallery.length>=4 ? p.gallery
+                      : p.gallery && p.gallery.length>=3 ? [...p.gallery, p.img]
+                      : [p.img, p.img, p.img, p.img];
 
     return `
     <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
 
-      <!-- Hero: shorter 21/9 cinematic, "Local Food Tip!" centered, no type pill -->
+      <!-- Hero: cinematic 21/9, bright image, frosted pill behind title -->
       <div class="partner-hero" style="aspect-ratio:21/9;">
-        <img src="${p.img}" alt="${p.name}">
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.42);"></div>
+        <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(1.05);">
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.18);"></div>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem;">
-          <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
-            background:linear-gradient(135deg,#ffdd57 0%,#ff6b35 55%,#ff3b7a 100%);
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-            filter:drop-shadow(0 2px 10px rgba(0,0,0,0.5));">
-            Local Food Tip!
+          <div style="background:rgba(255,255,255,0.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+            border:1px solid rgba(255,255,255,0.35);border-radius:99px;padding:0.3rem 1.1rem;">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
+              background:linear-gradient(135deg,#ffee66 0%,#ff6b35 50%,#ff3b7a 100%);
+              -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+              Local Food Tip!
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Partner info body -->
+      <!-- Partner info body — no "Partner" label -->
       <div class="partner-body">
-        <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
         <div class="partner-name">${p.name}</div>
         <div class="partner-desc">${p.desc}</div>
         <div class="partner-meta">
@@ -1735,84 +1739,83 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Video left + collage+coupon right -->
-      <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:flex-start;">
+      <!-- Video left + collage+coupon right — matched height via CSS grid -->
+      <div style="padding:0 1.25rem;margin-top:0.85rem;display:flex;gap:0.75rem;align-items:stretch;">
 
-        <!-- Video thumbnail — tapping opens fullscreen, label inside -->
+        <!-- Video thumbnail — fixed width, stretches to match collage height -->
         ${p.cloudflareId ? `
-        <div style="flex-shrink:0;width:110px;">
-          <div style="position:relative;width:110px;border-radius:10px;overflow:hidden;background:#111;aspect-ratio:9/16;cursor:pointer;"
+        <div style="flex-shrink:0;width:105px;display:flex;">
+          <div style="position:relative;width:105px;border-radius:10px;overflow:hidden;background:#111;cursor:pointer;flex:1;"
                onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
             <img src="${p.img}" alt="${p.name}"
-              style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.62);">
-            <!-- Label inside thumbnail bottom -->
-            <div style="position:absolute;bottom:0;left:0;right:0;padding:0.4rem 0.5rem;
-              background:linear-gradient(to top,rgba(0,0,0,0.75),transparent);">
-              <div style="font-size:0.52rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.08em;line-height:1.2;">Meet the<br>owner</div>
+              style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);">
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:0.45rem 0.5rem;
+              background:linear-gradient(to top,rgba(0,0,0,0.82),transparent);">
+              <div style="font-size:0.55rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.07em;line-height:1.3;">Meet the<br>owner</div>
             </div>
-            <!-- Play circle -->
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-              <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.9);
+              <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.9);
                 display:flex;align-items:center;justify-content:center;
                 box-shadow:0 3px 12px rgba(0,0,0,0.35);">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
               </div>
             </div>
           </div>
         </div>` : ''}
 
-        <!-- Right column: photo collage with coupon overlapping centre -->
+        <!-- Right column: 4-photo collage with coupon overlapping centre -->
         <div style="flex:1;min-width:0;position:relative;">
-          <!-- 3-photo collage grid -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:3px;border-radius:10px;overflow:hidden;">
-            <!-- Large top-left -->
-            <div style="grid-row:1/3;aspect-ratio:1/1.4;overflow:hidden;background:#ddd;">
+          <!-- 4-photo 2×2 grid — equal cells -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;border-radius:10px;overflow:hidden;height:100%;">
+            <div style="overflow:hidden;background:#ddd;aspect-ratio:1/1;">
               <img src="${collageImgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
-            <!-- Top-right -->
-            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+            <div style="overflow:hidden;background:#ddd;aspect-ratio:1/1;">
               <img src="${collageImgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
-            <!-- Bottom-right -->
-            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+            <div style="overflow:hidden;background:#ddd;aspect-ratio:1/1;">
               <img src="${collageImgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <div style="overflow:hidden;background:#ddd;aspect-ratio:1/1;">
+              <img src="${collageImgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
           </div>
 
-          <!-- Coupon overlapping the collage, centred, tilted -->
+          <!-- Coupon overlapping collage centre, tilted -6° -->
           ${p.offer ? `
           <div style="position:absolute;top:50%;left:50%;
-            transform:translate(-50%,-50%) rotate(-5deg);
-            z-index:10;width:90%;cursor:pointer;"
-            onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')">
-            <!-- Paper coupon look: white card with serrated left/right edges via SVG mask, subtle grain -->
-            <div style="
-              background:#fffdf9;
-              border-radius:6px;
-              box-shadow:0 4px 18px rgba(0,0,0,0.28),0 1px 3px rgba(0,0,0,0.15);
-              overflow:hidden;
-              border:1px solid rgba(0,0,0,0.06);">
-              <!-- Orange header strip -->
-              <div style="background:var(--orange);padding:0.28rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
-                <div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.12em;">Your Offer</div>
-                <div style="font-size:0.75rem;">${p.emoji||'🎟️'}</div>
+            transform:translate(-50%,-50%) rotate(-6deg);
+            z-index:10;width:82%;cursor:pointer;"
+            onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🎫'}')">
+            <div style="background:#fffdf9;border-radius:7px;
+              box-shadow:0 6px 22px rgba(0,0,0,0.32),0 1px 4px rgba(0,0,0,0.12);
+              overflow:hidden;border:1px solid rgba(0,0,0,0.07);">
+              <!-- Orange header: discount tag icon + label -->
+              <div style="background:var(--orange);padding:0.32rem 0.7rem;display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:0.6rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.12em;">Your Offer</div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
               </div>
-              <!-- Dotted divider -->
-              <div style="border-top:1.5px dashed rgba(255,107,53,0.35);margin:0 0.65rem;"></div>
+              <!-- Tear perforation top -->
+              <div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.6rem;"></div>
               <!-- Body -->
-              <div style="padding:0.45rem 0.75rem 0.5rem;">
-                <div style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:900;color:#1a1a1a;line-height:1.3;margin-bottom:0.3rem;">${p.offer}</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;">
-                  <div style="display:flex;align-items:center;gap:0.3rem;">
-                    <div style="font-size:0.5rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
-                    <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.12em;">${p.code||'TBR-001'}</div>
-                  </div>
-                  <div style="font-size:0.5rem;color:#aaa;font-style:italic;">tap to enlarge</div>
+              <div style="padding:0.5rem 0.7rem 0.45rem;">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div>
+                <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.25rem;">
+                  <div style="font-size:0.55rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+                  <div style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:var(--orange);letter-spacing:0.12em;">${p.code||'TBR-001'}</div>
                 </div>
               </div>
-              <!-- Bottom dotted tear line -->
-              <div style="border-top:1.5px dashed rgba(0,0,0,0.12);margin:0 0.65rem;"></div>
-              <div style="padding:0.22rem 0.75rem;font-size:0.48rem;color:#bbb;text-align:center;letter-spacing:0.04em;">VALID TODAY ONLY · TONBI ROTTERDAM</div>
+              <!-- Tear perforation bottom -->
+              <div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.6rem;"></div>
+              <!-- Footer: tap to enlarge — prominent -->
+              <div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                <div style="font-size:0.65rem;font-weight:800;color:var(--orange);letter-spacing:0.04em;text-transform:uppercase;">Tap to Enlarge</div>
+              </div>
             </div>
           </div>` : ''}
         </div>
