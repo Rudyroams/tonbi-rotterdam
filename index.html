@@ -572,8 +572,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .partner-coupon {
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%) rotate(-6deg);
-  z-index:10;width:84%;max-width:156px;cursor:pointer;
-  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3)) drop-shadow(0 1px 3px rgba(0,0,0,0.15));
+  z-index:10;width:60%;max-width:170px;cursor:pointer;
 }
 .partner-hero { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#e8e8e8; }
 .partner-hero img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -584,7 +583,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   padding:0.25rem 0.65rem; border-radius:20px;
   text-transform:uppercase; letter-spacing:0.1em;
 }
-.partner-body { padding:1.1rem 1.25rem 0; }
+.partner-body { padding:0; }
 .partner-name { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; line-height:1.1; margin-bottom:0.2rem; }
 .partner-desc { font-size:0.88rem; line-height:1.7; color:var(--text2); margin-bottom:0.85rem; }
 .partner-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
@@ -1711,131 +1710,112 @@ function renderCard(card,idx,total){
     return `
     <div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 1.5rem 0;">
 
-      <!-- Hero: cinematic 21/9, bright, teal-tinted frosted pill behind title -->
+      <!-- Hero: 21/9, bright, orange pill behind "Local Food Tip!" in near-white -->
       <div class="partner-hero" style="aspect-ratio:21/9;">
         <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(1.05);">
         <div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;">
-          <div style="background:rgba(32,178,170,0.38);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-            border:1px solid rgba(255,255,255,0.4);border-radius:99px;padding:0.3rem 1.2rem;">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1;letter-spacing:-0.01em;
-              background:linear-gradient(135deg,#ffee66 0%,#ff6b35 50%,#ff3b7a 100%);
-              -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          <div style="background:var(--orange);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+            border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:0.3rem 1.2rem;
+            box-shadow:0 4px 18px rgba(255,107,53,0.5);">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1;letter-spacing:-0.01em;color:rgba(255,255,255,0.96);">
               Local Food Tip!
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Partner info body -->
-      <div class="partner-body">
-        <div class="partner-name">${p.name}</div>
-        <div class="partner-desc">${p.desc}</div>
-        <div class="partner-meta">
-          <div class="partner-meta-item">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            ${p.hours}
+      <!-- Partner info body: name + desc left, video thumbnail right -->
+      <div class="partner-body" style="padding-bottom:0;">
+        <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+          <!-- Text column -->
+          <div style="flex:1;min-width:0;">
+            <div class="partner-name">${p.name}</div>
+            <div class="partner-desc">${p.desc}</div>
+            <div class="partner-meta" style="margin-bottom:0;">
+              <div class="partner-meta-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                ${p.hours}
+              </div>
+              ${p.mapUrl ? `
+              <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Open in Google Maps
+              </a>` : ''}
+            </div>
           </div>
-          ${p.mapUrl ? `
-          <a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Open in Google Maps
-          </a>` : ''}
-        </div>
-      </div>
-
-      <!-- Fixed-width container so proportions stay locked on wide screens -->
-      <div style="padding:0 1.25rem;margin-top:0.85rem;">
-        <div style="display:flex;gap:0.65rem;align-items:stretch;">
-
-          <!-- Video thumbnail: fixed 28% of container, stretches to collage height -->
+          <!-- Video thumbnail beside description -->
           ${p.cloudflareId ? `
-          <div style="flex:0 0 28%;display:flex;">
-            <div style="position:relative;width:100%;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;min-height:0;"
+          <div style="flex-shrink:0;width:90px;">
+            <div style="position:relative;width:90px;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;"
                  onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
               <img src="${p.img}" alt="${p.name}"
                 style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);">
-              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.4rem 0.45rem;
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.35rem 0.4rem;
                 background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);">
-                <div style="font-size:0.5rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;">Meet the<br>owner</div>
+                <div style="font-size:0.48rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;">Meet the<br>owner</div>
               </div>
               <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.9);
+                <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);
                   display:flex;align-items:center;justify-content:center;
                   box-shadow:0 2px 10px rgba(0,0,0,0.35);">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
                 </div>
               </div>
             </div>
           </div>` : ''}
+        </div>
+      </div>
 
-          <!-- Right: 2×2 collage with coupon centred on top -->
-          <div style="flex:1;position:relative;min-width:0;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:9px;overflow:hidden;">
-              <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
-                <img src="${collageImgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;">
-              </div>
-              <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
-                <img src="${collageImgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;">
-              </div>
-              <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
-                <img src="${collageImgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;">
-              </div>
-              <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
-                <img src="${collageImgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <!-- Full-width 4-photo gallery + coupon overlay -->
+      <div style="padding:0.85rem 1.25rem 0;">
+        <div style="position:relative;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;border-radius:9px;overflow:hidden;">
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <div style="aspect-ratio:1/1;overflow:hidden;background:#ddd;">
+              <img src="${collageImgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+          </div>
+          ${p.offer ? `
+          <div class="partner-coupon"
+            data-name="${p.name}"
+            data-offer="${p.offer}"
+            data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}"
+            data-code="${p.code||'TBR-001'}"
+            onclick="couponTap(this)">
+          <div style="background:#fffdf9;border-radius:6px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.3),0 1px 4px rgba(0,0,0,0.1);
+            overflow:hidden;border:1px solid rgba(0,0,0,0.07);">
+            <div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+            </div>
+            <div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div>
+            <div style="padding:0.5rem 0.7rem 0.45rem;">
+              <div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div>
               </div>
             </div>
-
-            <!-- Coupon: max-width capped so it doesn't sprawl on wide screens -->
-            ${p.offer ? `
-            <div class="partner-coupon"
-              data-name="${p.name}"
-              data-offer="${p.offer}"
-              data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}"
-              data-code="${p.code||'TBR-001'}"
-              data-emoji="${p.emoji||'🎫'}"
-              onclick="couponTap(this)">
-              <!-- Torn top edge via SVG wave -->
-              <svg viewBox="0 0 120 8" preserveAspectRatio="none" style="display:block;width:100%;height:8px;margin-bottom:-1px;">
-                <path d="M0,8 Q5,2 10,6 Q15,10 20,4 Q25,0 30,5 Q35,9 40,3 Q45,0 50,6 Q55,10 60,4 Q65,0 70,5 Q75,9 80,3 Q85,0 90,6 Q95,10 100,4 Q105,0 110,5 Q115,9 120,3 L120,8 Z" fill="#fffdf9"/>
-              </svg>
-              <!-- Paper body -->
-              <div style="background:
-                  repeating-linear-gradient(0deg,rgba(0,0,0,0.018) 0px,rgba(0,0,0,0.018) 1px,transparent 1px,transparent 4px),
-                  repeating-linear-gradient(90deg,rgba(0,0,0,0.012) 0px,rgba(0,0,0,0.012) 1px,transparent 1px,transparent 6px),
-                  #fffdf9;
-                padding:0 0.48rem;">
-                <!-- Orange header -->
-                <div style="background:var(--orange);padding:0.19rem 0.48rem;margin:0 -0.48rem;display:flex;align-items:center;justify-content:space-between;">
-                  <div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                    <line x1="7" y1="7" x2="7.01" y2="7"/>
-                  </svg>
-                </div>
-                <!-- Perforation -->
-                <div style="border-top:1.5px dashed rgba(255,107,53,0.3);margin:0.28rem 0;"></div>
-                <!-- Offer text -->
-                <div style="font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;color:#1a1a1a;line-height:1.2;margin-bottom:0.2rem;">${p.offer}</div>
-                <div style="display:flex;align-items:center;gap:0.25rem;margin-bottom:0.25rem;">
-                  <div style="font-size:0.42rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;">Code</div>
-                  <div style="font-family:'Nunito',sans-serif;font-size:0.66rem;font-weight:900;color:var(--orange);letter-spacing:0.08em;">${p.code||'TBR-001'}</div>
-                </div>
-                <!-- Perforation -->
-                <div style="border-top:1.5px dashed rgba(0,0,0,0.1);margin:0 0;"></div>
-                <!-- Tap to enlarge footer -->
-                <div style="padding:0.18rem 0;display:flex;align-items:center;justify-content:center;gap:0.22rem;">
-                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                  <div style="font-size:0.48rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div>
-                </div>
-              </div>
-              <!-- Torn bottom edge -->
-              <svg viewBox="0 0 120 8" preserveAspectRatio="none" style="display:block;width:100%;height:8px;margin-top:-1px;">
-                <path d="M0,0 Q5,6 10,2 Q15,-2 20,4 Q25,8 30,3 Q35,-1 40,5 Q45,9 50,2 Q55,-1 60,4 Q65,8 70,3 Q75,-1 80,5 Q85,9 90,2 Q95,-1 100,4 Q105,8 110,3 Q115,-1 120,5 L120,0 Z" fill="#fffdf9"/>
-              </svg>
-            </div>` : ''}
+            <div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div>
+            <div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              <div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div>
+            </div>
           </div>
-
+          </div>` : ''}
         </div>
       </div>
     </div>`;
@@ -2116,7 +2096,6 @@ function showOffer(name, offer, note, code, emoji){
   document.getElementById('offer-modal-offer-text').textContent = offer;
   document.getElementById('offer-modal-note').textContent = note;
   document.getElementById('offer-modal-code').textContent = code;
-  document.querySelector('.offer-modal-icon').textContent = emoji || '🎟️';
   document.getElementById('offer-overlay').classList.add('show');
 }
 
