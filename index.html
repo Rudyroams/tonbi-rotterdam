@@ -508,7 +508,7 @@ function renderCard(card,idx,total){
     const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
     const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
 
-    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80') center/cover no-repeat fixed;">
+    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;">
       <!-- ① 2×2 gallery at top with "Local Food Tip!" pill centred -->
       <div style="position:relative;width:100%;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
@@ -524,7 +524,7 @@ function renderCard(card,idx,total){
         </div>
       </div>
       <!-- ② Partner body: name + desc left, video thumb right -->
-      <div class="partner-body" style="padding:1rem 1.25rem 0;background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);border-radius:var(--radius) var(--radius) 0 0;margin:0;">
+      <div class="partner-body" style="padding:1rem 1.25rem 0;">
         <div style="display:flex;gap:0.75rem;align-items:flex-start;">
           <div style="flex:1;min-width:0;">
             <div class="partner-name">${p.name}</div>
@@ -534,25 +534,25 @@ function renderCard(card,idx,total){
             <!-- ③ Coupon inline under desc, tilted -->
             ${coupon}
           </div>
-          ${p.cloudflareId?`<div style="flex-shrink:0;width:120px;padding-top:2rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;display:block;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+          ${p.cloudflareId?`<div style="flex-shrink:0;width:130px;padding-top:2rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;display:block;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
             <!-- Filmstrip: orange bg, vertical holes on left+right sides -->
-            <div style="position:relative;background:var(--orange);border-radius:6px;box-shadow:0 8px 28px rgba(255,107,53,0.55),0 3px 10px rgba(0,0,0,0.25);display:flex;flex-direction:row;align-items:stretch;width:100%;">
+            <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55),0 3px 10px rgba(0,0,0,0.25);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:4px;">
               <!-- Left sprocket strip -->
-              <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:8px 0;">
-                ${[0,1,2,3,4,5,6].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;"></div>`).join('')}
+              <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:8px 0;">
+                ${[0,1,2,3,4,5,6].map(()=>`<div style="width:8px;height:8px;background:#f8f7f5;border-radius:2px;"></div>`).join('')}
               </div>
               <!-- Image frame -->
-              <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:2px;background:#111;margin:5px 0;">
+              <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:3px;background:#111;">
                 <img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);">
                 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-                  <div style="width:36px;height:36px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+                  <div style="width:38px;height:38px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
                   </div>
                 </div>
               </div>
               <!-- Right sprocket strip -->
-              <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:8px 0;">
-                ${[0,1,2,3,4,5,6].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;"></div>`).join('')}
+              <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:8px 0;">
+                ${[0,1,2,3,4,5,6].map(()=>`<div style="width:8px;height:8px;background:#f8f7f5;border-radius:2px;"></div>`).join('')}
               </div>
             </div>
             <!-- Title below filmstrip -->
@@ -639,19 +639,18 @@ function updateNavBtns(){
     next.textContent='Continue →';next.className='card-next-btn';
     next.onclick=function(){skipToCard(4);}; // 4 = rudy's notes, skip text card
     tb.textContent='Text only';
-    tb.style.display='block';
-    tb.style.flex='1';
     tb.onclick=function(){skipToTextFullscreen(currentStop.id);};
-    // Style card-bottom for video: floating above video, side-padded, transparent
+    // Style card-bottom for video: floating above video controls, side-padded, transparent
     const cb=document.getElementById('card-bottom');
-    cb.style.cssText='display:flex;position:fixed;bottom:calc(1.5rem + env(safe-area-inset-bottom));left:1.25rem;right:1.25rem;gap:0.5rem;background:transparent;border-top:none;padding:0;z-index:30;box-shadow:none;';
+    cb.style.cssText='display:flex;position:fixed;bottom:calc(4rem + env(safe-area-inset-bottom));left:1.25rem;right:1.25rem;gap:0.5rem;background:transparent;border-top:none;padding:0;z-index:30;box-shadow:none;';
     prev.style.cssText='flex:1;background:rgba(0,0,0,0.55);color:white;border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:var(--radius-sm);padding:0.5rem 0.5rem;font-family:\'Nunito\',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;white-space:nowrap;';
     tb.style.cssText='display:block;flex:1;background:rgba(0,0,0,0.55);color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:var(--radius-sm);padding:0.5rem 0.5rem;font-family:\'Nunito\',sans-serif;font-size:0.85rem;font-weight:800;cursor:pointer;white-space:nowrap;';
     next.style.cssText='flex:1;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:0.5rem 0.5rem;font-family:\'Nunito\',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,53,0.4);white-space:nowrap;';
   } else {
     next.textContent='Continue →';next.className='card-next-btn';next.onclick=nextCard;
-    // Reset any inline styles set for video card
-    prev.style.cssText='';tb.style.cssText='';next.style.cssText='';
+    // Reset all inline styles set for video card, explicitly hide text-only btn
+    prev.style.cssText='';next.style.cssText='';
+    tb.style.cssText='display:none;';
     document.getElementById('card-bottom').style.cssText='';
   }
 
