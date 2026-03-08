@@ -19,327 +19,54 @@
 .popup-tag { font-size:0.72rem; color:#6e6e73; line-height:1.4; }
 .popup-btn { display:block; background:#ff6b35; color:#fff; text-align:center; padding:0.5rem; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:800; text-decoration:none; cursor:pointer; border:none; width:100%; margin-top:0.5rem; border-radius:8px; }
 .mapboxgl-ctrl-logo { display:none !important; }
-
-/* ── Walking figure animation ── */
-@keyframes walkBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-@keyframes walkLegF { 0%,100%{transform:rotate(-30deg)} 50%{transform:rotate(30deg)} }
-@keyframes walkLegB { 0%,100%{transform:rotate(30deg)} 50%{transform:rotate(-30deg)} }
-@keyframes walkArmF { 0%,100%{transform:rotate(25deg)} 50%{transform:rotate(-25deg)} }
-@keyframes walkArmB { 0%,100%{transform:rotate(-25deg)} 50%{transform:rotate(25deg)} }
-
-/* ── Fullscreen video style ── */
-#journey-screen.cf-fullscreen .card-bottom {
-  position: fixed;
-  bottom: calc(83px + env(safe-area-inset-bottom));
-  left: 0; right: 0;
-  z-index: 30;
-  background: transparent;
-  border-top: none;
-  padding-bottom: 0;
-}
-#journey-screen.cf-fullscreen .card-bottom .card-prev-btn {
-  background: rgba(0,0,0,0.18);
-  color: rgba(255,255,255,0.92);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-#journey-screen.cf-fullscreen .card-bottom .card-next-btn {
-  background: rgba(255,107,53,0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* ── Quiz answer bounce ── */
-@keyframes quizBounce {
-  0%   { transform: scale(1); }
-  25%  { transform: scale(0.92); }
-  60%  { transform: scale(1.06); }
-  80%  { transform: scale(0.97); }
-  100% { transform: scale(1); }
-  60%  { transform: scale(1.04); }
-  100% { transform: scale(1); }
-}
-.quiz-o.answered { animation: quizBounce 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
-
-/* ── Typewriter effect ── */
-@keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
-}
-.quiz-typewriter { 
-  overflow: visible;
-  white-space: normal;
-  word-break: break-word;
-  animation: typewriterFade 1.2s ease-out 0.4s forwards;
-  opacity: 0;
-}
-
-@keyframes typewriterFade {
-  from { 
-    opacity: 0;
-  }
-  to { 
-    opacity: 1;
-  }
-}
-
-/* ── Pop-in effect ── */
-@keyframes popIn {
-  0% { 
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.quiz-pop-in {
-  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); opacity:0.7; }
-  50% { transform: translateX(-50%) translateY(5px); opacity:1; }
-}
-
-/* ── Rudy speech bubble ── */
-.rudy-bubble-wrap {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-}
-.rudy-avatar {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: #ff6b35;
-  display: flex; align-items: center; justify-content: center;
-  border: 2.5px solid white;
-  box-shadow: 0 2px 8px rgba(255,107,53,0.3);
-  overflow: hidden;
-}
-.rudy-bubble {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  border-top-left-radius: 4px;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  flex: 1;
-}
-.rudy-bubble strong { display: block; font-weight: 800; margin-bottom: 0.2rem; font-size: 0.9rem; }
-.rudy-bubble.correct-bubble { border-color: var(--green); background: var(--green-light); color: #1a6b2f; }
-.rudy-bubble.wrong-bubble   { border-color: var(--red);   background: var(--red-light);   color: #b31c13; }
-
-/* ── Score pill ── */
-.quiz-score-pill {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: #fff7f3; border: 1.5px solid var(--orange);
-  border-radius: 99px; padding: 0.3rem 0.85rem;
-  font-size: 0.75rem; font-weight: 700; color: var(--orange);
-  margin-bottom: 0.75rem;
-}
-.quiz-score-pill span { color: var(--text); font-weight: 900; }
-.quiz-score-pill span { color: var(--orange); font-size: 0.9rem; font-weight: 900; }
-
-/* ── Final score card ── */
-.final-score-card {
-  background: white;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 1.5rem 1.25rem;
-  text-align: center;
-  margin: 1rem 0;
-}
-.final-score-num {
-  font-family: 'Nunito', sans-serif;
-  font-size: 3.5rem; font-weight: 900;
-  color: var(--orange); line-height: 1;
-  margin-bottom: 0.25rem;
-}
-.final-score-label { font-size: 0.85rem; color: var(--text2); font-weight: 600; }
-
-
-/* ── Photo preview screen ── */
-#preview-overlay {
-  position: fixed; inset: 0; background: #000;
-  z-index: 1001; display: none; flex-direction: column;
-}
-#preview-overlay.on { display: flex; }
-#preview-img {
-  flex: 1; width: 100%; object-fit: cover; min-height: 0;
-}
-.preview-bottom {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 1rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 60%, transparent);
-}
-.preview-challenge-title {
-  color: white; font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem; font-weight: 900; margin-bottom: 0.75rem;
-  text-align: center;
-}
-.preview-tip-box {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.85rem;
-  display: flex; gap: 0.6rem; align-items: flex-start;
-}
-.preview-tip-label {
-  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--yellow); margin-bottom: 0.2rem;
-}
-.preview-tip-text { font-size: 0.78rem; line-height: 1.5; color: rgba(255,255,255,0.9); }
-.preview-actions { display: flex; gap: 0.6rem; }
-.preview-btn {
-  flex: 1; border: none; border-radius: var(--radius-sm);
-  padding: 0.65rem 0.5rem;
-  font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 800;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-}
-.preview-btn-retake {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.25) !important;
-  color: rgba(255,255,255,0.85);
-}
-.preview-btn-use {
-  background: var(--orange);
-  color: white;
-  box-shadow: 0 4px 12px rgba(255,107,53,0.4);
-}
-
-
-/* ── End-of-tour photo gallery ── */
-.photo-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.6rem;
-  margin: 1rem 0;
-}
-.gallery-thumb {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--bg);
-  border: 2px solid var(--border);
-}
-.gallery-thumb img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-}
-.gallery-thumb-label {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  color: white; font-size: 0.65rem; font-weight: 700;
-  padding: 0.4rem 0.5rem;
-}
-.gallery-empty {
-  aspect-ratio: 1; border-radius: 10px;
-  background: var(--bg); border: 2px dashed var(--border);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  color: var(--text2); font-size: 0.75rem; gap: 0.3rem;
-}
-
-/* ── Photo Challenge Instructions ── */
-.photo-existing {
-  background: var(--white); border-radius: var(--radius);
-  padding: 1.25rem; box-shadow: var(--shadow); margin-bottom: 1.25rem;
-}
-.photo-existing-thumb {
-  width: 100%; aspect-ratio: 3/2; object-fit: cover;
-  border-radius: var(--radius-sm); margin-bottom: 1rem;
-}
-.photo-existing-label {
-  font-size: 0.7rem; font-weight: 700; color: var(--green);
-  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
-}
-.photo-existing-text {
-  font-size: 0.9rem; color: var(--text); margin-bottom: 1rem;
-}
-
-.photo-select-btn {
-  width: 100%; background: var(--orange); color: #fff; border: none;
-  border-radius: var(--radius-sm); padding: 1rem; font-family: 'Nunito', sans-serif;
-  font-size: 1rem; font-weight: 800; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-  box-shadow: 0 4px 16px rgba(255,107,53,0.25); transition: transform 0.15s;
-}
-.photo-select-btn:hover { transform: translateY(-1px); }
-.photo-select-btn.replace {
-  background: var(--blue); box-shadow: 0 4px 16px rgba(45,107,228,0.25);
-}
-
-/* ── Photo Result Card ── */
-.photo-result-card {
-  background: var(--white); border-radius: var(--radius);
-  overflow: hidden; box-shadow: var(--shadow);
-  display: flex; flex-direction: column;
-}
-.photo-result-img {
-  width: 100%; aspect-ratio: 4/3; object-fit: cover;
-  display: block; animation: photoZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-@keyframes photoZoomIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-.photo-result-body { padding: 1.5rem; }
-.photo-result-compliment {
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.15rem; font-weight: 800;
-  color: var(--orange); line-height: 1.4;
-  margin-bottom: 1rem;
-}
-.photo-result-congrats {
-  font-size: 0.9rem; color: var(--text2);
-  line-height: 1.6; font-style: italic;
-}
-
+#journey-screen.cf-fullscreen .card-bottom { position:fixed; bottom:calc(83px + env(safe-area-inset-bottom)); left:0; right:0; z-index:30; background:transparent; border-top:none; padding-bottom:0; }
+#journey-screen.cf-fullscreen .card-bottom .card-prev-btn { background:rgba(0,0,0,0.18); color:rgba(255,255,255,0.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+#journey-screen.cf-fullscreen .card-bottom .card-next-btn { background:rgba(255,107,53,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+@keyframes quizBounce { 0%{transform:scale(1)} 25%{transform:scale(0.92)} 60%{transform:scale(1.06)} 80%{transform:scale(0.97)} 100%{transform:scale(1)} }
+.quiz-o.answered { animation:quizBounce 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
+@keyframes typewriterFade { from{opacity:0} to{opacity:1} }
+.quiz-typewriter { overflow:visible; white-space:normal; word-break:break-word; animation:typewriterFade 1.2s ease-out 0.4s forwards; opacity:0; }
+@keyframes popIn { 0%{opacity:0;transform:scale(0.8)} 100%{opacity:1;transform:scale(1)} }
+.quiz-pop-in { animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+@keyframes scrollBounce { 0%,100%{transform:translateX(-50%) translateY(0);opacity:0.7} 50%{transform:translateX(-50%) translateY(5px);opacity:1} }
+.rudy-bubble-wrap { display:flex; align-items:flex-start; gap:0.75rem; margin-bottom:0.85rem; }
+.rudy-avatar { width:52px; height:52px; border-radius:50%; flex-shrink:0; background:#ff6b35; display:flex; align-items:center; justify-content:center; border:2.5px solid white; box-shadow:0 2px 8px rgba(255,107,53,0.3); overflow:hidden; }
+.rudy-bubble { background:white; border:1.5px solid var(--border); border-radius:14px; border-top-left-radius:4px; padding:0.65rem 0.85rem; font-size:0.85rem; line-height:1.5; box-shadow:0 2px 8px rgba(0,0,0,0.07); flex:1; }
+.rudy-bubble strong { display:block; font-weight:800; margin-bottom:0.2rem; font-size:0.9rem; }
+.rudy-bubble.correct-bubble { border-color:var(--green); background:var(--green-light); color:#1a6b2f; }
+.rudy-bubble.wrong-bubble { border-color:var(--red); background:var(--red-light); color:#b31c13; }
+#preview-overlay { position:fixed; inset:0; background:#000; z-index:1001; display:none; flex-direction:column; }
+#preview-overlay.on { display:flex; }
+#preview-img { flex:1; width:100%; object-fit:cover; min-height:0; }
+.preview-bottom { position:absolute; bottom:0; left:0; right:0; padding:1rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.85) 60%,transparent); }
+.preview-challenge-title { color:white; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; margin-bottom:0.75rem; text-align:center; }
+.preview-actions { display:flex; gap:0.6rem; }
+.preview-btn { flex:1; border:none; border-radius:var(--radius-sm); padding:0.65rem 0.5rem; font-family:'Nunito',sans-serif; font-size:0.88rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.4rem; }
+.preview-btn-retake { background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.25) !important; color:rgba(255,255,255,0.85); }
+.preview-btn-use { background:var(--orange); color:white; box-shadow:0 4px 12px rgba(255,107,53,0.4); }
+.photo-existing { background:var(--white); border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow); margin-bottom:1.25rem; }
+.photo-existing-thumb { width:100%; aspect-ratio:3/2; object-fit:cover; border-radius:var(--radius-sm); margin-bottom:1rem; }
+.photo-existing-label { font-size:0.7rem; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
+.photo-existing-text { font-size:0.9rem; color:var(--text); margin-bottom:1rem; }
+.photo-select-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 4px 16px rgba(255,107,53,0.25); transition:transform 0.15s; }
+.photo-select-btn:hover { transform:translateY(-1px); }
+.photo-select-btn.replace { background:var(--blue); box-shadow:0 4px 16px rgba(45,107,228,0.25); }
+/* ── Inline tilted coupon ── */
+.partner-coupon-inline { display:block; width:65%; max-width:200px; transform:rotate(-4deg); cursor:pointer; margin:0.25rem 0 1rem 0.1rem; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f8f7f5;
-  --white: #ffffff;
-  --black: #111111;
-  --text: #1c1c1e;
-  --text2: #6e6e73;
-  --border: #e5e5ea;
-  --orange: #ff6b35;
-  --orange-light: #fff3ee;
-  --blue: #2d6be4;
-  --blue-light: #eef3fd;
-  --green: #34c759;
-  --green-light: #edfaf2;
-  --red-light: #ffeef0;
-  --red: #ff3b30;
-  --yellow: #ffcc00;
-  --yellow-light: #fffbe6;
-  --radius: 18px;
-  --radius-sm: 12px;
-  --shadow: 0 2px 16px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --bg:#f8f7f5; --white:#ffffff; --black:#111111; --text:#1c1c1e; --text2:#6e6e73;
+  --border:#e5e5ea; --orange:#ff6b35; --orange-light:#fff3ee; --blue:#2d6be4; --blue-light:#eef3fd;
+  --green:#34c759; --green-light:#edfaf2; --red-light:#ffeef0; --red:#ff3b30;
+  --yellow:#ffcc00; --yellow-light:#fffbe6; --radius:18px; --radius-sm:12px;
+  --shadow:0 2px 16px rgba(0,0,0,0.08); --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100svh; overflow-x:hidden; }
-
-/* ── PASSWORD ── */
-#pw-screen {
-  position:fixed; inset:0; background:var(--white);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:9999; padding:2.5rem 2rem; transition:opacity 0.5s, transform 0.5s;
-}
+#pw-screen { position:fixed; inset:0; background:var(--white); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; padding:2.5rem 2rem; transition:opacity 0.5s,transform 0.5s; }
 #pw-screen.exit { opacity:0; transform:scale(0.97); pointer-events:none; }
 .pw-logo { width:80px; height:80px; border-radius:22px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin-bottom:1.25rem; box-shadow:0 8px 24px rgba(255,107,53,0.35); animation:float 3s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
@@ -347,109 +74,31 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .pw-city { font-size:0.8rem; color:var(--text2); margin-bottom:2.5rem; }
 .pw-field { width:100%; max-width:320px; background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.9rem 1.25rem; font-family:'DM Sans',sans-serif; font-size:1rem; text-align:center; outline:none; transition:border-color 0.2s; margin-bottom:0.75rem; display:block; color:var(--text); }
 .pw-field:focus { border-color:var(--orange); }
-.pw-btn { width:100%; max-width:320px; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; box-shadow:0 4px 16px rgba(255,107,53,0.3); display:block; }
+.pw-btn { width:100%; max-width:320px; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.95rem; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:transform 0.15s,box-shadow 0.15s; box-shadow:0 4px 16px rgba(255,107,53,0.3); display:block; }
 .pw-btn:hover { transform:translateY(-1px); }
 .pw-error { color:var(--red); font-size:0.8rem; margin-top:0.6rem; height:1rem; text-align:center; }
-
-/* ── APP ── */
 #app { display:none; }
 #app.show { display:block; }
-
-/* ── HOME ── */
 #home-screen { min-height:100svh; padding-bottom:1rem; }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:var(--white); }
-
-/* ── OVERWORLD MAP HOME ── */
-#overworld-screen {
-  position:absolute; inset:0; overflow:hidden;
-  background:#1a1f2e;
-}
-#overworld-map {
-  position:absolute; inset:0; width:100%; height:100%;
-}
-/* Top header floating over map */
-.ow-header {
-  position:absolute; top:0; left:0; right:0; z-index:20;
-  padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem;
-  background:linear-gradient(to bottom, rgba(10,12,20,0.85) 0%, rgba(10,12,20,0.4) 70%, transparent 100%);
-  pointer-events:none;
-}
-.ow-logo {
-  display:flex; align-items:center; gap:0.65rem;
-}
-.ow-logo-icon {
-  width:40px; height:40px; border-radius:12px;
-  background:var(--orange); display:flex; align-items:center; justify-content:center;
-  font-size:1.2rem; box-shadow:0 4px 14px rgba(255,107,53,0.5);
-  flex-shrink:0;
-}
+#overworld-screen { position:absolute; inset:0; overflow:hidden; background:#1a1f2e; }
+#overworld-map { position:absolute; inset:0; width:100%; height:100%; }
+.ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(10,12,20,0.85) 0%,rgba(10,12,20,0.4) 70%,transparent 100%); pointer-events:none; }
+.ow-logo { display:flex; align-items:center; gap:0.65rem; }
+.ow-logo-icon { width:40px; height:40px; border-radius:12px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 4px 14px rgba(255,107,53,0.5); flex-shrink:0; }
 .ow-logo-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:white; }
-.ow-logo-sub  { font-size:0.65rem; color:rgba(255,255,255,0.55); letter-spacing:0.05em; }
-/* Bottom controls floating over map */
-.ow-bottom {
-  position:absolute; bottom:0; left:0; right:0; z-index:20;
-  padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
-  background:linear-gradient(to top, rgba(10,12,20,0.88) 0%, rgba(10,12,20,0.4) 70%, transparent 100%);
-}
-.ow-start-btn {
-  width:100%; background:var(--orange); color:#fff; border:none;
-  border-radius:var(--radius-sm); padding:1rem;
-  font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900;
-  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem;
-  box-shadow:0 6px 20px rgba(255,107,53,0.45); letter-spacing:-0.01em;
-  margin-bottom:0.65rem;
-}
-.ow-list-link {
-  display:block; text-align:center; font-size:0.75rem; font-weight:600;
-  color:rgba(255,255,255,0.45); cursor:pointer; padding:0.25rem;
-  text-decoration:none; pointer-events:all;
-}
-.ow-list-link:hover { color:rgba(255,255,255,0.75); }
-/* Stop node markers */
-.ow-stop-node {
-  width:58px; height:58px; border-radius:50%;
-  border:3px solid white;
-  overflow:hidden; cursor:pointer;
-  box-shadow:0 0 0 4px rgba(255,107,53,0.4), 0 4px 16px rgba(0,0,0,0.5);
-  transition:transform 0.2s, box-shadow 0.2s;
-  position:relative;
-}
+.ow-logo-sub { font-size:0.65rem; color:rgba(255,255,255,0.55); letter-spacing:0.05em; }
+.ow-bottom { position:absolute; bottom:0; left:0; right:0; z-index:20; padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(10,12,20,0.88) 0%,rgba(10,12,20,0.4) 70%,transparent 100%); }
+.ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.45); margin-bottom:0.65rem; }
+.ow-list-link { display:block; text-align:center; font-size:0.75rem; font-weight:600; color:rgba(255,255,255,0.45); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
+.ow-stop-node { width:58px; height:58px; border-radius:50%; border:3px solid white; overflow:hidden; cursor:pointer; box-shadow:0 0 0 4px rgba(255,107,53,0.4),0 4px 16px rgba(0,0,0,0.5); transition:transform 0.2s,box-shadow 0.2s; position:relative; }
 .ow-stop-node:active { transform:scale(0.93); }
 .ow-stop-node img { width:100%; height:100%; object-fit:cover; display:block; border-radius:50%; }
-.ow-stop-node .ow-num {
-  position:absolute; bottom:-2px; right:-2px;
-  width:22px; height:22px; border-radius:50%;
-  background:var(--orange); color:white;
-  font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:900;
-  display:flex; align-items:center; justify-content:center;
-  border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.4);
-}
-.ow-stop-node.done {
-  border-color:var(--orange);
-  box-shadow:0 0 0 4px rgba(255,107,53,0.6), 0 4px 16px rgba(0,0,0,0.5);
-}
-.ow-stop-node.done::after {
-  content:'✓';
-  position:absolute; inset:0; border-radius:50%;
-  background:rgba(255,107,53,0.55);
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.4rem; font-weight:900; color:white;
-}
-/* Stop popup tooltip above node */
-.ow-node-label {
-  position:absolute; bottom:68px; left:50%; transform:translateX(-50%);
-  background:rgba(10,12,20,0.85); backdrop-filter:blur(10px);
-  color:white; font-size:0.65rem; font-weight:700;
-  padding:0.3rem 0.65rem; border-radius:12px; white-space:nowrap;
-  border:1px solid rgba(255,255,255,0.15);
-  pointer-events:none;
-  opacity:0; transition:opacity 0.2s;
-}
-/* Pulse on the "next" stop */
-@keyframes owPulse {
-  0%, 100% { box-shadow:0 0 0 4px rgba(255,107,53,0.4), 0 4px 16px rgba(0,0,0,0.5); }
-  50%       { box-shadow:0 0 0 9px rgba(255,107,53,0.15), 0 4px 22px rgba(255,107,53,0.4); }
-}
+.ow-stop-node .ow-num { position:absolute; bottom:-2px; right:-2px; width:22px; height:22px; border-radius:50%; background:var(--orange); color:white; font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.4); }
+.ow-stop-node.done { border-color:var(--orange); box-shadow:0 0 0 4px rgba(255,107,53,0.6),0 4px 16px rgba(0,0,0,0.5); }
+.ow-stop-node.done::after { content:'✓'; position:absolute; inset:0; border-radius:50%; background:rgba(255,107,53,0.55); display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:900; color:white; }
+.ow-node-label { position:absolute; bottom:68px; left:50%; transform:translateX(-50%); background:rgba(10,12,20,0.85); backdrop-filter:blur(10px); color:white; font-size:0.65rem; font-weight:700; padding:0.3rem 0.65rem; border-radius:12px; white-space:nowrap; border:1px solid rgba(255,255,255,0.15); pointer-events:none; opacity:0; transition:opacity 0.2s; }
+@keyframes owPulse { 0%,100%{box-shadow:0 0 0 4px rgba(255,107,53,0.4),0 4px 16px rgba(0,0,0,0.5)} 50%{box-shadow:0 0 0 9px rgba(255,107,53,0.15),0 4px 22px rgba(255,107,53,0.4)} }
 .ow-stop-node.next-stop { animation:owPulse 2s ease-in-out infinite; }
 .home-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
 .home-logo { display:flex; align-items:center; gap:0.6rem; }
@@ -459,7 +108,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .home-city-tag { background:var(--orange-light); color:var(--orange); font-size:0.7rem; font-weight:700; padding:0.35rem 0.75rem; border-radius:20px; }
 .hero-card { margin:0 1.25rem 1.25rem; border-radius:var(--radius); overflow:hidden; position:relative; box-shadow:var(--shadow-lg); }
 .hero-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
-.hero-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%); padding:1.25rem; display:flex; flex-direction:column; justify-content:flex-end; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.1) 60%,transparent 100%); padding:1.25rem; display:flex; flex-direction:column; justify-content:flex-end; }
 .hero-label { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:0.3rem; }
 .hero-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:#fff; line-height:1.1; }
 .hero-desc { font-size:0.8rem; color:rgba(255,255,255,0.75); margin-top:0.3rem; line-height:1.5; }
@@ -471,7 +120,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.3); transition:transform 0.15s; }
 .start-btn:hover { transform:translateY(-1px); }
 .section-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; padding:0 1.25rem; margin-bottom:0.75rem; }
-.stop-item { margin:0 1.25rem 0.75rem; background:var(--white); border-radius:var(--radius); display:flex; align-items:center; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; }
+.stop-item { margin:0 1.25rem 0.75rem; background:var(--white); border-radius:var(--radius); display:flex; align-items:center; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
 .stop-item:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
 .stop-item-num { width:48px; flex-shrink:0; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; align-self:stretch; }
 .stop-item-img { width:80px; height:80px; object-fit:cover; flex-shrink:0; }
@@ -483,13 +132,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .pill-photo { background:var(--orange-light); color:var(--orange); }
 .pill-quiz { background:var(--blue-light); color:var(--blue); }
 .stop-item-arrow { color:var(--border); font-size:1rem; padding-right:1rem; }
-
-/* ── JOURNEY ── */
 #journey-screen { position:fixed; inset:0; background:var(--bg); display:none; flex-direction:column; z-index:200; }
 #journey-screen.show { display:flex; }
 .jt-bar { background:var(--white); padding:calc(0.9rem + env(safe-area-inset-top)) 1.25rem 0.5rem; border-bottom:1px solid var(--border); flex-shrink:0; }
 .jt-bar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.45rem; }
-.jt-back { background:var(--bg); border:none; border-radius:20px; padding:0.4rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; color:var(--text2); cursor:pointer; }
 .jt-stop-label { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; }
 .jt-close { background:var(--bg); border:none; border-radius:50%; width:32px; height:32px; font-size:1rem; cursor:pointer; color:var(--text2); display:flex; align-items:center; justify-content:center; }
 .progress-dots { display:flex; gap:0.4rem; align-items:center; }
@@ -500,191 +146,63 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .card-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change:transform; }
 .card { min-width:100%; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:1.25rem; scroll-behavior:smooth; }
 .card.nav-card { padding:0; overflow:hidden; position:relative; }
-
-/* ── VIDEO CARD ── */
-.video-wrap {
-  border-radius:var(--radius);
-  overflow:hidden;
-  background:#000;
-  margin-bottom:0.75rem;
-  position:relative;
-  aspect-ratio:16/9;
-  box-shadow:var(--shadow-lg);
-}
-/* Thumbnail + play button */
-.video-thumb {
-  position:absolute; inset:0;
-  cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:opacity 0.3s;
-}
-.video-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-.video-thumb-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; }
-.play-btn-circle {
-  width:64px; height:64px; border-radius:50%;
-  background:rgba(255,255,255,0.92);
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 4px 24px rgba(0,0,0,0.3);
-  transition:transform 0.2s;
-}
-.video-thumb:hover .play-btn-circle { transform:scale(1.08); }
+.video-wrap { border-radius:var(--radius); overflow:hidden; background:#000; margin-bottom:0.75rem; position:relative; aspect-ratio:16/9; box-shadow:var(--shadow-lg); }
+.play-btn-circle { width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 24px rgba(0,0,0,0.3); transition:transform 0.2s; }
 .play-triangle { width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-left:20px solid var(--orange); margin-left:4px; }
-/* YouTube iframe */
-.video-iframe-wrap { position:absolute; inset:0; display:none; }
-.video-iframe-wrap iframe { width:100%; height:100%; border:none; }
-.video-iframe-wrap.active { display:block; }
-/* Skip link */
 .video-skip { font-size:0.75rem; color:var(--text2); text-align:center; margin-bottom:1rem; }
 .video-skip a { color:var(--blue); font-weight:500; text-decoration:none; cursor:pointer; }
-.video-skip a:hover { text-decoration:underline; }
-
-/* Arrival text section */
 .arrival-stop-num { font-size:0.7rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
 .arrival-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.5rem; }
 .arrival-tagline { font-size:0.9rem; color:var(--text2); line-height:1.6; margin-bottom:1.25rem; }
-.arrival-map-btn { display:flex; align-items:center; gap:0.75rem; background:var(--white); border-radius:var(--radius-sm); padding:0.9rem 1rem; box-shadow:var(--shadow); text-decoration:none; color:var(--text); margin-bottom:0.75rem; transition:transform 0.15s; }
-.arrival-map-btn:hover { transform:translateY(-1px); }
-.arrival-map-icon { font-size:1.5rem; }
-.arrival-map-text strong { display:block; font-size:0.85rem; font-weight:700; }
-.arrival-map-text span { font-size:0.72rem; color:var(--text2); }
-.arrival-map-arrow { margin-left:auto; color:var(--blue); font-weight:700; }
-
-/* Text section (always visible below video) */
 .arrival-text-section { background:var(--white); border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow); margin-bottom:0.75rem; }
-.arrival-text-label { font-size:0.65rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.6rem; }
 .arrival-text-body { font-size:0.92rem; line-height:1.8; color:var(--text); font-weight:300; }
-
-/* ── OTHER CARD TYPES ── */
-.story-card-inner { background:var(--white); border-radius:var(--radius); padding:1.5rem; box-shadow:var(--shadow); margin-bottom:1rem; }
 .story-avatar { width:44px; height:44px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:#fff; margin-bottom:1rem; }
-.story-from { font-size:0.65rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
-.story-text { font-size:0.92rem; line-height:1.75; color:var(--text); }
 .photo-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .photo-card-header { background:var(--orange); padding:1.25rem; }
-.photo-card-label { font-size:0.95rem; font-weight:700; color:rgba(255,255,255,0.75); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
-.photo-card-title { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; color:#fff; }
 .photo-card-body { padding:1.25rem; padding-bottom:calc(2rem + env(safe-area-inset-bottom)); }
-.photo-card-desc { font-size:0.9rem; line-height:1.75; color:var(--text); margin-bottom:1rem; }
 .photo-tip-box { background:var(--yellow-light); border-radius:var(--radius-sm); padding:0.9rem 1rem; display:flex; gap:0.6rem; align-items:flex-start; margin-bottom:1.25rem; }
-
-/* ── PARTNER CARD ── */
-.partner-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
-.partner-hero { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#e8e8e8; }
-.partner-hero img { width:100%; height:100%; object-fit:cover; display:block; }
-.partner-type-pill {
-  position:absolute; top:12px; left:12px;
-  background:rgba(0,0,0,0.55); backdrop-filter:blur(8px);
-  color:white; font-size:0.6rem; font-weight:700;
-  padding:0.25rem 0.65rem; border-radius:20px;
-  text-transform:uppercase; letter-spacing:0.1em;
-}
-.partner-body { padding:1.1rem 1.25rem 0; }
+.partner-body { padding:0; }
 .partner-name { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; line-height:1.1; margin-bottom:0.2rem; }
-.partner-desc { font-size:0.88rem; line-height:1.7; color:var(--text2); margin-bottom:0.85rem; }
-.partner-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
-.partner-meta-item { display:flex; align-items:center; gap:0.35rem; font-size:0.75rem; color:var(--text2); font-weight:500; }
-/* Offer ticket */
-.partner-offer {
-  margin:0 1.25rem 1.25rem;
-  background:linear-gradient(135deg, #fff8f5 0%, #fff3ee 100%);
-  border:2px dashed var(--orange);
-  border-radius:var(--radius-sm);
-  overflow:hidden;
-}
-.partner-offer-header {
-  background:var(--orange); color:white;
-  padding:0.4rem 1rem;
-  display:flex; align-items:center; gap:0.5rem;
-  font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
-}
-.partner-offer-body { padding:0.85rem 1rem; }
-.partner-offer-text { font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; color:var(--text); line-height:1.35; margin-bottom:0.5rem; }
-.partner-offer-small { font-size:0.72rem; color:var(--text2); line-height:1.5; }
-.partner-offer-code {
-  margin-top:0.65rem; padding:0.5rem 0.85rem;
-  background:white; border-radius:8px;
-  border:1.5px solid rgba(255,107,53,0.25);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.partner-offer-code-label { font-size:0.6rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.08em; }
-.partner-offer-code-value { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; color:var(--orange); letter-spacing:0.12em; }
-/* Show offer overlay */
-#offer-overlay {
-  position:fixed; inset:0; z-index:9100;
-  background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
-  display:none; align-items:center; justify-content:center; padding:2rem;
-}
+.partner-desc { font-size:0.88rem; line-height:1.7; color:var(--text2); margin-bottom:0.5rem; }
+.partner-meta-item { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.75rem; color:var(--text2); font-weight:500; }
+#offer-overlay { position:fixed; inset:0; z-index:9100; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:2rem; }
 #offer-overlay.show { display:flex; }
-.offer-modal {
-  background:white; border-radius:24px; overflow:hidden;
-  width:100%; max-width:360px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.4);
-  animation:quizTitlePop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
-.offer-modal-header {
-  background:var(--orange); padding:1.25rem 1.5rem;
-  text-align:center;
-}
-.offer-modal-icon { font-size:2.2rem; margin-bottom:0.3rem; }
+.offer-modal { background:white; border-radius:24px; overflow:hidden; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.4); animation:quizTitlePop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.offer-modal-header { background:var(--orange); padding:1.25rem 1.5rem; text-align:center; }
 .offer-modal-title { font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.15em; }
 .offer-modal-body { padding:1.5rem; text-align:center; }
 .offer-modal-offer { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; line-height:1.25; margin-bottom:0.5rem; color:var(--text); }
 .offer-modal-note { font-size:0.78rem; color:var(--text2); line-height:1.6; margin-bottom:1.25rem; }
-.offer-modal-code-box {
-  background:var(--bg); border-radius:16px; padding:1rem;
-  margin-bottom:1.25rem;
-  border:2px dashed var(--orange);
-}
+.offer-modal-code-box { background:var(--bg); border-radius:16px; padding:1rem; margin-bottom:1.25rem; border:2px dashed var(--orange); }
 .offer-modal-code-lbl { font-size:0.6rem; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
 .offer-modal-code-val { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:var(--orange); letter-spacing:0.18em; }
 .offer-modal-close { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:99px; padding:0.7rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:var(--text2); cursor:pointer; }
 .photo-tip-icon { font-size:1.1rem; flex-shrink:0; margin-top:0.1rem; }
 .photo-tip-text { font-size:0.82rem; line-height:1.6; color:var(--text); }
 .photo-tip-text strong { color:#996600; font-weight:700; display:block; margin-bottom:0.15rem; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; }
-
-/* ── QUIZ ── */
 .quiz-card { background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
 .quiz-card-img { width:100%; height:155px; object-fit:cover; display:block; }
 .quiz-card-body { padding:0.75rem 1rem; }
-.quiz-card-label { font-size:1rem; font-weight:800; color:var(--orange); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0; }
 .quiz-card-q { font-family:'Nunito',sans-serif; font-size:1.2rem; font-weight:800; line-height:1.45; margin-bottom:0.5rem; }
 .quiz-opts { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.4rem; }
-.quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.6rem 0.9rem; font-size:0.9rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.6rem; transition:border-color 0.2s, background 0.2s; color:var(--text); }
+.quiz-o { background:var(--bg); border:2px solid var(--border); border-radius:var(--radius-sm); padding:0.6rem 0.9rem; font-size:0.9rem; font-weight:500; cursor:pointer; text-align:left; width:100%; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:0.6rem; transition:border-color 0.2s,background 0.2s; color:var(--text); }
 .quiz-o:hover:not([disabled]) { border-color:var(--blue); background:var(--blue-light); }
 .quiz-o.correct { background:var(--green-light); border-color:var(--green); }
 .quiz-o.wrong { background:var(--red-light); border-color:var(--red); }
 .quiz-o-icon { width:22px; height:22px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; font-weight:700; }
 .quiz-o.correct .quiz-o-icon { background:var(--green); color:#fff; }
 .quiz-o.wrong .quiz-o-icon { background:var(--red); color:#fff; }
-.quiz-result-box { border-radius:var(--radius-sm); padding:1rem; font-size:1rem; line-height:1.75; display:none; }
-.quiz-result-box.show { display:block; }
-.quiz-result-box.correct-res { background:var(--green-light); color:#1a6b2f; }
-.quiz-result-box.wrong-res { background:var(--red-light); color:#b31c13; }
-.quiz-result-box strong { font-weight:800; display:block; margin-bottom:0.2rem; }
-
-/* ── CARD BOTTOM ── */
-.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1.6rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.5rem; transition:background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+.card-bottom { flex-shrink:0; background:var(--white); border-top:1px solid var(--border); padding:0.45rem 1.6rem calc(0.45rem + env(safe-area-inset-bottom)); display:flex; gap:0.5rem; transition:background 0.3s,border-color 0.3s; }
 .card-bottom.on-map { background:rgba(255,255,255,0.75); border-top-color:transparent; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-/* Video cards - centered with side space */
-.cf-fullscreen .card-bottom { padding:0.45rem calc(1.5rem + 20%) calc(0.45rem + env(safe-area-inset-bottom)); display:flex; justify-content:center; align-items:center; }
-/* Regular cards - longer buttons */
 .card-prev-btn { background:var(--bg); border:none; border-radius:var(--radius-sm); padding:0.5rem 1.5rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:800; color:var(--text2); cursor:pointer; flex:1; white-space:nowrap; }
 .card-next-btn { background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:0.5rem 1.5rem; font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(255,107,53,0.25); transition:transform 0.15s; white-space:nowrap; flex:1; }
 .card-next-btn:hover { transform:translateY(-1px); }
 .card-next-btn.final { background:var(--green); box-shadow:0 4px 12px rgba(52,199,89,0.25); }
-
-/* ── MAP ── */
 #map-screen { display:none; min-height:100svh; padding-bottom:1rem; }
 #map-screen.show { display:block; }
 .map-top { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1rem; background:var(--white); border-bottom:1px solid var(--border); }
 .map-top-title { font-family:'Nunito',sans-serif; font-size:1.4rem; font-weight:900; margin-bottom:0.2rem; }
 .map-top-sub { font-size:0.8rem; color:var(--text2); }
-.map-placeholder-box { margin:1.25rem; background:var(--white); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
-.map-placeholder-visual { background:linear-gradient(135deg,#e8f0fe,#d2e3fc); aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; }
-.map-placeholder-visual .icon { font-size:2.5rem; }
-.map-placeholder-visual .title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; color:var(--blue); }
-.map-placeholder-visual .sub { font-size:0.78rem; color:#4a7fcb; max-width:220px; text-align:center; line-height:1.5; }
-.map-notice { margin:0 1.25rem 1.25rem; background:var(--blue-light); border-radius:var(--radius-sm); padding:0.85rem 1rem; font-size:0.8rem; color:var(--blue); font-weight:500; }
 .map-stops-title { font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; padding:0 1.25rem; margin-bottom:0.75rem; }
 .map-pill { margin:0 1.25rem 0.6rem; background:var(--white); border-radius:var(--radius-sm); padding:0.85rem 1rem; display:flex; align-items:center; gap:0.75rem; box-shadow:var(--shadow); cursor:pointer; text-decoration:none; color:var(--text); transition:transform 0.15s; }
 .map-pill:hover { transform:translateY(-1px); }
@@ -692,18 +210,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .map-pill-name { font-weight:700; font-size:0.88rem; flex:1; }
 .map-pill-addr { font-size:0.7rem; color:var(--text2); }
 .map-pill-link { font-size:0.75rem; color:var(--blue); font-weight:700; }
-
-/* ── BOTTOM NAV ── */
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-top:1px solid var(--border); display:flex; height:calc(68px + env(safe-area-inset-bottom)); padding-bottom:env(safe-area-inset-bottom); z-index:100; }
-.nav-btn { flex:1; background:none; border:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.25rem; color:var(--text2); cursor:pointer; transition:color 0.2s; padding-top:0.5rem; }
-.nav-btn.active { color:var(--orange); }
-.nav-icon { font-size:1.2rem; line-height:1; }
-.nav-lbl { font-size:0.55rem; letter-spacing:0.05em; font-weight:600; text-transform:uppercase; }
 </style>
-  </head>
+</head>
 <body>
 
-<!-- PASSWORD -->
 <div id="pw-screen">
   <div class="pw-logo">🪁</div>
   <div class="pw-wordmark">Tonbi</div>
@@ -712,43 +222,29 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <input class="pw-field" type="password" id="pw-in" placeholder="Enter your access code"
       autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
       onkeydown="if(event.key==='Enter')unlock()" style="margin-bottom:0;padding-right:3rem;width:100%;">
-    <button onclick="togglePw()" id="pw-eye"
-      style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--text2);padding:0.25rem;">
-      👁
-    </button>
+    <button onclick="togglePw()" id="pw-eye" style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--text2);padding:0.25rem;">👁</button>
   </div>
   <div class="pw-error" id="pw-err"></div>
   <button class="pw-btn" onclick="unlock()">Start the Tour 🪁</button>
 </div>
 
-<!-- APP -->
 <div id="app">
-  <!-- OVERWORLD MAP HOME -->
   <div id="overworld-screen">
     <div id="overworld-map"></div>
-
-    <!-- Floating header -->
     <div class="ow-header">
       <div class="ow-logo">
         <div class="ow-logo-icon">🪁</div>
-        <div>
-          <div class="ow-logo-name">Tonbi · Rotterdam</div>
-          <div class="ow-logo-sub">SELF-GUIDED WALKING TOUR</div>
-        </div>
+        <div><div class="ow-logo-name">Tonbi · Rotterdam</div><div class="ow-logo-sub">SELF-GUIDED WALKING TOUR</div></div>
       </div>
     </div>
-
-    <!-- Floating bottom controls -->
     <div class="ow-bottom">
-      <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
-        <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
-        Start Tour
+      <button class="ow-start-btn" onclick="owStartTour()">
+        <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Start Tour
       </button>
       <a class="ow-list-link" onclick="showScreen('home')" style="font-size:0.9rem;font-weight:700;color:rgba(255,255,255,0.65);padding:0.5rem;">☰ View as list of stops</a>
     </div>
   </div>
 
-  <!-- CLASSIC LIST HOME (hidden by default) -->
   <div id="home-screen">
     <div class="home-header">
       <div class="home-header-top">
@@ -759,7 +255,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         <div class="home-city-tag">Rotterdam 🇳🇱</div>
       </div>
     </div>
-
     <div class="hero-card">
       <img class="hero-img" src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" alt="Rotterdam">
       <div class="hero-overlay">
@@ -785,10 +280,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <div id="map-screen">
     <div class="map-top">
       <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div>
-          <div class="map-top-title">Route Map</div>
-          <div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div>
-        </div>
+        <div><div class="map-top-title">Route Map</div><div class="map-top-sub">All 5 stops · Rotterdam · ~2 hours walk</div></div>
         <a onclick="showScreen('overworld')" style="font-size:0.9rem;font-weight:700;color:var(--orange);cursor:pointer;white-space:nowrap;">← Tour</a>
       </div>
     </div>
@@ -797,15 +289,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div id="map-pill-list"></div>
     <div style="height:1rem"></div>
   </div>
-
-
 </div>
 
-<!-- JOURNEY -->
 <div id="journey-screen">
-<div class="jt-bar" id="jt-bar">
+  <div class="jt-bar" id="jt-bar">
     <div class="jt-bar-top">
-      <div id="dp-prog" style="margin-left:0;min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#ff6b35;letter-spacing:-0.01em;"></div>
+      <div id="dp-prog" style="min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:#ff6b35;"></div>
       <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;font-size:1.05rem;"></div>
       <button class="jt-close" onclick="closeJourney()">✕</button>
     </div>
@@ -820,7 +309,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<!-- PHOTO PREVIEW OVERLAY -->
 <div id="preview-overlay">
   <img id="preview-img" src="" alt="Your photo">
   <div class="preview-bottom">
@@ -832,14 +320,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<!-- HIDDEN FILE INPUT -->
 <input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="handlePhotoSelection(event)">
 
-<!-- OFFER OVERLAY -->
 <div id="offer-overlay" onclick="closeOffer(event)">
   <div class="offer-modal" onclick="event.stopPropagation()">
     <div class="offer-modal-header">
-      <div class="offer-modal-icon">🎟️</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;">
+        <div style="width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🪁</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:white;">Tonbi</div>
+      </div>
       <div class="offer-modal-title" id="offer-modal-partner-name">Partner Offer</div>
     </div>
     <div class="offer-modal-body">
@@ -854,19 +343,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<!-- END SCREEN -->
 <div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="max-width:480px;margin:0 auto;padding:calc(2rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
-
-    <!-- Rudy sign-off hero -->
     <div style="text-align:center;margin-bottom:1.75rem;">
       <div style="font-size:2.8rem;margin-bottom:0.5rem;">🪁</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1.15;margin-bottom:0.65rem;letter-spacing:-0.02em;">Tour Complete!</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1.15;margin-bottom:0.65rem;">Tour Complete!</div>
       <div style="font-size:0.95rem;color:var(--text2);line-height:1.7;max-width:320px;margin:0 auto;">Thanks for exploring Rotterdam with me. You've walked the same streets my family has walked for generations — I hope the city showed you something real.</div>
       <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text2);font-style:italic;">— Rudy</div>
     </div>
-
-    <!-- Quiz score card -->
     <div id="end-score-card" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.25rem;">
       <div style="text-align:center;flex-shrink:0;">
         <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:3rem;font-weight:900;color:var(--orange);line-height:1;"></div>
@@ -879,8 +363,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         <div id="end-score-msg" style="font-size:0.85rem;color:var(--text);font-weight:600;line-height:1.4;"></div>
       </div>
     </div>
-
-    <!-- Static Mapbox map -->
     <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:1.25rem;">
       <div style="padding:0.85rem 1rem 0.5rem;border-bottom:1px solid var(--border);">
         <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
@@ -888,8 +370,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       </div>
       <div id="end-map" style="width:100%;height:220px;"></div>
     </div>
-
-    <!-- Photos section -->
     <div id="end-photos-section" style="display:none;margin-bottom:1.25rem;">
       <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
         <div style="padding:0.85rem 1rem 0.75rem;border-bottom:1px solid var(--border);">
@@ -898,21 +378,17 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
         <div id="end-photos-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:3px;"></div>
         <div style="padding:0.85rem 1rem;">
-          <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 12px rgba(45,107,228,0.2);">
+          <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download Photo Collage
           </button>
         </div>
       </div>
     </div>
-
-    <!-- No photos message -->
     <div id="end-no-photos" style="display:none;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;text-align:center;margin-bottom:1.25rem;color:var(--text2);font-size:0.88rem;line-height:1.6;">
       📷 No photos captured this time.<br>Next time try the photo challenges — they're worth it!
     </div>
-
-    <!-- Back to tour button -->
-    <button onclick="closeEndScreen()" style="width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+    <button onclick="closeEndScreen()" style="width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
       Back to Tour 🗺️
     </button>
     <div style="height:1rem;"></div>
@@ -920,815 +396,145 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </div>
 
 <script>
-// ══ DATA ══
-// NOTE: Replace the youtubeId values with your actual unlisted YouTube video IDs.
-// To get an ID: upload to YouTube as Unlisted, copy the URL
-// e.g. https://www.youtube.com/watch?v=ABC123XYZ → ID is "ABC123XYZ"
-// thumbUrl can be left as the stop image or use YouTube's auto-thumbnail:
-// https://img.youtube.com/vi/YOUR_ID/hqdefault.jpg
-
-const stops = [
-  {
-    id:1, name:"Erasmus Bridge", dutch:"Erasmusbrug",
-    tagline:"Where Rotterdam announces itself to the world",
-    img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",
-    mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
-    address:"Boompjeskade, 3011 XE Rotterdam",
-    youtubeId: null, cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
-    desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",
-    rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",
-    challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps. The asymmetry is the magic.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"Locals call it <em>De Zwaan</em> — The Swan — because of the graceful curve of its single white pylon, which resembles a swan's neck."}
-  },
-  {
-    id:2, name:"Witte Huis", dutch:"The White House",
-    tagline:"Europe's first skyscraper, still standing proud",
-    img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",
-    mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
-    address:"Geldersekade 1, 3011 EG Rotterdam",
-    youtubeId: null,
-    cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
-    desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously, and stands today as a living link to Rotterdam before the war.",
-    rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed. That moment always hits hard.",
-    challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture. The contrast between the 1898 facade and today's glass-and-steel is the whole story of the city in one frame.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"The Witte Huis was completed in 1898. At 10 stories, it was a genuine skyscraper for its era — a bold statement from an ambitious city."}
-  },
-  {
-    id:3, name:"Oude Haven", dutch:"Old Harbor",
-    tagline:"The oldest harbor in Rotterdam, still full of life",
-    img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
-    mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
-    address:"Oudehaven, 3011 KN Rotterdam",
-    youtubeId: null, cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
-    desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead. My family's connection to these harbors stretches back generations; working hands, heavy ropes, and the smell of the Maas.",
-    rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up. But any time of day, the contrast between old vessels and the Cube Houses above is something completely unique to Rotterdam.",
-    challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water. Move around the edge — the best reflections shift depending on exactly where you stand.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the longer and more dramatic the reflection."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"The Oude Haven dates to 1325, making it the oldest part of Rotterdam's harbor system — and essentially the birthplace of the city."}
-  },
-  {
-    id:4, name:"Cube Houses", dutch:"Kubuswoningen",
-    tagline:"Living tilted at 45° — Rotterdam's most playful architecture",
-    img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",
-    mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
-    address:"Overblaak 70, 3011 MH Rotterdam",
-    youtubeId: null, cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
-    desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon. Blom's concept: a village within a city, where each cube is a tree, together forming a forest. The result is disorienting, playful, and completely Rotterdam.",
-    rudy:"Don't just look up at them from below. Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture. That's my favourite spot.",
-    challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically. The overlapping angles and windows create an almost abstract pattern. Try converting to black and white afterwards.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here — don't fight it."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed the Cube Houses. His concept: 'living as an urban roof' — each tilted cube a tree, together a forest canopy over the street."}
-  },
-  {
-    id:5, name:"Markthal", dutch:"Market Hall",
-    tagline:"A cathedral of food — and the best ceiling in the Netherlands",
-    img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
-    mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
-    address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",
-    youtubeId: null, cloudflareId: "cdf7ca48be25d626e763da55c81765b8", cfStyle: "fullscreen",
-    desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>. Walk in, look up, and let your jaw drop. Then eat something — I insist.",
-    rudy:"The ceiling artwork is extraordinary but most people walk in and look at the stalls. Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",
-    challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork. Try a slow panorama sweep, or take a regular shot and experiment with the fisheye effect in editing.",tip:"The ceiling is brightly lit but the market below is darker — tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},
-    quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"The ceiling mural is called <em>Horn of Plenty</em> (Hoorn des Overvloeds), created by Arno Coenen and Iris Roskam. At 11,000 m² it's one of the largest artworks in the world."},
-    partners:[
-      {
-        name:"Markthal Herring Stand",
-        type:"Street Food",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
-        desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. This is non-negotiable Rotterdam food culture.",
-        hours:"Tue–Sat 10:00–18:00, Sun 11:00–17:00",
-        location:"Inside Markthal, central aisle",
-        offer:"Free soft drink with any purchase",
-        offerNote:"Show this screen to the staff at the counter. One offer per tour code.",
-        code:"TBR-001",
-        emoji:"🐟"
-      }
-    ]
-  }
+const stops=[
+  {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",youtubeId:null,cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."}},
+  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",youtubeId:null,cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
+  {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",youtubeId:null,cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
+  {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",youtubeId:null,cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
+  {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",youtubeId:null,cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
+    partners:[{name:"Markthal Herring Stand",type:"Street Food",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. Non-negotiable Rotterdam food culture.",location:"Inside Markthal, central aisle",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",offer:"Free soft drink with any purchase",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-001",emoji:"🐟",ownerName:"Jan van der Berg",ownerDesc:"Third-generation herring fishmonger.",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"]}]}
 ];
 
-// ══ STATE ══
-const photoCollection = {};
-const quizAnswered = {};
-let currentStop = null, currentCardIdx = 0, cards = [];
-let pendingPhotoStopId = null;
-const videoActivated = {};
+const photoCollection={};
+const quizAnswered={};
+let currentStop=null,currentCardIdx=0,cards=[];
+let pendingPhotoStopId=null;
+const videoActivated={};
 
-// ══ PASSWORD ══
-function togglePw(){
-  const input=document.getElementById('pw-in');
-  const eye=document.getElementById('pw-eye');
-  input.type=input.type==='password'?'text':'password';
-  eye.textContent=input.type==='password'?'👁':'🙈';
-}
-
+function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
 function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(v === 'yyy'){
-    const pw=document.getElementById('pw-screen');
-    pw.classList.add('exit');
-    setTimeout(()=>{
-      pw.style.display='none';
-      document.getElementById('app').classList.add('show');
-      try { showScreen('home'); } catch(e){ console.error('showScreen error:', e); }
-    },500);
-  } else {
-    document.getElementById('pw-err').textContent='Incorrect code — try again.';
-    document.getElementById('pw-in').value='';
-  }
+  if(v==='yyy'){const pw=document.getElementById('pw-screen');pw.classList.add('exit');setTimeout(()=>{pw.style.display='none';document.getElementById('app').classList.add('show');try{showScreen('overworld');initOverworldMap();}catch(e){console.error(e);}},500);}
+  else{document.getElementById('pw-err').textContent='Incorrect code — try again.';document.getElementById('pw-in').value='';}
 }
-
-// ══ SCREENS ══
 function showScreen(name){
   document.getElementById('overworld-screen').style.display=name==='overworld'?'block':'none';
   document.getElementById('home-screen').style.display=name==='home'?'block':'none';
-  const mapEl=document.getElementById('map-screen');
-  name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
+  const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
 }
-
-// ══ LISTS ══
-function owStartTour(){
-  // Find next unvisited stop; fall back to stop 1
-  const nextStop = stops.find(s => !quizAnswered[s.id]) || stops[0];
-  startJourney(nextStop.id);
-}
+function owStartTour(){const n=stops.find(s=>!quizAnswered[s.id])||stops[0];startJourney(n.id);}
 
 function initOverworldMap(){
-  if(!window.mapboxgl) return;
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-
-  // Stop coords [lng, lat]
-  const stopCoords = [
-    [4.4871, 51.9090], // 1 Erasmus Bridge
-    [4.4917, 51.9186], // 2 Witte Huis
-    [4.4917, 51.9193], // 3 Oude Haven
-    [4.4877, 51.9188], // 4 Cube Houses
-    [4.4866, 51.9200]  // 5 Markthal
-  ];
-
-  // Compute bounding box center
-  const lngs = stopCoords.map(c=>c[0]);
-  const lats = stopCoords.map(c=>c[1]);
-  const centerLng = (Math.min(...lngs)+Math.max(...lngs))/2;
-  const centerLat = (Math.min(...lats)+Math.max(...lats))/2;
-
-  const owMap = new mapboxgl.Map({
-    container: 'overworld-map',
-    style: 'mapbox://styles/mapbox/dark-v11',
-    center: [centerLng, centerLat - 0.004],
-    zoom: 13.8,
-    interactive: true,
-    attributionControl: false,
-    pitchWithRotate: false,
-    dragRotate: false
-  });
-
-  owMap.on('load', () => {
-    // Fit all stops
-    const bounds = stopCoords.reduce((b,c)=>b.extend(c),
-      new mapboxgl.LngLatBounds(stopCoords[0], stopCoords[0]));
-    owMap.fitBounds(bounds, {padding:{top:120,bottom:180,left:60,right:60}, animate:false, maxZoom:14.5});
-
-    // Dotted path connecting stops
-    owMap.addSource('ow-path', {
-      type:'geojson',
-      data:{type:'Feature',geometry:{type:'LineString',coordinates:stopCoords}}
-    });
-    owMap.addLayer({
-      id:'ow-path-line', type:'line', source:'ow-path',
-      paint:{
-        'line-color':'#ff6b35','line-width':3,
-        'line-dasharray':[2,3],'line-opacity':0.7
-      }
-    });
-
-    // Stop node markers
-    stops.forEach((stop, i) => {
-      const coord = stopCoords[i];
-      const el = document.createElement('div');
-      el.style.cssText = 'position:relative;width:58px;height:58px;';
-
-      // Label above node
-      const label = document.createElement('div');
-      label.className = 'ow-node-label';
-      label.textContent = stop.name;
-      el.appendChild(label);
-
-      const node = document.createElement('div');
-      const isDone = quizAnswered[stop.id] !== undefined;
-      const isNext = !isDone && (i===0 || quizAnswered[stops[i-1]?.id] !== undefined);
-      node.className = 'ow-stop-node' + (isDone?' done':'') + (isNext?' next-stop':'');
-
-      const img = document.createElement('img');
-      img.src = stop.img;
-      img.alt = stop.name;
-      node.appendChild(img);
-
-      const num = document.createElement('div');
-      num.className = 'ow-num';
-      num.textContent = stop.id;
-      node.appendChild(num);
-
-      // Tap: show label briefly then launch stop
-      node.addEventListener('click', () => {
-        label.style.opacity = '1';
-        setTimeout(()=>{ label.style.opacity='0'; }, 1800);
-        startJourney(stop.id);
-      });
-
-      el.appendChild(node);
-      new mapboxgl.Marker({element:el, anchor:'center'}).setLngLat(coord).addTo(owMap);
+  if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
+  const sc=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  const lngs=sc.map(c=>c[0]),lats=sc.map(c=>c[1]);
+  const owMap=new mapboxgl.Map({container:'overworld-map',style:'mapbox://styles/mapbox/dark-v11',center:[(Math.min(...lngs)+Math.max(...lngs))/2,(Math.min(...lats)+Math.max(...lats))/2-0.004],zoom:13.8,interactive:true,attributionControl:false,pitchWithRotate:false,dragRotate:false});
+  owMap.on('load',()=>{
+    const bounds=sc.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(sc[0],sc[0]));
+    owMap.fitBounds(bounds,{padding:{top:120,bottom:180,left:60,right:60},animate:false,maxZoom:14.5});
+    owMap.addSource('ow-path',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:sc}}});
+    owMap.addLayer({id:'ow-path-line',type:'line',source:'ow-path',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,3],'line-opacity':0.7}});
+    stops.forEach((stop,i)=>{
+      const coord=sc[i];const el=document.createElement('div');el.style.cssText='position:relative;width:58px;height:58px;';
+      const label=document.createElement('div');label.className='ow-node-label';label.textContent=stop.name;el.appendChild(label);
+      const node=document.createElement('div');const isDone=quizAnswered[stop.id]!==undefined;const isNext=!isDone&&(i===0||quizAnswered[stops[i-1]?.id]!==undefined);
+      node.className='ow-stop-node'+(isDone?' done':'')+(isNext?' next-stop':'');
+      const img=document.createElement('img');img.src=stop.img;img.alt=stop.name;node.appendChild(img);
+      const num=document.createElement('div');num.className='ow-num';num.textContent=stop.id;node.appendChild(num);
+      node.addEventListener('click',()=>{label.style.opacity='1';setTimeout(()=>{label.style.opacity='0';},1800);startJourney(stop.id);});
+      el.appendChild(node);new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coord).addTo(owMap);
     });
   });
 }
 
 function renderLists(){
-  document.getElementById('stop-list').innerHTML=stops.map(s=>`
-    <div class="stop-item" onclick="startJourney(${s.id})">
-      <div class="stop-item-num">${s.id}</div>
-      <img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy">
-      <div class="stop-item-body">
-        <div class="stop-item-name">${s.name}</div>
-        <div class="stop-item-tag">${s.tagline}</div>
-        <div class="stop-item-badges">
-          ${s.youtubeId?'<span class="pill pill-photo">🎬 Video</span>':''}
-          <span class="pill pill-photo">📸 Challenge</span>
-          <span class="pill pill-quiz">❓ Quiz</span>
-        </div>
-      </div>
-      <div class="stop-item-arrow">›</div>
-    </div>`).join('');
-
-  document.getElementById('map-pill-list').innerHTML=stops.map(s=>`
-    <a class="map-pill" href="${s.mapUrl}" target="_blank">
-      <div class="map-pill-num">${s.id}</div>
-      <div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div>
-      <div class="map-pill-link">Open →</div>
-    </a>`).join('');
+  document.getElementById('stop-list').innerHTML=stops.map(s=>`<div class="stop-item" onclick="startJourney(${s.id})"><div class="stop-item-num">${s.id}</div><img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy"><div class="stop-item-body"><div class="stop-item-name">${s.name}</div><div class="stop-item-tag">${s.tagline}</div><div class="stop-item-badges"><span class="pill pill-photo">📸 Challenge</span><span class="pill pill-quiz">❓ Quiz</span></div></div><div class="stop-item-arrow">›</div></div>`).join('');
+  document.getElementById('map-pill-list').innerHTML=stops.map(s=>`<a class="map-pill" href="${s.mapUrl}" target="_blank"><div class="map-pill-num">${s.id}</div><div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div><div class="map-pill-link">Open →</div></a>`).join('');
 }
 
-// ══ VIDEO ══
-function openVideo(youtubeId){
-  window.location.href = `youtube://watch?v=${youtubeId}`;
-  setTimeout(()=>{
-    window.open(`https://www.youtube.com/watch?v=${youtubeId}`, '_blank');
-  }, 500);
-}
+function skipToTextFullscreen(stopId){const iframe=document.getElementById('cf-vid-'+stopId);if(iframe)iframe.src='';skipToCard(3);}
+function skipToCard(idx){stopCFVideo();currentCardIdx=idx;updateCardPosition();updateProgressDots();updateNavBtns();}
+function jumpToDescCard(stopId){currentCardIdx=2;updateCardPosition();updateProgressDots();updateNavBtns();setTimeout(()=>{const iframe=document.getElementById('cf-vid-'+stopId);if(iframe)iframe.src='https://customer-umijtu8zknmpubqb.cloudflarestream.com/'+stops.find(s=>s.id===stopId).cloudflareId+'/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto';},300);}
+function skipToText(stopId){const t=document.getElementById('text-section-'+stopId),v=document.getElementById('video-wrap-'+stopId);if(t)t.style.display='block';if(v)v.style.display='none';}
+function startVideoAfterPopup(stopId){const popup=document.getElementById('sound-popup-'+stopId);if(popup)popup.style.display='none';const thumb=document.getElementById('cf-thumb-'+stopId);if(thumb)thumb.style.display='none';const iframe=document.getElementById('cf-vid-'+stopId);if(iframe&&iframe.dataset.src){iframe.src=iframe.dataset.src;iframe.style.zIndex='3';}}
+function setupSoundPopup(){}
+function setupRudyScrollHint(stopId){const card=document.querySelector(`.card[data-stop="${stopId}"][data-type="rudy"]`),hint=document.getElementById('rudy-scroll-hint-'+stopId);if(!card||!hint)return;card.addEventListener('scroll',function(){if(card.scrollTop>60)hint.style.display='none';},{passive:true});}
 
-function activateVideo(stopId){
-  const s=stops.find(x=>x.id===stopId);
-  if(!s.youtubeId) return;
-  openVideo(s.youtubeId);
-}
-
-function skipToTextFullscreen(stopId){
-  const iframe = document.getElementById('cf-vid-'+stopId);
-  if(iframe) iframe.src = '';
-  skipToCard(3);
-}
-
-function skipToCard(idx){
-  stopCFVideo();
-  currentCardIdx = idx;
-  updateCardPosition();
-  updateProgressDots();
-  updateNavBtns();
-}
-
-function jumpToDescCard(stopId){
-  // Go back to desc card (index 2) and restart video
-  currentCardIdx = 2;
-  updateCardPosition();
-  updateProgressDots();
-  updateNavBtns();
-  // Re-init iframe src to restart
-  setTimeout(()=>{
-    const iframe = document.getElementById('cf-vid-'+stopId);
-    if(iframe){
-      iframe.src = 'https://customer-umijtu8zknmpubqb.cloudflarestream.com/'+
-        stops.find(s=>s.id===stopId).cloudflareId+
-        '/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto';
-    }
-  }, 300);
-}
-
-function skipToText(stopId){
-  const textEl=document.getElementById(`text-section-${stopId}`);
-  const videoWrap=document.getElementById(`video-wrap-${stopId}`);
-  const skipLink=document.querySelector(`#video-wrap-${stopId}`)?.closest('.card')?.querySelector('.video-skip');
-  if(textEl){ textEl.style.display='block'; }
-  if(videoWrap){ videoWrap.style.display='none'; }
-  if(skipLink){ skipLink.style.display='none'; }
-}
-
-function startVideoAfterPopup(stopId){
-  const popup = document.getElementById('sound-popup-'+stopId);
-  if(popup) popup.style.display = 'none';
-  const thumb = document.getElementById('cf-thumb-'+stopId);
-  if(thumb) thumb.style.display = 'none';
-  const iframe = document.getElementById('cf-vid-'+stopId);
-  if(iframe && iframe.dataset.src){
-    iframe.src = iframe.dataset.src;
-    iframe.style.zIndex = '3';
-  }
-}
-
-function setupSoundPopup(stopId){
-  // Popup is now shown by default, no auto-dismiss needed
-}
-
-function setupRudyScrollHint(stopId){
-  // hide scroll hint once user scrolls down
-  const card = document.querySelector(`.card[data-stop="${stopId}"][data-type="rudy"]`);
-  const hint = document.getElementById(`rudy-scroll-hint-${stopId}`);
-  if(!card || !hint) return;
-  card.addEventListener('scroll', function(){
-    if(card.scrollTop > 60) hint.style.display = 'none';
-  }, {passive:true});
-}
-
-function setupVideoObserver(stopId){
-  const wrap=document.getElementById(`yt-wrap-${stopId}`);
-  if(!wrap) return;
-  const observer=new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(!entry.isIntersecting && videoActivated[stopId]){
-        const iframe=wrap.querySelector('iframe');
-        if(iframe) iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');
-      }
-    });
-  },{threshold:0.2});
-  observer.observe(wrap);
-}
-
-// ══ CONFETTI & ANIMATIONS ══
-const CONFETTI_COLORS = ['#ff6b35','#2d6be4','#ffcc00','#34c759','#e8295c','#af52de'];
-// ══ CARDS ══
 function buildCards(stop){
   const base=['transition','nav','desc','text','rudy','photo','quiz'];
-  const cards = base.map(type=>({type,stop}));
-  // Inject a partner card for each partner after quiz
-  if(stop.partners && stop.partners.length>0){
-    stop.partners.forEach(partner=>{
-      cards.push({type:'partner', stop, partner});
-    });
-  }
+  const cards=base.map(type=>({type,stop}));
+  if(stop.partners&&stop.partners.length>0)stop.partners.forEach((partner,pi)=>cards.push({type:'partner',stop,partner,partnerIdx:pi}));
   return cards;
 }
 
 function renderCard(card,idx,total){
   const s=card.stop;
-  
-  if(card.type==='transition'){
-    return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;">
-      <button onclick="closeJourney()" style="position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid rgba(0,0,0,0.1);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.1);font-weight:700;">✕</button>
-      <img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;">
-      <div>
-        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.6rem;">Time to move!</div>
-        <div style="font-size:1rem;color:var(--text2);line-height:1.75;font-weight:400;max-width:280px;margin:0 auto;">
-          Next stop: <strong style="color:var(--text)">${s.name}</strong>. We'll show you exactly how to get there with a live map and walking route.
-        </div>
-      </div>
-      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 One quick thing</div>
-        <div style="font-size:0.92rem;line-height:1.7;color:var(--text);font-weight:400;">When your phone asks <em>"Allow location access?"</em> — tap <strong>Allow</strong>. This lets the map show where you are and draw the walking route to the next stop.</div>
-      </div>
-      <button onclick="nextCard()" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,0.25);letter-spacing:-0.01em;">
-        Let's go! 👟
-      </button>
-    </div>`;
-  }
 
-  if(card.type==='nav'){
-    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav">
-      <div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
-      <!-- Top gradient + header (title only, no gmaps here) -->
-      <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-        padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;
-        background:linear-gradient(to bottom, rgba(255,255,255,0.90) 45%, rgba(255,255,255,0));
-        pointer-events:none;">
-        <div style="pointer-events:none;">
-          <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
-          <div class="arrival-title" style="line-height:1.1;">${s.name}</div>
-        </div>
-      </div>
-      <!-- Bottom white gradient -->
-      <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;
-        height:120px;background:linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 50%, transparent 100%);pointer-events:none;"></div>
-      <!-- Bottom-right: route info + Google Maps button stacked -->
-      <!-- Route info + Google Maps — frosted pill, bottom-center -->
-      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;
-        background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-        border:1px solid rgba(255,255,255,0.35);border-radius:22px;
-        box-shadow:0 2px 12px rgba(0,0,0,0.10);
-        overflow:hidden;display:flex;flex-direction:column;min-width:160px;">
-        <!-- Time remaining row — hidden until route loads -->
-        <div id="route-info-${s.id}"
-          style="display:none;
-                 padding:0.3rem 0.85rem 0.22rem;
-                 font-size:0.62rem;font-weight:700;color:var(--orange);
-                 border-bottom:1px solid rgba(255,255,255,0.4);
-                 white-space:nowrap;line-height:1.3;text-align:center;"></div>
-        <!-- Google Maps row — always visible -->
-        <a href="${s.mapUrl}" target="_blank"
-          style="padding:0.3rem 0.85rem 0.3rem;
-                 color:var(--orange);font-size:0.62rem;font-weight:700;
-                 text-decoration:none;white-space:nowrap;
-                 display:flex;align-items:center;justify-content:center;gap:0.35rem;">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>
-          Open in Google Maps
-        </a>
-      </div>
-    </div>`;
-  }
+  if(card.type==='transition'){return `<div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1.75rem;gap:1.5rem;position:relative;"><button onclick="closeJourney()" style="position:absolute;top:1rem;right:1rem;background:var(--bg);border:1.5px solid rgba(0,0,0,0.1);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(0,0,0,0.1);">✕</button><img src="${s.img}" alt="${s.name}" style="width:110px;height:110px;border-radius:28px;object-fit:cover;box-shadow:0 8px 28px rgba(0,0,0,0.2);border:3px solid white;"><div><div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;margin-bottom:0.6rem;">Time to move!</div><div style="font-size:1rem;color:var(--text2);line-height:1.75;max-width:280px;margin:0 auto;">Next stop: <strong style="color:var(--text)">${s.name}</strong>. We'll show you exactly how to get there.</div></div><div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.25rem;width:100%;text-align:left;"><div style="font-size:0.7rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 One quick thing</div><div style="font-size:0.92rem;line-height:1.7;color:var(--text);">When your phone asks <em>"Allow location access?"</em> — tap <strong>Allow</strong>. This lets the map draw the walking route to the next stop.</div></div><button onclick="nextCard()" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;">Let's go! 👟</button></div>`;}
+
+  if(card.type==='nav'){return `<div class="card nav-card" data-stop="${s.id}" data-type="nav"><div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${s.id}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;}
 
   if(card.type==='desc'){
-    if(s.cloudflareId && s.cfStyle==='fullscreen'){
-      return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;">
-        <!-- Thumbnail shown while popup is up, replaced by iframe after -->
-        <img id="cf-thumb-${s.id}" src="${s.img}"
-          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;">
-        <iframe id="cf-vid-${s.id}"
-          src=""
-          data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto"
-          style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;object-position:bottom;z-index:1;"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowfullscreen></iframe>
-        <!-- Sound info popup — shown first, starts video when dismissed -->
-        <div id="sound-popup-${s.id}"
-          style="position:absolute;inset:0;z-index:15;
-            display:flex;align-items:center;justify-content:center;padding-top:20%;
-            background:rgba(0,0,0,0.3);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);">
-          <div onclick="startVideoAfterPopup('${s.id}')"
-            style="background:rgba(0,0,0,0.45);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-              border:1px solid rgba(255,255,255,0.2);border-radius:24px;
-              padding:1.5rem 1.75rem;width:82%;max-width:300px;text-align:center;cursor:pointer;
-              animation:fadeInUp 0.35s ease forwards;">
-            <!-- Speaker-off icon: clean minimal lines, no phone feel -->
-            <div style="margin-bottom:0.75rem;display:flex;justify-content:center;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3 L7 8 H3 V16 H7 L12 21 Z"/>
-                <line x1="20" y1="8" x2="14" y2="14"/>
-                <line x1="14" y1="8" x2="20" y2="14"/>
-              </svg>
-            </div>
-            <div style="font-size:0.92rem;font-weight:800;color:white;margin-bottom:0.4rem;">Video starts muted</div>
-            <div style="font-size:0.78rem;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:1rem;">Tap the screen to show player controls, then tap the sound icon to unmute.</div>
-            <!-- Play button: clean circle with triangle -->
-            <div style="background:var(--orange);color:white;border-radius:99px;padding:0.6rem 1.5rem;
-              font-weight:800;font-size:0.88rem;display:inline-flex;align-items:center;gap:0.6rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="none">
-                <path d="M5 3 L19 12 L5 21 Z"/>
-              </svg>
-              Play video
-            </div>
-          </div>
-        </div>
-        <!-- Top gradient + title/tagline -->
-        <div style="position:absolute;top:0;left:0;right:0;z-index:10;
-          padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;
-          background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);
-          pointer-events:none;">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div>
-        </div>
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);
-          z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;">
-          <div class="arrival-stop-num">Stop ${s.id} &#183; ${s.dutch}</div>
-          <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
-          <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
-          <div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div>
-          <div style="text-align:center;padding-bottom:1rem;">
-            <a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'"
-              style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                     background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;
-                     padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;">
-              <svg width="13" height="13" viewBox="0 0 12 12" fill="white" style="margin-right:0.3rem;flex-shrink:0;"><polygon points="2,1 11,6 2,11"/></svg> Watch video instead</a>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    const cfBlock = s.cloudflareId && s.cfStyle==='card' ? `
-      <div style="position:relative;width:100%;border-radius:16px;overflow:hidden;background:#000;
-                  aspect-ratio:9/16;max-height:72vh;margin-bottom:0.85rem;box-shadow:var(--shadow-lg);">
-        <iframe
-          src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=true&muted=false&loop=false&controls=true&preload=true"
-          style="width:100%;height:100%;border:0;"
-          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-          allowfullscreen></iframe>
-      </div>
-      <div class="video-skip">Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a></div>` : '';
-
-    const videoBlock = s.cloudflareId ? cfBlock : s.youtubeId ? `
-      <div class="video-wrap" id="video-wrap-${s.id}" style="position:relative;cursor:pointer;" onclick="openVideo('${s.youtubeId}')">
-        <img src="https://img.youtube.com/vi/${s.youtubeId}/hqdefault.jpg" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        <div class="video-thumb-overlay">
-          <div class="play-btn-circle"><div class="play-triangle"></div></div>
-        </div>
-        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:white;font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:4px;font-weight:600;">Opens in YouTube</div>
-      </div>
-      <div class="video-skip">Slow connection? <a onclick="skipToText(${s.id})" style="cursor:pointer;">Skip video — read text instead</a></div>` : `<div id="text-section-${s.id}-trigger" style="display:none;"></div>`;
-
-    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;">
-      <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Stop ${s.id} · ${s.dutch}</div>
-      <div class="arrival-title" style="margin-bottom:0.2rem;">${s.name}</div>
-      <div class="arrival-tagline" style="margin-bottom:1rem;">${s.tagline}</div>
-      ${videoBlock}
-      <div class="arrival-text-section" id="text-section-${s.id}" style="display:${(s.cloudflareId||s.youtubeId) ? 'none' : 'block'};">
-        <div class="arrival-text-body" style="margin-top:0.5rem;">${s.desc}</div>
-      </div>
-    </div>`;
+    if(s.cloudflareId&&s.cfStyle==='fullscreen'){return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#000;padding:0;"><img id="cf-thumb-${s.id}" src="${s.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;"><iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;bottom:0;left:0;right:0;width:100%;height:100%;border:0;z-index:1;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe><div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;padding-top:20%;background:rgba(0,0,0,0.3);backdrop-filter:blur(1px);"><div onclick="startVideoAfterPopup('${s.id}')" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.2);border-radius:24px;padding:1.5rem 1.75rem;width:82%;max-width:300px;text-align:center;cursor:pointer;"><div style="margin-bottom:0.75rem;display:flex;justify-content:center;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><path d="M12 3 L7 8 H3 V16 H7 L12 21 Z"/><line x1="20" y1="8" x2="14" y2="14"/><line x1="14" y1="8" x2="20" y2="14"/></svg></div><div style="font-size:0.92rem;font-weight:800;color:white;margin-bottom:0.4rem;">Video starts muted</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.72);line-height:1.55;margin-bottom:1rem;">Tap the screen to show controls, then tap the sound icon to unmute.</div><div style="background:var(--orange);color:white;border-radius:99px;padding:0.6rem 1.5rem;font-weight:800;font-size:0.88rem;display:inline-flex;align-items:center;gap:0.6rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M5 3 L19 12 L5 21 Z"/></svg>Play video</div></div></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);pointer-events:none;"><div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div><div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div></div><div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div></div>`;}
+    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-section"><div class="arrival-text-body">${s.desc}</div></div></div>`;
   }
 
-  if(card.type==='rudy') return `
-    <div class="card" data-stop="${s.id}" data-type="rudy" style="padding:0 0 3rem 0;">
-      <!-- Scroll hint arrow -->
-      <div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;
-        display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;
-        animation:scrollBounce 1.6s ease-in-out infinite;">
-        <span style="font-size:0.6rem;font-weight:700;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;">scroll</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-      <!-- Hero image FIRST — full bleed with Rudy header overlaid -->
-      <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;margin-bottom:0;">
-        <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;">
-          <div class="story-avatar" style="margin-bottom:0;flex-shrink:0;width:44px;height:44px;">R</div>
-          <div>
-            <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div>
-            <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;">Local filmmaker &amp; guide</div>
-          </div>
-        </div>
-      </div>
-      <!-- Main text card -->
-      <div style="padding:1.25rem 1.25rem 0.25rem;">
-        <div style="font-size:1.05rem;line-height:1.85;color:var(--text);font-weight:400;">${s.rudy}</div>
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyExtra || "Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look. No other city in the world has this combination of 19th-century remnants and bold 21st-century architecture side by side."}</div>
-      </div>
-      <!-- Placeholder image 1 -->
-      <div style="width:100%;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:var(--shadow);position:relative;background:linear-gradient(135deg,#e8e8e8,#d0d0d0);">
-        <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;
-          background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);
-          color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div>
-      </div>
-      <!-- Extra text block -->
-      <div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:0.75rem;">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">📷 Filmmaker's Eye</div>
-        <div style="font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyFilm || "When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think — just find something close to your lens, even a railing or a leaf, and let it fall slightly out of focus. Suddenly your photo has dimension."}</div>
-      </div>
-      <!-- Placeholder image 2 -->
-      <div style="width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:var(--shadow);position:relative;background:linear-gradient(135deg,#d8e8f0,#c0d4e0);">
-        <img src="${s.img}" alt="${s.name} detail" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.1)contrast(1.05);">
-        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.08);"></div>
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;
-          background:linear-gradient(to top,rgba(0,0,0,0.55),transparent);
-          color:white;font-size:0.7rem;font-weight:600;">🎥 Placeholder — your video/photo here</div>
-      </div>
-      <div style="background:var(--white);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow);margin-bottom:1rem;">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">🗺️ Local Knowledge</div>
-        <div style="font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyLocal || "Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere. Morning gives you soft diffused tones; late afternoon brings long shadows and golden warmth. That's when I do my best work."}</div>
-      </div>
-    </div>`;
+  if(card.type==='rudy')return `<div class="card" data-stop="${s.id}" data-type="rudy" style="padding:0 0 3rem 0;"><div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div><div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div><div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;"><div class="story-avatar" style="margin-bottom:0;flex-shrink:0;width:44px;height:44px;">R</div><div><div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div><div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;">Local filmmaker &amp; guide</div></div></div></div><div style="padding:1.25rem 1.25rem 0.25rem;"><div style="font-size:1.05rem;line-height:1.85;color:var(--text);">${s.rudy}</div><div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look."}</div></div><div style="width:100%;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:var(--shadow);position:relative;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div></div><div style="background:var(--orange-light);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:0.75rem;"><div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">📷 Filmmaker's Eye</div><div style="font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think."}</div></div><div style="background:var(--white);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow);margin-bottom:1rem;"><div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;">🗺️ Local Knowledge</div><div style="font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere."}</div></div></div>`;
 
-  if(card.type==='text'){
-    return `
-    <div class="card" data-stop="${s.id}" data-type="text" style="padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));">
-      <div style="font-size:0.65rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.25rem;">Stop ${s.id} · ${s.dutch}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;letter-spacing:-0.02em;margin-bottom:0.35rem;">${s.name}</div>
-      <div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div>
-      <div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.desc}</div>
-      <div style="padding-bottom:1rem;">
-        <a onclick="jumpToDescCard(${s.id})"
-          style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;
-                 background:var(--orange);color:white;font-weight:700;font-size:0.88rem;
-                 padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;">
-          <svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
-          Watch video
-        </a>
-      </div>
-    </div>`;
-  }
+  if(card.type==='text')return `<div class="card" data-stop="${s.id}" data-type="text" style="padding:1.5rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;margin-bottom:0.35rem;">${s.name}</div><div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div><div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.desc}</div><a onclick="jumpToDescCard(${s.id})" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.88rem;padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video</a></div>`;
 
   if(card.type==='photo'){
-    const hasPhoto = photoCollection[s.id];
-    const photoUI = hasPhoto ? `
-      <div class="photo-existing">
-        <img src="${photoCollection[s.id].dataUrl}" alt="Your photo" class="photo-existing-thumb">
-        <div class="photo-existing-label">✓ Photo Captured</div>
-        <div class="photo-existing-text">You've already taken a great shot here. Want to capture another angle?</div>
-        <button class="photo-select-btn replace" onclick="openPhotoPicker(${s.id})">📷 Replace Photo</button>
-      </div>
-    ` : ``;
-    
-    return `
-    <div class="card" data-stop="${s.id}" data-type="photo">
-      <div class="photo-card">
-        <!-- Header: title BIG, subtitle small above it -->
-        <div class="photo-card-header" style="padding:1.5rem 1.25rem 1.25rem;">
-          <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">${s.challenge.title}</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-0.02em;">📸 Photo<br>Challenge!</div>
-        </div>
-        <div class="photo-card-body" style="padding:0;">
-          <!-- Example photo placeholder -->
-          <div style="position:relative;width:100%;aspect-ratio:4/3;background:#e0e0e0;overflow:hidden;">
-            <img src="${s.img}" alt="Example shot" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.92);">
-            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);"></div>
-            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
-              color:white;font-size:0.6rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:20px;
-              text-transform:uppercase;letter-spacing:0.08em;">📷 Example shot</div>
-            <div style="position:absolute;bottom:12px;left:12px;right:12px;font-size:0.85rem;color:white;font-weight:500;line-height:1.5;">${s.challenge.desc}</div>
-          </div>
-          <!-- Map: where to stand -->
-          <div style="padding:1rem 1.25rem 0;">
-            <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 Where to stand</div>
-            <div id="photo-map-${s.id}" style="width:100%;height:140px;border-radius:var(--radius-sm);overflow:hidden;background:#e8e8e8;"></div>
-          </div>
-          <!-- Tips -->
-          <div style="padding:1rem 1.25rem 0;">
-            <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem;">💡 Tips</div>
-            <div style="display:flex;flex-direction:column;gap:0.5rem;">
-              ${(s.challenge.tips || [
-                'Get low — crouch down to change the perspective dramatically.',
-                'Shoot into the light for drama. Silhouettes beat a flat, correctly exposed shot.',
-                'Take 5–10 shots and pick the best one. Professional photographers always shoot in bursts.'
-              ]).map((tip,i) => '<div style="display:flex;gap:0.6rem;align-items:flex-start;background:var(--bg);border-radius:10px;padding:0.55rem 0.75rem;"><span style=\'font-size:0.75rem;font-weight:800;color:var(--orange);flex-shrink:0;margin-top:0.05rem;\'>' + (i+1) + '.</span><span style=\'font-size:0.85rem;line-height:1.55;color:var(--text);\'>' + tip + '</span></div>').join('')}
-            </div>
-          </div>
-          <!-- Selfie option -->
-          <div style="margin:1rem 1.25rem 0;background:var(--blue-light);border-radius:var(--radius-sm);padding:0.85rem 1rem;display:flex;gap:0.85rem;align-items:center;">
-            <div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#c8d8f0;">
-              <img src="${s.img}" alt="selfie spot" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.7)brightness(1.1);">
-            </div>
-            <div style="flex:1;">
-              <div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem;">🤳 Selfie Spot</div>
-              <div style="font-size:0.82rem;line-height:1.5;color:var(--text);">${s.challenge.selfie || 'Stand here with the landmark behind you. Turn slightly sideways — it looks better than full-face-on.'}</div>
-            </div>
-          </div>
-          <!-- Rudy tip -->
-          <div style="margin:0.85rem 1.25rem 0;">
-            <div class="photo-tip-box">
-              <div class="photo-tip-icon">💡</div>
-              <div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div>
-            </div>
-          </div>
-          <!-- Existing photo or take shot -->
-          <div style="padding:0 1.25rem 1.5rem;">
-            ${photoUI}
-            ${!hasPhoto ? `
-              <div style="text-align:center;margin-top:1.25rem;">
-                <button class="photo-select-btn" onclick="openPhotoPicker(${s.id})">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                    <circle cx="12" cy="13" r="4"/>
-                  </svg>
-                  Take your shot
-                </button>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      </div>
-    </div>`;
+    const hasPhoto=photoCollection[s.id];
+    return `<div class="card" data-stop="${s.id}" data-type="photo"><div class="photo-card"><div class="photo-card-header" style="padding:1.5rem 1.25rem 1.25rem;"><div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">${s.challenge.title}</div><div style="font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;line-height:1.05;">📸 Photo<br>Challenge!</div></div><div class="photo-card-body" style="padding:0;"><div style="position:relative;width:100%;aspect-ratio:4/3;background:#e0e0e0;overflow:hidden;"><img src="${s.img}" alt="Example shot" style="width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.92);"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);"></div><div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);color:white;font-size:0.6rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:20px;text-transform:uppercase;">📷 Example shot</div><div style="position:absolute;bottom:12px;left:12px;right:12px;font-size:0.85rem;color:white;font-weight:500;line-height:1.5;">${s.challenge.desc}</div></div><div style="padding:1rem 1.25rem 0;"><div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 Where to stand</div><div id="photo-map-${s.id}" style="width:100%;height:140px;border-radius:var(--radius-sm);overflow:hidden;background:#e8e8e8;"></div></div><div style="padding:1rem 1.25rem 0;"><div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem;">💡 Tips</div><div style="display:flex;flex-direction:column;gap:0.5rem;">${(s.challenge.tips||['Get low — crouch down to change the perspective.','Shoot into the light for drama. Silhouettes beat flat exposures.','Take 5–10 shots and pick the best one.']).map((tip,i)=>`<div style="display:flex;gap:0.6rem;background:var(--bg);border-radius:10px;padding:0.55rem 0.75rem;"><span style="font-size:0.75rem;font-weight:800;color:var(--orange);flex-shrink:0;">${i+1}.</span><span style="font-size:0.85rem;line-height:1.55;">${tip}</span></div>`).join('')}</div></div><div style="margin:1rem 1.25rem 0;background:var(--blue-light);border-radius:var(--radius-sm);padding:0.85rem 1rem;display:flex;gap:0.85rem;align-items:center;"><div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;"><img src="${s.img}" style="width:100%;height:100%;object-fit:cover;filter:saturate(0.7)brightness(1.1);"></div><div style="flex:1;"><div style="font-size:0.65rem;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:0.2rem;">🤳 Selfie Spot</div><div style="font-size:0.82rem;line-height:1.5;">${s.challenge.selfie||'Stand here with the landmark behind you. Turn slightly sideways — it looks better than full-face-on.'}</div></div></div><div style="margin:0.85rem 1.25rem 0;"><div class="photo-tip-box"><div class="photo-tip-icon">💡</div><div class="photo-tip-text"><strong>Rudy's Tip</strong>${s.challenge.tip}</div></div></div><div style="padding:0 1.25rem 1.5rem;">${hasPhoto?`<div class="photo-existing"><img src="${photoCollection[s.id].dataUrl}" class="photo-existing-thumb"><div class="photo-existing-label">✓ Photo Captured</div><div class="photo-existing-text">Great shot! Want another angle?</div><button class="photo-select-btn replace" onclick="openPhotoPicker(${s.id})">📷 Replace Photo</button></div>`:`<div style="text-align:center;margin-top:1.25rem;"><button class="photo-select-btn" onclick="openPhotoPicker(${s.id})"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Take your shot</button></div>`}</div></div></div></div>`;
   }
 
   if(card.type==='quiz'){
-    const qa=quizAnswered[s.id];
-    const answered=qa!==undefined;
-    const totalStops=stops.length;
+    const qa=quizAnswered[s.id],answered=qa!==undefined;
     const attempted=Object.keys(quizAnswered).length;
-    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
-      const st=stops.find(x=>x.id===parseInt(sid));
-      return st&&ans===st.quiz.correct;
-    }).length;
-    const scoreText=`🏆 ${scored}/${attempted}`;
-
+    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
     const opts=s.quiz.opts.map((opt,i)=>{
-      let cls='',icon='○';
-      let rudyStamp='';
-      if(answered){
-        if(i===s.quiz.correct){
-          cls='correct';icon='✓';
-          // Only show stamp if this was the selected answer
-          if(i===qa){
-            rudyStamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 8px rgba(52,199,89,0.4);transform:rotate(15deg);">😊</div>`;
-          }
-        }
-        else if(i===qa){
-          cls='wrong';icon='✗';
-          rudyStamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 2px 8px rgba(179,28,19,0.4);transform:rotate(-15deg);">😕</div>`;
-        }
-      }
-      // bounce only on the answered option (correct or wrong), not all options
-      const bounce=(answered && (i===s.quiz.correct || i===qa))?' answered':'';
-      const delay=`${i * 0.25}s`;
-      return `<button class="quiz-o ${cls}${bounce} quiz-pop-in" style="animation-delay:${delay};position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>
-        ${rudyStamp}
-        <span class="quiz-o-icon">${icon}</span><span>${opt}</span>
-      </button>`;
+      let cls='',icon='○',stamp='';
+      if(answered){if(i===s.quiz.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.8rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.8rem;transform:rotate(-15deg);">😕</div>`;}}
+      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
-
-    const explanation=answered?s.quiz.explanation:'';
-    const wasCorrect = answered && qa===s.quiz.correct;
-    const combinedText=answered?`<div style="margin-top:1rem;padding:1rem;
-      background:${wasCorrect?'var(--green-light)':'var(--red-light)'};
-      border:1.5px solid ${wasCorrect?'var(--green)':'var(--red)'};
-      border-radius:var(--radius-sm);">
-      <div style="font-size:0.9rem;line-height:1.8;color:${wasCorrect?'#1a6b2f':'#b31c13'};">${explanation}</div>
-    </div>`:'';
-
-    return `
-    <div class="card" data-stop="${s.id}" data-type="quiz" style="position:relative;display:flex;flex-direction:column;">
-      <div class="quiz-card" style="flex:1;display:flex;flex-direction:column;">
-        <!-- Quiz image with overlaid title + score -->
-        <div style="position:relative;">
-          <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz">
-          <!-- dark gradient over image -->
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);border-radius:0;pointer-events:none;"></div>
-          <!-- Quiz Time! frosted pill centered on image -->
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-            <div style="
-              background:var(--orange);
-              backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-              border:2px solid rgba(255,255,255,0.4);
-              border-radius:22px;
-              padding:0.55rem 1.3rem;
-              display:flex;flex-direction:column;align-items:center;gap:0.1rem;
-              box-shadow:0 4px 20px rgba(255,107,53,0.45);
-              animation:quizTitlePop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;">
-              <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;
-                color:white;letter-spacing:0.02em;line-height:1;text-align:center;">
-                🎯 Quiz Time!
-              </div>
-            </div>
-          </div>
-          <!-- Score badge bottom-right of image -->
-          <div style="position:absolute;bottom:10px;right:10px;z-index:3;
-            background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-            border-radius:20px;padding:0.25rem 0.6rem;
-            display:flex;align-items:center;gap:0.3rem;
-            border:1px solid rgba(255,255,255,0.15);">
-            <span style="font-size:0.85rem;">🏆</span>
-            <span style="font-size:0.75rem;font-weight:800;color:white;">${scored}/${attempted}</span>
-          </div>
-        </div>
-        <div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;">
-          <div class="quiz-card-q quiz-typewriter" style="width:100%;margin-top:0.25rem;">${s.quiz.q}</div>
-          <div class="quiz-opts" style="margin-top:0.5rem;">${opts}</div>
-          ${combinedText}
-        </div>
-      </div>
-    </div>`;
+    const wasCorrect=answered&&qa===s.quiz.correct;
+    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="position:relative;display:flex;flex-direction:column;"><div class="quiz-card" style="flex:1;display:flex;flex-direction:column;"><div style="position:relative;"><img class="quiz-card-img" src="${s.quiz.img}" alt="quiz"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;"><div style="background:var(--orange);border:2px solid rgba(255,255,255,0.4);border-radius:22px;padding:0.55rem 1.3rem;box-shadow:0 4px 20px rgba(255,107,53,0.45);"><div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;">🎯 Quiz Time!</div></div></div><div style="position:absolute;bottom:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);border-radius:20px;padding:0.25rem 0.6rem;display:flex;align-items:center;gap:0.3rem;border:1px solid rgba(255,255,255,0.15);"><span style="font-size:0.85rem;">🏆</span><span style="font-size:0.75rem;font-weight:800;color:white;">${scored}/${attempted}</span></div></div><div class="quiz-card-body" style="flex:1;display:flex;flex-direction:column;"><div class="quiz-card-q quiz-typewriter">${s.quiz.q}</div><div class="quiz-opts" style="margin-top:0.5rem;">${opts}</div>${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'var(--green-light)':'var(--red-light)'};border:1.5px solid ${wasCorrect?'var(--green)':'var(--red)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#1a6b2f':'#b31c13'};">${s.quiz.explanation}</div>`:''}</div></div></div>`;
   }
+
   if(card.type==='partner'){
-    const p = card.partner;
-    return `
-    <div class="card" data-stop="${s.id}" data-type="partner" style="padding-bottom:1.5rem;">
-      <div class="partner-card">
-        <!-- Hero image -->
-        <div class="partner-hero">
-          <img src="${p.img}" alt="${p.name}">
-          <div class="partner-type-pill">${p.emoji || '🏪'} ${p.type}</div>
+    const p=card.partner;
+    const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
+    const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
+
+    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;">
+      <!-- ① 2×2 gallery at top with "Local Food Tip!" pill centred -->
+      <div style="position:relative;width:100%;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
-        <!-- Body -->
-        <div class="partner-body">
-          <div style="font-size:0.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Partner</div>
-          <div class="partner-name">${p.name}</div>
-          <div class="partner-desc">${p.desc}</div>
-          <div class="partner-meta">
-            <div class="partner-meta-item">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              ${p.hours}
-            </div>
-            <div class="partner-meta-item">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              ${p.location}
-            </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="background:var(--orange);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:0.22rem 1rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;line-height:1.1;color:rgba(255,255,255,0.96);">Local Food Tip!</div>
           </div>
         </div>
       </div>
-      <!-- Offer ticket -->
-      ${p.offer ? `
-      <div class="partner-offer" style="margin-top:0.85rem;">
-        <div class="partner-offer-header">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Your exclusive offer
-        </div>
-        <div class="partner-offer-body">
-          <div class="partner-offer-text">${p.offer}</div>
-          <div class="partner-offer-small">${p.offerNote || 'Show this screen to staff. Valid today only.'}</div>
-          <div class="partner-offer-code">
-            <div>
-              <div class="partner-offer-code-label">Today's code</div>
-              <div class="partner-offer-code-value">${p.code || 'TBR-001'}</div>
-            </div>
-            <button onclick="showOffer('${p.name}','${p.offer}','${p.offerNote||'Show this screen to staff. Valid today only.'}','${p.code||'TBR-001'}','${p.emoji||'🏪'}')"
-              style="background:var(--orange);color:white;border:none;border-radius:99px;padding:0.5rem 1rem;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(255,107,53,0.3);">
-              Show offer
-            </button>
+      <!-- ② Partner body: name + desc left, video thumb right -->
+      <div class="partner-body" style="padding:1rem 1.25rem 0;">
+        <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+          <div style="flex:1;min-width:0;">
+            <div class="partner-name">${p.name}</div>
+            <div class="partner-desc">${p.desc}</div>
+            <!-- ③ Coupon inline under desc, tilted -->
+            ${coupon}
+            <!-- Google Maps (no hours) -->
+            ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" class="partner-meta-item" style="color:var(--orange);text-decoration:none;font-weight:600;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
           </div>
+          ${p.cloudflareId?`<div style="flex-shrink:0;width:108px;"><div style="position:relative;width:108px;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:#111;cursor:pointer;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);"><div style="position:absolute;bottom:0;left:0;right:0;padding:0.35rem 0.4rem;background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);"><div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;">Meet the<br>owner</div></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 14px rgba(0,0,0,0.38);"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div></div>`:''}
         </div>
-      </div>` : ''}
+      </div>
     </div>`;
   }
 
@@ -1736,15 +542,9 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
-  currentStop=stops.find(s=>s.id===stopId);
-  currentCardIdx=0;
-  cards=buildCards(currentStop);
+  currentStop=stops.find(s=>s.id===stopId);currentCardIdx=0;cards=buildCards(currentStop);
   Object.keys(videoActivated).forEach(k=>delete videoActivated[k]);
-  renderJourney();
-  document.getElementById('journey-screen').classList.add('show');
-  if(currentStop.youtubeId){
-    setTimeout(()=>setupVideoObserver(currentStop.id),300);
-  }
+  renderJourney();document.getElementById('journey-screen').classList.add('show');
 }
 
 function renderJourney(){
@@ -1755,23 +555,18 @@ function renderJourney(){
   var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
   document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
-  var _js2=document.getElementById('journey-screen');
-  if(_js2) _js2.classList.toggle('cf-fullscreen',!!(isCFFS));
-  const contentCards = cards.slice(2);
-  const contentIdx = currentCardIdx - 2;
-  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`
-    <div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
+  var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
+  const contentCards=cards.slice(2),contentIdx=currentCardIdx-2;
+  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`<div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
-
-  updateCardPosition(false);
-  updateNavBtns();
+  updateCardPosition(false);updateNavBtns();
 }
 
 function updateCardPosition(animate=true){
-  const track=document.getElementById('card-track');
-  if(!animate){track.style.transition='none';}
-  track.style.transform=`translateX(-${currentCardIdx*100}%)`;
-  if(!animate) setTimeout(()=>track.style.transition='',50);
+  const t=document.getElementById('card-track');
+  if(!animate)t.style.transition='none';
+  t.style.transform=`translateX(-${currentCardIdx*100}%)`;
+  if(!animate)setTimeout(()=>t.style.transition='',50);
 }
 
 function updateProgressDots(){
@@ -1780,693 +575,185 @@ function updateProgressDots(){
   var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
   document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
-  var _js2=document.getElementById('journey-screen');
-  if(_js2) _js2.classList.toggle('cf-fullscreen',!!(isCFFS));
-  const contentIdx = currentCardIdx - 2;
-  document.querySelectorAll('.dot').forEach((d,i)=>{
-    d.className='dot'+(i===contentIdx?' active':i<contentIdx?' done':'');
-    d.style.width=i===contentIdx?'20px':'8px';
-  });
+  var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
+  const ci=currentCardIdx-2;
+  document.querySelectorAll('.dot').forEach((d,i)=>{d.className='dot'+(i===ci?' active':i<ci?' done':'');d.style.width=i===ci?'20px':'8px';});
 }
 
 function updateNavBtns(){
-  if(!currentStop) return;
-  const prev=document.getElementById('prev-btn');
-  const next=document.getElementById('next-btn');
-  const currentCard = cards[currentCardIdx];
-  const isTransition = currentCard && currentCard.type==='transition';
-  const isNav = currentCard && currentCard.type==='nav';
-  const isPhotoResult = currentCard && currentCard.type==='photo-result';
-  const isLastCard = currentCardIdx===cards.length-1;
-  const isLastStop = currentStop.id===stops.length;
-
-  prev.style.display = currentCardIdx===0 ? 'none' : 'block';
-  
-  if(isPhotoResult){
-    prev.textContent = '← Replace Photo';
-    prev.onclick = function(){ 
-      currentCardIdx--;
-      updateCardPosition();
-      updateProgressDots();
-      updateNavBtns();
-      openPhotoPicker(currentStop.id);
-    };
+  if(!currentStop)return;
+  const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn');
+  const cc=cards[currentCardIdx];
+  const isTransition=cc&&cc.type==='transition',isNav=cc&&cc.type==='nav';
+  const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
+  prev.style.display=currentCardIdx===0?'none':'block';
+  prev.textContent=currentCardIdx===2?'← Back to Map':'← Back';prev.onclick=prevCard;
+  if(isLast){next.textContent=isLastStop?'🎉 Finish Tour':`Next Stop: ${stops[currentStop.id].name} →`;next.className=isLastStop?'card-next-btn final':'card-next-btn';if(isLastStop)next.onclick=function(){closeJourney(true);};}
+  else if(isNav){next.textContent="I've Arrived ✓";next.className='card-next-btn';next.onclick=nextCard;}
+  else if(cc&&cc.type==='desc'){
+    next.textContent='Continue →';next.className='card-next-btn';next.onclick=function(){skipToCard(4);};
+    let tb=document.getElementById('read-text-btn');
+    if(!tb){tb=document.createElement('button');tb.id='read-text-btn';tb.className='card-prev-btn';tb.style.cssText='flex:1;';document.getElementById('card-bottom').insertBefore(tb,next);}
+    tb.textContent='Text only';tb.onclick=function(){skipToTextFullscreen(currentStop.id);};tb.style.display='block';
   } else {
-    prev.textContent = currentCardIdx===2 ? '← Back to Map' : '← Back';
-    prev.onclick = prevCard;
+    next.textContent='Continue →';next.className='card-next-btn';next.onclick=nextCard;
+    const tb=document.getElementById('read-text-btn');if(tb)tb.style.display='none';
   }
-
-  if(isLastCard){
-    next.textContent = isLastStop ? '🎉 Finish Tour' : `Next Stop: ${stops[currentStop.id].name} →`;
-    next.className = isLastStop ? 'card-next-btn final' : 'card-next-btn';
-    if(isLastStop) next.onclick = function(){ closeJourney(true); };
-  } else if(isNav){
-    next.textContent = "I've Arrived ✓";
-    next.className = 'card-next-btn';
-    next.onclick = nextCard;
-  } else if(currentCard && currentCard.type==='desc'){
-    // On video card: Continue skips text card → goes straight to rudy (idx 4)
-    next.textContent = 'Continue →';
-    next.className = 'card-next-btn';
-    next.onclick = function(){ skipToCard(4); };
-    // Add "Read text only" between back and continue
-    let textBtn = document.getElementById('read-text-btn');
-    if(!textBtn){
-      textBtn = document.createElement('button');
-      textBtn.id = 'read-text-btn';
-      textBtn.className = 'card-prev-btn';
-      textBtn.style.cssText = 'flex:1;';
-      document.getElementById('card-bottom').insertBefore(textBtn, document.getElementById('next-btn'));
-    }
-    textBtn.textContent = 'Text only';
-    textBtn.onclick = function(){ skipToTextFullscreen(currentStop.id); };
-    textBtn.style.display = 'block';
-  } else {
-    next.textContent = 'Continue →';
-    next.className = 'card-next-btn';
-    next.onclick = nextCard;
-    // Remove read-text-btn if present
-    const tb = document.getElementById('read-text-btn');
-    if(tb) tb.style.display = 'none';
-  }
-
-  document.getElementById('prev-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('next-btn').style.visibility = isTransition ? 'hidden' : 'visible';
-  document.getElementById('card-bottom').style.display = 'flex';
-  document.getElementById('card-bottom').classList.toggle('on-map', isNav);
-  // On video card the bar is dark/transparent to match video
-  // No special background on desc card nav bar
-  // Reset any inline overrides
-  document.getElementById('prev-btn').style.color = '';
-  document.getElementById('next-btn').style.background = '';
+  prev.style.visibility=isTransition?'hidden':'visible';next.style.visibility=isTransition?'hidden':'visible';
+  document.getElementById('card-bottom').style.display='flex';
+  document.getElementById('card-bottom').classList.toggle('on-map',isNav);
+  prev.style.color='';next.style.background='';
 }
 
-function stopCFVideo(){
-  var iframe = document.querySelector('.card[data-type="desc"] iframe[id^="cf-vid"]');
-  if(iframe){ iframe.src = ''; }
-}
+function stopCFVideo(){var i=document.querySelector('.card[data-type="desc"] iframe[id^="cf-vid"]');if(i)i.src='';}
 
 function nextCard(){
   stopCFVideo();
-  const isLastCard=currentCardIdx===cards.length-1;
-  if(isLastCard){
-    currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney(true);
-  } else {
-    currentCardIdx++;
-    updateCardPosition();
-    updateProgressDots();
-    updateNavBtns();
+  if(currentCardIdx===cards.length-1){currentStop.id<stops.length?startJourney(currentStop.id+1):closeJourney(true);}
+  else{
+    currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
-      const scrollTarget=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');
-      if(scrollTarget) scrollTarget.scrollTop=0;
-      const activeCard=cards[currentCardIdx];
-      if(activeCard && activeCard.type==='nav'){
-        setTimeout(()=>{ initStopMap(activeCard.stop.id); }, 100);
-      }
-      if(activeCard && activeCard.type==='rudy'){
-        setTimeout(()=>{ setupRudyScrollHint(activeCard.stop.id); }, 300);
-      }
-      if(activeCard && activeCard.type==='desc'){
-        setTimeout(()=>{ setupSoundPopup(activeCard.stop.id); }, 600);
-      }
-      if(activeCard && activeCard.type==='photo'){
-        setTimeout(()=>{ initPhotoMap(activeCard.stop.id); }, 200);
-      }
+      const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
+      const ac=cards[currentCardIdx];
+      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id),100);
+      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac.stop.id),300);
+      if(ac&&ac.type==='desc')setTimeout(()=>setupSoundPopup(ac.stop.id),600);
+      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac.stop.id),200);
     },400);
   }
 }
 
-function prevCard(){
-  stopCFVideo();
-  if(currentCardIdx>0){
-    currentCardIdx--;
-    updateCardPosition();
-    updateProgressDots();
-    updateNavBtns();
-  }
-}
-
-function closeJourney(showEnd){
-  stopCFVideo();
-  document.getElementById('journey-screen').classList.remove('show');
-  if(showEnd) showEndScreen();
-}
-
-function closeEndScreen(){
-  document.getElementById('end-screen').style.display='none';
-}
+function prevCard(){stopCFVideo();if(currentCardIdx>0){currentCardIdx--;updateCardPosition();updateProgressDots();updateNavBtns();}}
+function closeJourney(showEnd){stopCFVideo();document.getElementById('journey-screen').classList.remove('show');if(showEnd)showEndScreen();}
+function closeEndScreen(){document.getElementById('end-screen').style.display='none';}
 
 function showEndScreen(){
   const attempted=Object.keys(quizAnswered).length;
-  const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
-    const st=stops.find(x=>x.id===parseInt(sid)); return st&&ans===st.quiz.correct;
-  }).length;
-  const total=stops.length;
+  const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
   const pct=attempted>0?Math.round((scored/attempted)*100):0;
-
-  // Score
   document.getElementById('end-score-num').textContent=`${scored}/${attempted||'—'}`;
-  const msgs=[
-    [1.0,"Perfect score! You're a Rotterdam expert! 🏆"],
-    [0.6,"Great knowledge of Rotterdam! 🌟"],
-    [0.0,"Keep exploring — Rotterdam has more secrets! 🗺️"]
-  ];
-  const msg=msgs.find(([t])=>pct/100>=t)[1];
-  document.getElementById('end-score-msg').textContent=attempted>0?msg:'Complete more quizzes next time!';
-  setTimeout(()=>{ document.getElementById('end-score-bar').style.width=pct+'%'; },200);
-
-  // Photos
-  const photoEntries=Object.entries(photoCollection);
-  if(photoEntries.length>0){
-    document.getElementById('end-photos-section').style.display='block';
-    document.getElementById('end-no-photos').style.display='none';
-    document.getElementById('end-photos-count').textContent=`${photoEntries.length} photo${photoEntries.length>1?'s':''} captured`;
-    const grid=document.getElementById('end-photos-grid');
-    grid.innerHTML=photoEntries.map(([stopId,photo])=>`
-      <div style="position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;">
-        <img src="${photo.dataUrl}" alt="${photo.stopName}" style="width:100%;height:100%;object-fit:cover;display:block;">
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.3rem 0.4rem;
-          background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);
-          color:white;font-size:0.58rem;font-weight:700;">${photo.stopName}</div>
-      </div>`).join('');
-  } else {
-    document.getElementById('end-photos-section').style.display='none';
-    document.getElementById('end-no-photos').style.display='block';
-  }
-
-  // Show screen
-  const screen=document.getElementById('end-screen');
-  screen.style.display='block';
-  screen.scrollTop=0;
-
-  // Init static map
+  const msgs=[[1.0,"Perfect score! You're a Rotterdam expert! 🏆"],[0.6,"Great knowledge of Rotterdam! 🌟"],[0.0,"Keep exploring — Rotterdam has more secrets! 🗺️"]];
+  document.getElementById('end-score-msg').textContent=attempted>0?msgs.find(([t])=>pct/100>=t)[1]:'Complete more quizzes next time!';
+  setTimeout(()=>{document.getElementById('end-score-bar').style.width=pct+'%';},200);
+  const pe=Object.entries(photoCollection);
+  if(pe.length>0){document.getElementById('end-photos-section').style.display='block';document.getElementById('end-no-photos').style.display='none';document.getElementById('end-photos-count').textContent=`${pe.length} photo${pe.length>1?'s':''} captured`;document.getElementById('end-photos-grid').innerHTML=pe.map(([sid,ph])=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;"><img src="${ph.dataUrl}" style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;bottom:0;left:0;right:0;padding:0.3rem 0.4rem;background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);color:white;font-size:0.58rem;font-weight:700;">${ph.stopName}</div></div>`).join('');}
+  else{document.getElementById('end-photos-section').style.display='none';document.getElementById('end-no-photos').style.display='block';}
+  const screen=document.getElementById('end-screen');screen.style.display='block';screen.scrollTop=0;
   setTimeout(()=>initEndMap(),150);
 }
 
-function showOffer(name, offer, note, code, emoji){
-  document.getElementById('offer-modal-partner-name').textContent = name;
-  document.getElementById('offer-modal-offer-text').textContent = offer;
-  document.getElementById('offer-modal-note').textContent = note;
-  document.getElementById('offer-modal-code').textContent = code;
-  document.querySelector('.offer-modal-icon').textContent = emoji || '🎟️';
+function openPartnerVideoFullscreen(cfId){
+  const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:9500;background:#000;display:flex;align-items:center;justify-content:center;';ov.onclick=()=>document.body.removeChild(ov);
+  const iframe=document.createElement('iframe');iframe.src='https://customer-umijtu8zknmpubqb.cloudflarestream.com/'+cfId+'/iframe?autoplay=1&muted=0&controls=1';iframe.style.cssText='width:100%;height:100%;border:0;';iframe.allow='accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture';iframe.allowFullscreen=true;
+  const btn=document.createElement('button');btn.textContent='✕';btn.style.cssText='position:absolute;top:calc(1rem + env(safe-area-inset-top));right:1rem;background:rgba(255,255,255,0.15);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;z-index:1;';btn.onclick=e=>{e.stopPropagation();document.body.removeChild(ov);};
+  ov.appendChild(iframe);ov.appendChild(btn);document.body.appendChild(ov);
+}
+
+function couponTap(el){showOffer(el.dataset.name,el.dataset.offer,el.dataset.note,el.dataset.code);}
+function showOffer(name,offer,note,code){
+  document.getElementById('offer-modal-partner-name').textContent=name;
+  document.getElementById('offer-modal-offer-text').textContent=offer;
+  document.getElementById('offer-modal-note').textContent=note;
+  document.getElementById('offer-modal-code').textContent=code;
   document.getElementById('offer-overlay').classList.add('show');
 }
-
-function closeOffer(e){
-  if(!e || e.target === document.getElementById('offer-overlay')){
-    document.getElementById('offer-overlay').classList.remove('show');
-  }
-}
+function closeOffer(e){if(!e||e.target===document.getElementById('offer-overlay'))document.getElementById('offer-overlay').classList.remove('show');}
 
 function initPhotoMap(stopId){
-  const container = document.getElementById('photo-map-'+stopId);
-  if(!container || container._mapInitialized || !window.mapboxgl) return;
-  container._mapInitialized = true;
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-  const coords = [[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
-  const coord = coords[stopId-1];
-  const m = new mapboxgl.Map({
-    container:'photo-map-'+stopId,
-    style:'mapbox://styles/mapbox/streets-v12',
-    center:coord, zoom:16,
-    interactive:false, attributionControl:false
-  });
-  m.on('load',()=>{
-    const el = document.createElement('div');
-    el.style.cssText = 'width:36px;height:36px;border-radius:50%;background:var(--orange);border:3px solid white;box-shadow:0 2px 10px rgba(255,107,53,0.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;';
-    el.textContent = '📷';
-    new mapboxgl.Marker({element:el}).setLngLat(coord).addTo(m);
-  });
+  const container=document.getElementById('photo-map-'+stopId);if(!container||container._mapInitialized||!window.mapboxgl)return;container._mapInitialized=true;mapboxgl.accessToken=MAPBOX_TOKEN;
+  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];const coord=coords[stopId-1];
+  const m=new mapboxgl.Map({container:'photo-map-'+stopId,style:'mapbox://styles/mapbox/streets-v12',center:coord,zoom:16,interactive:false,attributionControl:false});
+  m.on('load',()=>{const el=document.createElement('div');el.style.cssText='width:36px;height:36px;border-radius:50%;background:var(--orange);border:3px solid white;box-shadow:0 2px 10px rgba(255,107,53,0.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;';el.textContent='📷';new mapboxgl.Marker({element:el}).setLngLat(coord).addTo(m);});
 }
 
 function initEndMap(){
-  if(!window.mapboxgl||document.getElementById('end-map')._mapInitialized) return;
-  document.getElementById('end-map')._mapInitialized=true;
-  mapboxgl.accessToken=MAPBOX_TOKEN;
+  if(!window.mapboxgl||document.getElementById('end-map')._mapInitialized)return;document.getElementById('end-map')._mapInitialized=true;mapboxgl.accessToken=MAPBOX_TOKEN;
   const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
-  const endMap=new mapboxgl.Map({
-    container:'end-map',
-    style:'mapbox://styles/mapbox/streets-v12',
-    center:[4.4890,51.9150],
-    zoom:11,
-    interactive:false,
-    attributionControl:false
-  });
+  const endMap=new mapboxgl.Map({container:'end-map',style:'mapbox://styles/mapbox/streets-v12',center:[4.4890,51.9150],zoom:11,interactive:false,attributionControl:false});
   endMap.on('load',()=>{
-    // Fit all stops into view
-    const bounds = coords.reduce((b,c)=>b.extend(c), new mapboxgl.LngLatBounds(coords[0],coords[0]));
-    endMap.fitBounds(bounds, {padding:45, animate:false, maxZoom:14});
-    // Dotted route line
+    const bounds=coords.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(coords[0],coords[0]));endMap.fitBounds(bounds,{padding:45,animate:false,maxZoom:14});
     endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
-    endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',
-      paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
-    // Numbered pins
-    stops.forEach((stop,i)=>{
-      const el=document.createElement('div');
-      el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;'+
-        'display:flex;align-items:center;justify-content:center;'+
-        'font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;'+
-        'border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';
-      el.textContent=stop.id;
-      new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coords[i]).addTo(endMap);
-    });
+    endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coords[i]).addTo(endMap);});
   });
 }
-
-// showFinalScore replaced by showEndScreen
 
 function downloadCollage(){
-  const photos = Object.entries(photoCollection).map(([stopId, photo]) => ({
-    id: stopId,
-    dataUrl: photo.dataUrl,
-    stopName: photo.stopName
-  }));
-
-  if(photos.length === 0){
-    alert('No photos to collage!');
-    return;
-  }
-
-  // Create canvas - 3 rows x 2 cols for 5 photos + title
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const photoSize = 350;
-  const cols = 2;
-  const rows = 3;
-  const padding = 20;
-  const titleHeight = 80;
-  
-  canvas.width = cols * photoSize + (cols + 1) * padding;
-  canvas.height = titleHeight + rows * photoSize + (rows + 1) * padding;
-
-  // Background
-  ctx.fillStyle = '#f8f7f5';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Title
-  ctx.fillStyle = '#ff6b35';
-  ctx.font = 'bold 48px Nunito';
-  ctx.textAlign = 'center';
-  ctx.fillText('Tonbi Rotterdam 🪁', canvas.width / 2, 50);
-
-  // Load and draw photos
-  let loadedCount = 0;
-  photos.forEach((photo, idx) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const row = Math.floor(idx / cols);
-      const col = idx % cols;
-      const x = padding + col * (photoSize + padding);
-      const y = titleHeight + padding + row * (photoSize + padding);
-
-      // Draw border
-      ctx.strokeStyle = '#e5e5ea';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(x, y, photoSize, photoSize);
-
-      // Draw image
-      ctx.drawImage(img, x, y, photoSize, photoSize);
-
-      // Draw label
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
-      ctx.fillRect(x, y + photoSize - 40, photoSize, 40);
-      ctx.fillStyle = '#fff';
-      ctx.font = '14px DM Sans';
-      ctx.textAlign = 'left';
-      ctx.fillText(photo.stopName, x + 10, y + photoSize - 12);
-
-      loadedCount++;
-      if(loadedCount === photos.length){
-        // Download the collage
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'tonbi-rotterdam-collage.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 'image/png');
-      }
-    };
-    img.onerror = () => {
-      loadedCount++;
-      if(loadedCount === photos.length){
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'tonbi-rotterdam-collage.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 'image/png');
-      }
-    };
-    img.src = photo.dataUrl;
-  });
+  const photos=Object.entries(photoCollection).map(([sid,ph])=>({id:sid,dataUrl:ph.dataUrl,stopName:ph.stopName}));
+  if(!photos.length){alert('No photos to collage!');return;}
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),ps=350,cols=2,rows=3,pad=20,th=80;
+  canvas.width=cols*ps+(cols+1)*pad;canvas.height=th+rows*ps+(rows+1)*pad;
+  ctx.fillStyle='#f8f7f5';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#ff6b35';ctx.font='bold 48px Nunito';ctx.textAlign='center';ctx.fillText('Tonbi Rotterdam 🪁',canvas.width/2,50);
+  let n=0;photos.forEach((photo,idx)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const r=Math.floor(idx/cols),c=idx%cols,x=pad+c*(ps+pad),y=th+pad+r*(ps+pad);ctx.strokeStyle='#e5e5ea';ctx.lineWidth=3;ctx.strokeRect(x,y,ps,ps);ctx.drawImage(img,x,y,ps,ps);ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(x,y+ps-40,ps,40);ctx.fillStyle='#fff';ctx.font='14px DM Sans';ctx.textAlign='left';ctx.fillText(photo.stopName,x+10,y+ps-12);if(++n===photos.length){canvas.toBlob(blob=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tonbi-rotterdam-collage.png';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);},'image/png');}};img.onerror=()=>{if(++n===photos.length){canvas.toBlob(blob=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tonbi-rotterdam-collage.png';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);},'image/png');}};img.src=photo.dataUrl;});
 }
 
-// ══ QUIZ ══
 function answerQuiz(stopId,optIdx){
-  quizAnswered[stopId]=optIdx;
-  const stop=stops.find(s=>s.id===stopId);
-  const isCorrect = stop && optIdx===stop.quiz.correct;
-  const pos=currentCardIdx;
+  quizAnswered[stopId]=optIdx;const pos=currentCardIdx;
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
-  currentCardIdx=pos;
-  updateCardPosition(false);
-  setTimeout(()=>{
-    const card=document.querySelectorAll('.card')[pos];
-    const target=card?.querySelector('.rudy-bubble-wrap') || card?.querySelector('.quiz-opts');
-    if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
-  },200);
+  currentCardIdx=pos;updateCardPosition(false);
+  setTimeout(()=>{const card=document.querySelectorAll('.card')[pos];const t=card?.querySelector('.quiz-opts');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});},200);
 }
 
-// ══ PHOTO PICKER ══
-function openPhotoPicker(stopId){
-  pendingPhotoStopId = stopId;
-  document.getElementById('photo-file-input').click();
-}
-
+function openPhotoPicker(stopId){pendingPhotoStopId=stopId;document.getElementById('photo-file-input').click();}
 function handlePhotoSelection(event){
-  const file = event.target.files?.[0];
-  if(!file || !pendingPhotoStopId) return;
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const dataUrl = e.target.result;
-    const stop = stops.find(s => s.id === pendingPhotoStopId);
-    if(!stop) return;
-
-    // Show preview
-    document.getElementById('preview-img').src = dataUrl;
-    document.getElementById('preview-title').textContent = stop.challenge.title;
-    document.getElementById('preview-overlay').classList.add('on');
-  };
-  reader.readAsDataURL(file);
-  // Reset input so same file can be selected again
-  event.target.value = '';
+  const file=event.target.files?.[0];if(!file||!pendingPhotoStopId)return;
+  const reader=new FileReader();reader.onload=e=>{const dataUrl=e.target.result,stop=stops.find(s=>s.id===pendingPhotoStopId);if(!stop)return;document.getElementById('preview-img').src=dataUrl;document.getElementById('preview-title').textContent=stop.challenge.title;document.getElementById('preview-overlay').classList.add('on');};
+  reader.readAsDataURL(file);event.target.value='';
 }
-
-function retakePhoto(){
-  document.getElementById('preview-overlay').classList.remove('on');
-  if(pendingPhotoStopId) openPhotoPicker(pendingPhotoStopId);
-}
-
+function retakePhoto(){document.getElementById('preview-overlay').classList.remove('on');if(pendingPhotoStopId)openPhotoPicker(pendingPhotoStopId);}
 function usePhoto(){
-  if(!pendingPhotoStopId) return;
-  const stop = stops.find(s => s.id === pendingPhotoStopId);
-  if(!stop) return;
-
-  const dataUrl = document.getElementById('preview-img').src;
-  photoCollection[pendingPhotoStopId] = {
-    dataUrl,
-    tip: stop.challenge.tip,
-    stopName: stop.name
-  };
-
-  document.getElementById('preview-overlay').classList.remove('on');
-  pendingPhotoStopId = null;
-
-  // Re-render current card to show "Photo Captured" state
-  const pos = currentCardIdx;
-  document.getElementById('card-track').innerHTML = cards.map((c,i) => renderCard(c,i,cards.length)).join('');
-  currentCardIdx = pos;
-  updateCardPosition(false);
+  if(!pendingPhotoStopId)return;const stop=stops.find(s=>s.id===pendingPhotoStopId);if(!stop)return;
+  const dataUrl=document.getElementById('preview-img').src;photoCollection[pendingPhotoStopId]={dataUrl,tip:stop.challenge.tip,stopName:stop.name};
+  document.getElementById('preview-overlay').classList.remove('on');pendingPhotoStopId=null;
+  const pos=currentCardIdx;document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');currentCardIdx=pos;updateCardPosition(false);
 }
 
-// ══ STOP NAV MINI MAP ══
-const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY' + '3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
+const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
 
 function initStopMap(stopId){
-  if(!window.mapboxgl) return;
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-  const coords = [
-    [4.4871, 51.9090],
-    [4.4917, 51.9186],
-    [4.4917, 51.9193],
-    [4.4877, 51.9188],
-    [4.4866, 51.9200]
-  ];
-  const idx = stopId - 1;
-  const destCoord = coords[idx];
-  const containerId = `stop-map-${stopId}`;
-  const container = document.getElementById(containerId);
-  if(!container || container._mapInitialized) return;
-  container._mapInitialized = true;
-
-  const stopMap = new mapboxgl.Map({
-    container: containerId,
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: destCoord,
-    zoom: 10,
-    attributionControl: false,
-    interactive: true
-  });
-
-  // Destination marker: circular photo of the stop
-  const stop = stops.find(x => x.id === stopId);
-  const destEl = document.createElement('div');
-  destEl.style.cssText = 'width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;transition:transform 0.2s;';
-  const destImg = document.createElement('img');
-  destImg.src = stop ? stop.img : '';
-  destImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';
-  destEl.appendChild(destImg);
-  // Tap to enlarge
-  destEl.addEventListener('click', function(){
-    let overlay = document.getElementById('dest-img-overlay');
-    if(!overlay){
-      overlay = document.createElement('div');
-      overlay.id = 'dest-img-overlay';
-      overlay.style.cssText = 'position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px);';
-      overlay.onclick = function(){ overlay.style.display='none'; };
-      const imgWrap = document.createElement('div');
-      imgWrap.style.cssText = 'border-radius:20px;overflow:hidden;max-width:340px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
-      const bigImg = document.createElement('img');
-      bigImg.id = 'dest-img-big';
-      bigImg.style.cssText = 'width:100%;display:block;object-fit:cover;';
-      const caption = document.createElement('div');
-      caption.id = 'dest-img-caption';
-      caption.style.cssText = 'background:#111;color:white;padding:0.75rem 1rem;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;';
-      imgWrap.appendChild(bigImg);
-      imgWrap.appendChild(caption);
-      overlay.appendChild(imgWrap);
-      document.body.appendChild(overlay);
-    }
-    document.getElementById('dest-img-big').src = stop ? stop.img : '';
-    document.getElementById('dest-img-caption').textContent = stop ? stop.name : '';
-    overlay.style.display = 'flex';
-  });
+  if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
+  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  const destCoord=coords[stopId-1],containerId='stop-map-'+stopId,container=document.getElementById(containerId);
+  if(!container||container._mapInitialized)return;container._mapInitialized=true;
+  const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
+  const stop=stops.find(x=>x.id===stopId);
+  const destEl=document.createElement('div');destEl.style.cssText='width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;';
+  const destImg=document.createElement('img');destImg.src=stop?stop.img:'';destImg.style.cssText='width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';destEl.appendChild(destImg);
+  destEl.addEventListener('click',function(){let ov=document.getElementById('dest-img-overlay');if(!ov){ov=document.createElement('div');ov.id='dest-img-overlay';ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px);';ov.onclick=()=>ov.style.display='none';const iw=document.createElement('div');iw.style.cssText='border-radius:20px;overflow:hidden;max-width:340px;width:100%;';const bi=document.createElement('img');bi.id='dest-img-big';bi.style.cssText='width:100%;display:block;';const cap=document.createElement('div');cap.id='dest-img-caption';cap.style.cssText='background:#111;color:white;padding:0.75rem 1rem;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;';iw.appendChild(bi);iw.appendChild(cap);ov.appendChild(iw);document.body.appendChild(ov);}document.getElementById('dest-img-big').src=stop?stop.img:'';document.getElementById('dest-img-caption').textContent=stop?stop.name:'';ov.style.display='flex';});
   new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
-
-  stopMap.on('load', () => {
-    stopMap.addSource('walking-route', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] }
-    });
-
-    stopMap.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'walking-route',
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: {
-        'line-color': '#ff6b35',
-        'line-width': 5,
-        'line-opacity': 0.85
-      }
-    });
-
-    stopMap.addLayer({
-      id: 'route-arrows',
-      type: 'symbol',
-      source: 'walking-route',
-      layout: {
-        'symbol-placement': 'line',
-        'symbol-spacing': 80,
-        'icon-image': 'arrow-right',
-        'icon-size': 0.8,
-        'icon-rotate': 90
-      }
-    });
-
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(pos => {
-        const userLng = pos.coords.longitude;
-        const userLat = pos.coords.latitude;
-
-        const userEl = document.createElement('div');
-        userEl.style.cssText = `
-          width:20px;height:20px;border-radius:50%;
-          background:#2d6be4;
-          border:3px solid #fff;
-          box-shadow:0 2px 8px rgba(45,107,228,0.5);
-        `;
-        new mapboxgl.Marker(userEl).setLngLat([userLng, userLat]).addTo(stopMap);
-
-        const bounds = new mapboxgl.LngLatBounds();
-        bounds.extend([userLng, userLat]);
-        bounds.extend(destCoord);
-        stopMap.fitBounds(bounds, {
-          padding: { top:70, bottom:90, left:50, right:50 },
-          maxZoom: 16,
-          duration: 800
-        });
-
-        const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${userLng},${userLat};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
-
-        fetch(url)
-          .then(r => r.json())
-          .then(data => {
-            if(data.routes && data.routes.length > 0){
-              const routeGeo = data.routes[0].geometry;
-              stopMap.getSource('walking-route').setData({
-                type: 'Feature',
-                geometry: routeGeo
-              });
-
-              const minutes = Math.round(data.routes[0].duration / 60);
-              const distance = (data.routes[0].distance / 1000).toFixed(1);
-              const infoEl = document.getElementById(`route-info-${stopId}`);
-              if(infoEl){
-                infoEl.textContent = `🚶 ${minutes} min walk · ${distance} km`;
-                infoEl.style.display = 'block';
-              }
-            }
-          })
-          .catch(() => {});
-
-      }, () => {
-        stopMap.flyTo({ center: destCoord, zoom: 10 });
-      });
-    }
+  stopMap.on('load',()=>{
+    stopMap.addSource('walking-route',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+    stopMap.addLayer({id:'route-line',type:'line',source:'walking-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#ff6b35','line-width':5,'line-opacity':0.85}});
+    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{
+      const ul=pos.coords.longitude,ult=pos.coords.latitude;
+      const ue=document.createElement('div');ue.style.cssText='width:20px;height:20px;border-radius:50%;background:#2d6be4;border:3px solid #fff;box-shadow:0 2px 8px rgba(45,107,228,0.5);';
+      new mapboxgl.Marker(ue).setLngLat([ul,ult]).addTo(stopMap);
+      const bounds=new mapboxgl.LngLatBounds();bounds.extend([ul,ult]);bounds.extend(destCoord);
+      stopMap.fitBounds(bounds,{padding:{top:70,bottom:90,left:50,right:50},maxZoom:16,duration:800});
+      fetch(`https://api.mapbox.com/directions/v5/mapbox/walking/${ul},${ult};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`)
+        .then(r=>r.json()).then(data=>{if(data.routes&&data.routes.length>0){stopMap.getSource('walking-route').setData({type:'Feature',geometry:data.routes[0].geometry});const min=Math.round(data.routes[0].duration/60),dist=(data.routes[0].distance/1000).toFixed(1),infoEl=document.getElementById('route-info-'+stopId);if(infoEl){infoEl.textContent=`🚶 ${min} min walk · ${dist} km`;infoEl.style.display='block';}}}).catch(()=>{});
+    },()=>stopMap.flyTo({center:destCoord,zoom:10}));}
   });
 }
 
-// ══ MAPBOX MAP ══
 function initMap(){
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-
-  const map = new mapboxgl.Map({
-    container: 'mapbox-map',
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: [4.4841, 51.9060],
-    zoom: 12,
-    attributionControl: false
-  });
-
-  const coords = [
-    [4.4871, 51.9090],
-    [4.4917, 51.9186],
-    [4.4917, 51.9193],
-    [4.4877, 51.9188],
-    [4.4866, 51.9200]
-  ];
-
-  map.on('load', () => {
-    map.addSource('route', {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: coords
-        }
-      }
-    });
-    map.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'route',
-      paint: {
-        'line-color': '#ff6b35',
-        'line-width': 3,
-        'line-dasharray': [2, 1.5],
-        'line-opacity': 0.8
-      }
-    });
-
-    stops.forEach((stop, i) => {
-      const el = document.createElement('div');
-      el.style.cssText = `
-        width:36px;height:36px;border-radius:50%;
-        background:#ff6b35;color:#fff;
-        display:flex;align-items:center;justify-content:center;
-        font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;
-        border:3px solid #fff;
-        box-shadow:0 2px 12px rgba(255,107,53,0.5);
-        cursor:pointer;
-      `;
-      el.textContent = stop.id;
-
-      const popup = new mapboxgl.Popup({ offset:25, closeButton:false, maxWidth:'220px' })
-        .setHTML(`
-          <img class="popup-img" src="${stop.img}" alt="${stop.name}">
-          <div class="popup-body">
-            <div class="popup-num">Stop ${stop.id}</div>
-            <div class="popup-name">${stop.name}</div>
-            <div class="popup-tag">${stop.tagline}</div>
-            <button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button>
-          </div>`);
-
-      new mapboxgl.Marker(el)
-        .setLngLat(coords[i])
-        .setPopup(popup)
-        .addTo(map);
-    });
+  mapboxgl.accessToken=MAPBOX_TOKEN;
+  const map=new mapboxgl.Map({container:'mapbox-map',style:'mapbox://styles/mapbox/streets-v12',center:[4.4841,51.9060],zoom:12,attributionControl:false});
+  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  map.on('load',()=>{
+    map.addSource('route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
+    map.addLayer({id:'route-line',type:'line',source:'route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,1.5],'line-opacity':0.8}});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText="width:36px;height:36px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;border:3px solid #fff;box-shadow:0 2px 12px rgba(255,107,53,0.5);cursor:pointer;";el.textContent=stop.id;const popup=new mapboxgl.Popup({offset:25,closeButton:false,maxWidth:'220px'}).setHTML(`<img class="popup-img" src="${stop.img}"><div class="popup-body"><div class="popup-num">Stop ${stop.id}</div><div class="popup-name">${stop.name}</div><div class="popup-tag">${stop.tagline}</div><button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button></div>`);new mapboxgl.Marker(el).setLngLat(coords[i]).setPopup(popup).addTo(map);});
   });
 }
 
-// ══ INIT ══
-try { renderLists(); } catch(e){ console.error('renderLists error:', e); }
+try{renderLists();}catch(e){console.error(e);}
 
-const RUDY_CORRECT = [
-  ["Yes! 🎉","You really know your Rotterdam!"],
-  ["Nailed it! 🙏","I knew you'd get that one."],
-  ["Spot on! ⭐","A true Rotterdam insider already."],
-  ["Brilliant! 🎊","That's exactly right — well done!"],
-  ["Perfect! 🏆","Rotterdam would be proud of you."]
-];
-const RUDY_WRONG = [
-  ["Oops! 😄","Don't worry — now you know!"],
-  ["Close! 🤔","Tricky one — Rotterdam keeps its secrets."],
-  ["Not quite! 😅","Easy to miss if you don't know where to look."],
-  ["Ha, nice try! 😄","This one catches most people out."],
-  ["Almost! 🙈","A little local knowledge goes a long way!"]
-];
-
-function rudyAvatarSVG(happy){
-  var mouth = happy
-    ? '<path d="M13.5 20 Q18 24 22.5 20" stroke="#3d2b1f" stroke-width="1.5" stroke-linecap="round" fill="none"/>'
-    : '<path d="M13.5 21.5 Q18 18.5 22.5 21.5" stroke="#3d2b1f" stroke-width="1.5" stroke-linecap="round" fill="none"/>';
-  return '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">'
-    + '<circle cx="18" cy="18" r="18" fill="#ff6b35"/>'
-    + '<circle cx="18" cy="17" r="11" fill="#FDDBB4"/>'
-    + '<circle cx="14.5" cy="15.5" r="1.8" fill="#3d2b1f"/>'
-    + '<circle cx="21.5" cy="15.5" r="1.8" fill="#3d2b1f"/>'
-    + '<circle cx="15.1" cy="14.9" r="0.6" fill="white"/>'
-    + '<circle cx="22.1" cy="14.9" r="0.6" fill="white"/>'
-    + mouth
-    + '<path d="M8 15 Q8 6 18 6 Q28 6 28 15 Q26 9 18 9 Q10 9 8 15Z" fill="#3d2b1f"/>'
-    + '</svg>';
-}
-
-function getRudyBubble(isCorrect, stopId){
-  var arr = isCorrect ? RUDY_CORRECT : RUDY_WRONG;
-  var pair = arr[(stopId - 1) % arr.length];
-  var title = pair[0], body = pair[1];
-  var svg = rudyAvatarSVG(isCorrect);
-  var cls = isCorrect ? 'correct-bubble' : 'wrong-bubble';
-  return '<div class="rudy-bubble-wrap">'
-    + '<div class="rudy-avatar">' + svg + '</div>'
-    + '<div class="rudy-bubble ' + cls + '"><strong>' + title + '</strong>' + body + '</div>'
-    + '</div>';
-}
-
+const RUDY_CORRECT=[["Yes! 🎉","You really know your Rotterdam!"],["Nailed it! 🙏","I knew you'd get that one."],["Spot on! ⭐","A true Rotterdam insider already."],["Brilliant! 🎊","That's exactly right — well done!"],["Perfect! 🏆","Rotterdam would be proud of you."]];
+const RUDY_WRONG=[["Oops! 😄","Don't worry — now you know!"],["Close! 🤔","Tricky one — Rotterdam keeps its secrets."],["Not quite! 😅","Easy to miss if you don't know where to look."],["Ha, nice try! 😄","This one catches most people out."],["Almost! 🙈","A little local knowledge goes a long way!"]];
+function rudyAvatarSVG(h){var m=h?'<path d="M13.5 20 Q18 24 22.5 20" stroke="#3d2b1f" stroke-width="1.5" stroke-linecap="round" fill="none"/>':'<path d="M13.5 21.5 Q18 18.5 22.5 21.5" stroke="#3d2b1f" stroke-width="1.5" stroke-linecap="round" fill="none"/>';return '<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#ff6b35"/><circle cx="18" cy="17" r="11" fill="#FDDBB4"/><circle cx="14.5" cy="15.5" r="1.8" fill="#3d2b1f"/><circle cx="21.5" cy="15.5" r="1.8" fill="#3d2b1f"/><circle cx="15.1" cy="14.9" r="0.6" fill="white"/><circle cx="22.1" cy="14.9" r="0.6" fill="white"/>'+m+'<path d="M8 15 Q8 6 18 6 Q28 6 28 15 Q26 9 18 9 Q10 9 8 15Z" fill="#3d2b1f"/></svg>';}
+function getRudyBubble(isCorrect,stopId){var arr=isCorrect?RUDY_CORRECT:RUDY_WRONG,pair=arr[(stopId-1)%arr.length],svg=rudyAvatarSVG(isCorrect),cls=isCorrect?'correct-bubble':'wrong-bubble';return '<div class="rudy-bubble-wrap"><div class="rudy-avatar">'+svg+'</div><div class="rudy-bubble '+cls+'"><strong>'+pair[0]+'</strong>'+pair[1]+'</div></div>';}
 </script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
 </body>
