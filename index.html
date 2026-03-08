@@ -305,6 +305,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
   <div class="card-bottom" id="card-bottom">
     <button class="card-prev-btn" id="prev-btn" onclick="prevCard()">← Back</button>
+    <button class="card-prev-btn" id="read-text-btn" style="display:none;flex:1;">Text only</button>
     <button class="card-next-btn" id="next-btn" onclick="nextCard()">Continue →</button>
   </div>
 </div>
@@ -586,45 +587,51 @@ function updateProgressDots(){
 
 function updateNavBtns(){
   if(!currentStop)return;
-  const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn');
+  const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn'),tb=document.getElementById('read-text-btn');
   const cc=cards[currentCardIdx];
   const isTransition=cc&&cc.type==='transition',isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
   const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
-  const tb2=document.getElementById('read-text-btn');
 
-  // Hide nav buttons if popup is still showing
+  // Hide everything if popup is still showing
   const popup=currentStop&&document.getElementById('sound-popup-'+currentStop.id);
   const popupVisible=popup&&popup.style.display!=='none';
   if(isCFFS&&popupVisible){
     document.getElementById('card-bottom').style.display='none';
-    if(tb2)tb2.style.display='none';
     return;
   }
 
-  prev.style.display=currentCardIdx===0?'none':'block';
-  prev.textContent=currentCardIdx===2?'← Back to Map':'← Back';prev.onclick=prevCard;
+  // Always reset text-only btn
+  tb.style.display='none';
 
-  if(isLast){next.textContent=isLastStop?'🎉 Finish Tour':`Next Stop: ${stops[currentStop.id].name} →`;next.className=isLastStop?'card-next-btn final':'card-next-btn';if(isLastStop)next.onclick=function(){closeJourney(true);};}
-  else if(isNav){next.textContent="I've Arrived ✓";next.className='card-next-btn';next.onclick=nextCard;}
-  else if(isCFFS){
-    next.textContent='Continue →';next.className='card-next-btn';next.onclick=function(){skipToCard(4);};
-    let tb=document.getElementById('read-text-btn');
-    if(!tb){tb=document.createElement('button');tb.id='read-text-btn';tb.className='card-prev-btn';tb.style.cssText='flex:1;';document.getElementById('card-bottom').insertBefore(tb,next);}
-    tb.textContent='Text only';tb.onclick=function(){skipToTextFullscreen(currentStop.id);};tb.style.display='block';
-    // Less transparent for video card — solid white bg
-    document.getElementById('card-bottom').style.background='rgba(255,255,255,0.92)';
-    document.getElementById('card-bottom').style.borderTopColor='rgba(255,255,255,0.3)';
+  prev.style.display=currentCardIdx===0?'none':'block';
+  prev.textContent=currentCardIdx===2?'← Back to Map':'← Back';
+  prev.onclick=prevCard;
+
+  if(isLast){
+    next.textContent=isLastStop?'🎉 Finish Tour':`Next Stop: ${stops[currentStop.id].name} →`;
+    next.className=isLastStop?'card-next-btn final':'card-next-btn';
+    if(isLastStop)next.onclick=function(){closeJourney(true);};
+  } else if(isNav){
+    next.textContent="I've Arrived ✓";next.className='card-next-btn';next.onclick=nextCard;
+  } else if(isCFFS){
+    // Continue skips straight to Rudy's notes (idx 4), bypassing text card (idx 3)
+    next.textContent='Continue →';next.className='card-next-btn';
+    next.onclick=function(){skipToCard(4);};
+    // Text only button
+    tb.textContent='Text only';
+    tb.onclick=function(){skipToTextFullscreen(currentStop.id);};
+    tb.style.display='block';
   } else {
     next.textContent='Continue →';next.className='card-next-btn';next.onclick=nextCard;
-    if(tb2)tb2.style.display='none';
-    document.getElementById('card-bottom').style.background='';
-    document.getElementById('card-bottom').style.borderTopColor='';
   }
-  prev.style.visibility=isTransition?'hidden':'visible';next.style.visibility=isTransition?'hidden':'visible';
+
+  prev.style.visibility=isTransition?'hidden':'visible';
+  next.style.visibility=isTransition?'hidden':'visible';
   document.getElementById('card-bottom').style.display='flex';
   document.getElementById('card-bottom').classList.toggle('on-map',isNav);
-  prev.style.color='';next.style.background='';
+  // Reset any manual style overrides
+  if(!isCFFS){document.getElementById('card-bottom').style.background='';document.getElementById('card-bottom').style.borderTopColor='';}
 }
 
 function stopCFVideo(){var i=document.querySelector('.card[data-type="desc"] iframe[id^="cf-vid"]');if(i)i.src='';}
