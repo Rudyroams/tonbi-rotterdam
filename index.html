@@ -479,26 +479,25 @@ function renderCard(card,idx,total){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#1a0a2e 0%,#0d1a3a 50%,#1a1a0a 100%)';
     return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;">
-      <!-- subtle bg texture blobs -->
       <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);pointer-events:none;"></div>
       <div style="position:absolute;bottom:-60px;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;"></div>
       <div style="position:relative;z-index:2;padding:2rem 1.75rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;">
         <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">✕</button>
-        <!-- floating shoes badge -->
-        <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);border:3px solid rgba(255,255,255,0.2);">👟</div>
+        <!-- plain gradient circle, no border -->
+        <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);">👟</div>
         <div>
           <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;margin-bottom:0.6rem;line-height:1.1;">Time to move!</div>
           <div style="font-size:1rem;color:rgba(255,255,255,0.7);line-height:1.75;max-width:280px;margin:0 auto;">Next stop: <strong style="color:white;">${s.name}</strong>.<br>We'll show you exactly how to get there.</div>
         </div>
-        <!-- stop preview card -->
+        <!-- stop preview — image only, no title overlay -->
         <div style="width:100%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.4);">
-          <div style="position:relative;width:100%;height:140px;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 60%);"></div><div style="position:absolute;bottom:0.75rem;left:0.9rem;right:0.9rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:white;">${s.name}</div></div>
+          <div style="position:relative;width:100%;height:140px;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div style="background:rgba(255,107,53,0.15);border-top:1px solid rgba(255,107,53,0.3);padding:0.75rem 1rem;text-align:left;">
             <div style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem;">📍 One quick thing</div>
             <div style="font-size:0.85rem;line-height:1.6;color:rgba(255,255,255,0.8);">When your phone asks <em>"Allow location access?"</em> — tap <strong style="color:white;">Allow</strong>.</div>
           </div>
         </div>
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
       </div>
     </div>`;
   }
@@ -553,14 +552,12 @@ function renderCard(card,idx,total){
     return `<div class="card" data-stop="${s.id}" data-type="rudy" style="padding:0 0 3rem 0;background:var(--bg);">
       <div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
 
-      <!-- Hero image with Rudy badge floating over bottom -->
+      <!-- Hero image — plain circle badge, no content, no border -->
       <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:visible;">
         <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
-        <!-- Floating R badge -->
-        <div style="position:absolute;bottom:-1.5rem;left:50%;transform:translateX(-50%);z-index:3;width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,53,0.55);border:3px solid rgba(255,255,255,0.3);">
-          <span style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;">R</span>
-        </div>
+        <!-- Empty gradient circle, no icon, no border -->
+        <div style="position:absolute;bottom:-1.5rem;left:50%;transform:translateX(-50%);z-index:3;width:52px;height:52px;border-radius:50%;background:${RY};box-shadow:0 4px 18px rgba(255,107,53,0.55);"></div>
         <div style="position:absolute;bottom:1rem;left:1.25rem;"><div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div><div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;">Local filmmaker &amp; guide</div></div>
       </div>
 
@@ -570,22 +567,24 @@ function renderCard(card,idx,total){
         <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look."}</div>
       </div>
 
-      <!-- Filmmaker's Eye block -->
-      <div style="position:relative;margin:1.5rem 1.25rem 0;margin-top:2rem;">
-        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(255,107,53,0.5);border:3px solid rgba(255,255,255,0.2);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill="none"/><circle cx="12" cy="13" r="4" fill="none" stroke="white" stroke-width="2"/></svg>
-        </div>
+      <!-- Photo of the stop -->
+      <div style="margin:1.25rem 1.25rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);position:relative;">
+        <img src="${s.img}" alt="${s.name}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div>
+      </div>
+
+      <!-- Filmmaker's Eye block — no icon in circle -->
+      <div style="position:relative;margin:2rem 1.25rem 0;">
+        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${RY};box-shadow:0 4px 14px rgba(255,107,53,0.5);"></div>
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(255,107,53,0.2);">
           <div style="background:${RY};padding:1.4rem 1.1rem 0.75rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
           <div style="background:${RY};padding:0 1.1rem 1rem;"><div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.7;">${s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think."}</div></div>
         </div>
       </div>
 
-      <!-- Local Knowledge block -->
-      <div style="position:relative;margin:1.5rem 1.25rem 0;margin-top:2rem;">
-        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${TEAL};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(13,110,138,0.45);border:3px solid rgba(255,255,255,0.2);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="none"/><line x1="2" y1="12" x2="22" y2="12" fill="none"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="none"/></svg>
-        </div>
+      <!-- Local Knowledge block — no icon in circle -->
+      <div style="position:relative;margin:2rem 1.25rem 0;">
+        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${TEAL};box-shadow:0 4px 14px rgba(13,110,138,0.45);"></div>
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(13,110,138,0.2);">
           <div style="background:${TEAL};padding:1.4rem 1.1rem 0.75rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Local Knowledge</span></div>
           <div style="background:${TEAL};padding:0 1.1rem 1rem;"><div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.7;">${s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere."}</div></div>
@@ -612,7 +611,7 @@ function renderCard(card,idx,total){
 
       <!-- ① Hero block: floating camera badge + photo + desc footer -->
       <div style="position:relative;margin-top:1.75rem;margin-bottom:1rem;">
-        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,53,0.55);border:3px solid rgba(255,255,255,0.25);">
+        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,53,0.55);">
           ${icoCamera}
         </div>
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.28);">
@@ -665,7 +664,7 @@ function renderCard(card,idx,total){
       <!-- ④ Rudy's tip — indigo block, oversized bulb sticking out top -->
       <div style="position:relative;margin-bottom:1.5rem;margin-top:2rem;">
         <!-- Big bulb badge floating above -->
-        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${INDIGO};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(102,126,234,0.55);border:3px solid rgba(255,255,255,0.25);">
+        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${INDIGO};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(102,126,234,0.55);">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18" fill="none"/><line x1="10" y1="22" x2="14" y2="22" fill="none"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" fill="none"/></svg>
         </div>
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 18px rgba(102,126,234,0.3);">
@@ -685,7 +684,7 @@ function renderCard(card,idx,total){
 
   if(card.type==='quiz'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
-    const DARK='linear-gradient(160deg,#1c0a2e 0%,#0a1a3a 50%,#0a1a10 100%)';
+    const RAINBOW='linear-gradient(160deg,#c0392b 0%,#d4620a 12%,#b8860b 24%,#0a7a3a 36%,#0a7a7a 50%,#1a4fa0 64%,#4a1a8a 78%,#8a1a3a 100%)';
     const qa=quizAnswered[s.id],answered=qa!==undefined;
     const attempted=Object.keys(quizAnswered).length;
     const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
@@ -695,21 +694,27 @@ function renderCard(card,idx,total){
       return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
     const wasCorrect=answered&&qa===s.quiz.correct;
-    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:0;background:${DARK};display:flex;flex-direction:column;overflow:hidden;">
-      <!-- Hero image with floating 🎯 badge -->
+    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
+      <!-- Hero image with Quiz Time! title, no floating circle -->
       <div style="position:relative;flex-shrink:0;">
         <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;"></div>
-        <!-- Floating target badge -->
-        <div style="position:absolute;bottom:-1.5rem;left:50%;transform:translateX(-50%);z-index:3;width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 18px rgba(255,107,53,0.55);border:3px solid rgba(255,255,255,0.25);">🎯</div>
+        <!-- Quiz Time! title centred on image - no border -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
+          <div style="background:var(--orange);border-radius:22px;padding:0.55rem 1.3rem;box-shadow:0 4px 20px rgba(255,107,53,0.45);">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;">🎯 Quiz Time!</div>
+          </div>
+        </div>
         <!-- Score badge -->
         <div style="position:absolute;bottom:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);border-radius:20px;padding:0.25rem 0.6rem;display:flex;align-items:center;gap:0.3rem;border:1px solid rgba(255,255,255,0.15);">🏆<span style="font-size:0.75rem;font-weight:800;color:white;">${scored}/${attempted}</span></div>
       </div>
-      <!-- Question + options on dark bg -->
-      <div style="padding:2.5rem 1.1rem 1.1rem;flex:1;display:flex;flex-direction:column;">
-        <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${s.quiz.q}</div>
-        <div class="quiz-opts" style="margin-top:0.25rem;">${opts}</div>
-        ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${s.quiz.explanation}</div>`:''}
+      <!-- Question + options on dark panel -->
+      <div style="margin:1.1rem 1.1rem 1.1rem;">
+        <div style="background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${s.quiz.q}</div>
+          <div class="quiz-opts" style="margin-top:0.25rem;">${opts}</div>
+          ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${s.quiz.explanation}</div>`:''}
+        </div>
       </div>
     </div>`;
   }
@@ -725,13 +730,13 @@ function renderCard(card,idx,total){
       <!-- 2×2 gallery with floating badge -->
       <div style="position:relative;width:100%;margin-bottom:0;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-          <div style="background:${RY};border:2px solid rgba(255,255,255,0.3);border-radius:99px;padding:0.35rem 1.2rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
+          <div style="background:${RY};border-radius:99px;padding:0.35rem 1.2rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
             <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;">Local Food Tip!</div>
           </div>
         </div>
