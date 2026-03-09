@@ -291,6 +291,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <div class="card-bottom" id="card-bottom">
     <button class="card-prev-btn" id="prev-btn" onclick="prevCard()">← Back</button>
     <button class="card-prev-btn" id="read-text-btn" style="display:none;flex:1;">Text only</button>
+    <button id="shot-btn" style="display:none;flex:1.4;background:#5f27cd;color:white;border:none;border-radius:var(--radius-sm);padding:0.5rem 0.75rem;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(95,39,205,0.4);display:none;align-items:center;justify-content:center;gap:0.4rem;white-space:nowrap;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span id="shot-btn-label">Take shot</span></button>
     <button class="card-next-btn" id="next-btn" onclick="nextCard()">Continue →</button>
   </div>
 </div>
@@ -483,11 +484,7 @@ function renderCard(card,idx,total){
       const holes = (n) => Array(n).fill(0).map(()=>`<div style="width:14px;height:14px;background:white;border-radius:3px;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#0d0d12;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#3d1f6e 0%,#1a3a6e 40%,#1a4a20 70%,#6e2a0a 100%);">
-          <!-- Floating colour blobs -->
-          <div style="position:absolute;top:-60px;left:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.18) 0%,transparent 70%);pointer-events:none;"></div>
-          <div style="position:absolute;bottom:-80px;right:-40px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(45,107,228,0.15) 0%,transparent 70%);pointer-events:none;"></div>
-          <div style="position:absolute;top:30%;left:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(52,199,89,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#6d3fc0 0%,#2d5fb5 38%,#1a8050 68%,#b04a10 100%);">
           <!-- Filmstrip card -->
           <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;filter:drop-shadow(0 12px 40px rgba(0,0,0,0.7));">
             <div style="background:#111115;border-radius:10px;overflow:hidden;border-top:3px solid #222228;border-bottom:3px solid #222228;">
@@ -779,19 +776,20 @@ function updateNavBtns(){
   document.getElementById('card-bottom').style.display='flex';
   document.getElementById('card-bottom').classList.toggle('on-map',isNav);
 
-  // Sticky shot button — only on photo card
+  // Camera button — only on photo card
   const isPhoto=cc&&cc.type==='photo';
-  const sb=document.getElementById('sticky-shot-btn');
-  if(sb){
-    sb.style.display=isPhoto?'block':'none';
+  const shotBtn=document.getElementById('shot-btn');
+  if(shotBtn){
+    shotBtn.style.display=isPhoto?'flex':'none';
     if(isPhoto){
       const hasP=photoCollection[currentStop.id];
-      const inner=document.getElementById('sticky-shot-inner');
-      if(inner)inner.onclick=()=>openPhotoPicker(currentStop.id);
-      const lbl=document.getElementById('sticky-shot-label');
-      if(lbl)lbl.textContent=hasP?'Replace Photo':'Take your shot 📸';
+      shotBtn.onclick=()=>openPhotoPicker(currentStop.id);
+      const lbl=document.getElementById('shot-btn-label');
+      if(lbl)lbl.textContent=hasP?'Replace':'Take shot 📸';
     }
   }
+  // Hide old sticky button if present
+  const sb=document.getElementById('sticky-shot-btn');if(sb)sb.style.display='none';
 }
 
 function stopCFVideo(){var i=document.querySelector('.card[data-type="desc"] iframe[id^="cf-vid"]');if(i)i.src='';}
@@ -913,11 +911,11 @@ function handlePhotoSelection(event){
   const file=event.target.files?.[0];if(!file||!pendingPhotoStopId)return;
   const reader=new FileReader();reader.onload=e=>{
     const dataUrl=e.target.result,stop=stops.find(s=>s.id===pendingPhotoStopId);if(!stop)return;
-    // Save directly — no preview screen
     photoCollection[pendingPhotoStopId]={dataUrl,tip:stop.challenge.tip,stopName:stop.name};
     pendingPhotoStopId=null;
-    const pos=currentCardIdx;document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');currentCardIdx=pos;updateCardPosition(false);
-    // Show low-res notice
+    const pos=currentCardIdx;document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');currentCardIdx=pos;updateCardPosition(false);updateNavBtns();
+    // Scroll to bottom so user sees the captured photo
+    setTimeout(()=>{const card=document.querySelectorAll('.card')[pos];if(card)card.scrollTo({top:card.scrollHeight,behavior:'smooth'});},100);
     document.getElementById('lowres-overlay').style.display='flex';
   };
   reader.readAsDataURL(file);event.target.value='';
