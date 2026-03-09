@@ -291,7 +291,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   <div class="card-bottom" id="card-bottom">
     <button class="card-prev-btn" id="prev-btn" onclick="prevCard()">← Back</button>
     <button class="card-prev-btn" id="read-text-btn" style="display:none;flex:1;">Text only</button>
-    <button id="shot-btn" style="display:none;flex:1.4;background:#5f27cd;color:white;border:none;border-radius:var(--radius-sm);padding:0.5rem 0.75rem;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(95,39,205,0.4);display:none;align-items:center;justify-content:center;gap:0.4rem;white-space:nowrap;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span id="shot-btn-label">Take shot</span></button>
+    <button id="shot-btn" style="display:none;flex:1.4;background:#5f27cd;color:white;border:none;border-radius:var(--radius-sm);padding:0.5rem 0.75rem;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(95,39,205,0.4);align-items:center;justify-content:center;gap:0.4rem;white-space:nowrap;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span id="shot-btn-label">Take shot</span></button>
     <button class="card-next-btn" id="next-btn" onclick="nextCard()">Continue →</button>
   </div>
 </div>
@@ -486,8 +486,8 @@ function renderCard(card,idx,total){
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#6d3fc0 0%,#2d5fb5 38%,#1a8050 68%,#b04a10 100%);">
           <!-- Filmstrip card -->
-          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;filter:drop-shadow(0 12px 40px rgba(0,0,0,0.7));">
-            <div style="background:#111115;border-radius:10px;overflow:hidden;border-top:3px solid #222228;border-bottom:3px solid #222228;">
+          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
+            <div style="background:#111115;border-radius:10px;overflow:hidden;border-top:3px solid #222228;border-bottom:3px solid #222228;box-shadow:0 8px 32px rgba(0,0,0,0.4),0 2px 8px rgba(0,0,0,0.25);">
               <!-- Main row: left holes | content | right holes -->
               <div style="display:flex;align-items:stretch;">
                 <!-- Left sprocket holes -->
@@ -538,21 +538,25 @@ function renderCard(card,idx,total){
     const hdr=(ico,label)=>`<div style="background:${RY};padding:0.75rem 1.1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">${ico}<span style="font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:white;">${label}</span></div>`;
     return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:1.25rem 1.25rem 5.5rem;background:${RAINBOW};">
 
-      <!-- ① Hero block: big title bar + photo + desc footer -->
-      <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.28);margin-bottom:1rem;">
-        <div style="background:${RY};padding:1rem 1.1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;">
+      <!-- ① Hero block: floating camera badge + photo + desc footer -->
+      <div style="position:relative;margin-top:1.75rem;margin-bottom:1rem;">
+        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,53,0.55);border:3px solid rgba(255,255,255,0.25);">
           ${icoCamera}
-          <span style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;letter-spacing:-0.01em;">Photo Challenge!</span>
         </div>
-        <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;">
-          <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
-          <div style="position:absolute;bottom:0.9rem;left:0.9rem;right:0.9rem;">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${s.challenge.title}</div>
+        <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.28);">
+          <div style="background:${RY};padding:1.6rem 1.1rem 0.85rem;text-align:center;">
+            <span style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;letter-spacing:-0.01em;">Photo Challenge!</span>
           </div>
-        </div>
-        <div style="background:${RY};padding:0.85rem 1.1rem 1rem;">
-          <div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.65;">${s.challenge.desc}</div>
+          <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;">
+            <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
+            <div style="position:absolute;bottom:0.9rem;left:0.9rem;right:0.9rem;">
+              <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${s.challenge.title}</div>
+            </div>
+          </div>
+          <div style="background:${RY};padding:0.85rem 1.1rem 1rem;">
+            <div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.65;">${s.challenge.desc}</div>
+          </div>
         </div>
       </div>
 
@@ -785,7 +789,7 @@ function updateNavBtns(){
       const hasP=photoCollection[currentStop.id];
       shotBtn.onclick=()=>openPhotoPicker(currentStop.id);
       const lbl=document.getElementById('shot-btn-label');
-      if(lbl)lbl.textContent=hasP?'Replace':'Take shot 📸';
+      if(lbl)lbl.textContent=hasP?'Replace':'Take shot';
     }
   }
   // Hide old sticky button if present
