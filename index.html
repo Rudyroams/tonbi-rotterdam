@@ -512,10 +512,10 @@ function renderCard(card,idx,total){
       <!-- ① 2×2 gallery at top with "Local Food Tip!" pill centred -->
       <div style="position:relative;width:100%;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="aspect-ratio:4/3;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:var(--orange);border:1px solid rgba(255,255,255,0.3);border-radius:99px;padding:0.22rem 1rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
@@ -585,6 +585,7 @@ function renderJourney(){
   document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`<div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   updateCardPosition(false);updateNavBtns();
+  setTimeout(reloadGalleryImages,100);
 }
 
 function updateCardPosition(animate=true){
@@ -674,6 +675,8 @@ function nextCard(){
       if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac.stop.id),300);
       if(ac&&ac.type==='desc')setTimeout(()=>setupSoundPopup(ac.stop.id),600);
       if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac.stop.id),200);
+      if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
+      if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),450);
     },400);
   }
 }
@@ -685,6 +688,7 @@ function prevCard(){stopCFVideo();if(currentCardIdx>0){
   updateCardPosition();updateProgressDots();updateNavBtns();
   // If landing on desc card, re-show popup (reset to pre-video state)
   const ac=cards[currentCardIdx];
+  if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),150);
   if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cfStyle==='fullscreen'){
     const iframe=document.getElementById('cf-vid-'+ac.stop.id);
     if(iframe){iframe.src='';iframe.style.display='none';}
@@ -818,6 +822,24 @@ function initMap(){
 }
 
 try{renderLists();}catch(e){console.error(e);}
+
+function reloadGalleryImages(){
+  document.querySelectorAll('img[data-src]').forEach(img=>{
+    const url=img.getAttribute('data-src');
+    if(!url)return;
+    // Directly bust the cache and reassign — avoids iOS memory-eviction blank bug
+    img.src=url+'?_r='+Date.now();
+  });
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible') reloadGalleryImages();
+});
+window.addEventListener('pageshow',function(){
+  reloadGalleryImages();
+});
+window.addEventListener('focus',function(){
+  reloadGalleryImages();
+});
 
 const RUDY_CORRECT=[["Yes! 🎉","You really know your Rotterdam!"],["Nailed it! 🙏","I knew you'd get that one."],["Spot on! ⭐","A true Rotterdam insider already."],["Brilliant! 🎊","That's exactly right — well done!"],["Perfect! 🏆","Rotterdam would be proud of you."]];
 const RUDY_WRONG=[["Oops! 😄","Don't worry — now you know!"],["Close! 🤔","Tricky one — Rotterdam keeps its secrets."],["Not quite! 😅","Easy to miss if you don't know where to look."],["Ha, nice try! 😄","This one catches most people out."],["Almost! 🙈","A little local knowledge goes a long way!"]];
