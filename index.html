@@ -530,17 +530,25 @@ function renderCard(card,idx,total){
     const hasPhoto=photoCollection[s.id];
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#ff6b6b 0%,#ff9f43 12%,#ffd32a 24%,#0be881 36%,#00d2d3 50%,#54a0ff 64%,#5f27cd 78%,#ff6b81 100%)';
-    const hdr=(label)=>`<div style="background:${RY};padding:0.55rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;">${label}</span></div>`;
-    return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:1.25rem 1.25rem 2rem;background:${RAINBOW};">
+    const INDIGO='linear-gradient(160deg,#667eea 0%,#764ba2 100%)';
+    const W='stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"';
+    const icoCamera=`<svg width="18" height="18" viewBox="0 0 24 24" ${W}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+    const icoPin=`<svg width="16" height="16" viewBox="0 0 24 24" ${W}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+    const icoFilm=`<svg width="16" height="16" viewBox="0 0 24 24" ${W}><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg>`;
+    const hdr=(ico,label)=>`<div style="background:${RY};padding:0.75rem 1.1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">${ico}<span style="font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:white;">${label}</span></div>`;
+    return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:1.25rem 1.25rem 5.5rem;background:${RAINBOW};">
 
-      <!-- Hero: thin bar + photo with title overlay + desc footer -->
-      <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);margin-bottom:1rem;">
-        ${hdr('📸 Photo Challenge!')}
+      <!-- ① Hero block: big title bar + photo + desc footer -->
+      <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.28);margin-bottom:1rem;">
+        <div style="background:${RY};padding:1rem 1.1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;">
+          ${icoCamera}
+          <span style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;letter-spacing:-0.01em;">Photo Challenge!</span>
+        </div>
         <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;">
           <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
           <div style="position:absolute;bottom:0.9rem;left:0.9rem;right:0.9rem;">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;color:white;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,0.55);">${s.challenge.title}</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${s.challenge.title}</div>
           </div>
         </div>
         <div style="background:${RY};padding:0.85rem 1.1rem 1rem;">
@@ -548,55 +556,63 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Where to stand -->
+      <!-- ② Where to stand — two placeholders side by side -->
       <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.2);margin-bottom:1rem;">
-        ${hdr('📍 Where to stand')}
-        <div style="display:flex;height:170px;">
-          <div style="flex:1;position:relative;background:#111;min-width:0;">
-            <div id="photo-map-${s.id}" style="width:100%;height:100%;"></div>
-            <a href="${s.mapUrl}" target="_blank" style="position:absolute;bottom:7px;left:50%;transform:translateX(-50%);background:white;color:var(--orange);font-size:0.58rem;font-weight:800;padding:0.25rem 0.65rem;border-radius:20px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.35);display:flex;align-items:center;gap:0.3rem;z-index:5;"><svg width="9" height="9" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Maps</a>
-          </div>
-          <div style="width:1px;background:rgba(0,0,0,0.15);flex-shrink:0;"></div>
-          <div style="flex:1;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;min-width:0;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><rect x="15" y="2" width="6" height="5" rx="1" stroke-width="1"/><circle cx="18" cy="4.5" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg>
-            <span style="font-size:0.58rem;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;text-align:center;line-height:1.5;padding:0 0.6rem;">Cameraman<br>position photo</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Shot styles -->
-      <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.2);margin-bottom:1rem;">
-        ${hdr('🎬 Shot Styles')}
+        ${hdr(icoPin,'Where to stand')}
         <div style="display:flex;background:#1a1a2e;">
-          <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-            <div style="aspect-ratio:3/4;background:#111827;"></div>
-            <div style="padding:0.55rem 0.5rem;text-align:center;"><span style="font-size:0.68rem;font-weight:800;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.07em;">Selfie Style</span></div>
+          <div style="flex:1;aspect-ratio:1;background:#111827;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;border-right:1px solid rgba(255,255,255,0.07);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:0.55rem;font-weight:800;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.07em;">Location shot</span>
           </div>
-          <div style="width:1px;background:rgba(255,255,255,0.08);flex-shrink:0;"></div>
-          <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
-            <div style="aspect-ratio:3/4;background:#111827;"></div>
-            <div style="padding:0.55rem 0.5rem;text-align:center;"><span style="font-size:0.68rem;font-weight:800;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.07em;">Portrait Style</span></div>
+          <div style="flex:1;aspect-ratio:1;background:#111827;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <span style="font-size:0.55rem;font-weight:800;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.07em;">Position photo</span>
           </div>
         </div>
       </div>
 
-      <!-- Rudy's tip — full gradient body, white text -->
+      <!-- ③ Shot styles — two portrait placeholders -->
       <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.2);margin-bottom:1rem;">
-        ${hdr("💡 Rudy's Tip")}
-        <div style="background:${RY};padding:0.85rem 1.1rem 1rem;">
-          <div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.65;">${s.challenge.tip}</div>
+        ${hdr(icoFilm,'Shot Styles')}
+        <div style="display:flex;background:#1a1a2e;">
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0;border-right:1px solid rgba(255,255,255,0.07);">
+            <div style="aspect-ratio:3/4;background:#111827;"></div>
+            <div style="padding:0.55rem 0.5rem;text-align:center;"><span style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.07em;">Selfie Style</span></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+            <div style="aspect-ratio:3/4;background:#111827;"></div>
+            <div style="padding:0.55rem 0.5rem;text-align:center;"><span style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.07em;">Portrait Style</span></div>
+          </div>
         </div>
       </div>
 
-      <!-- Take shot / captured -->
-      <div>
-        ${hasPhoto
-          ? `<div class="photo-existing"><img src="${photoCollection[s.id].dataUrl}" class="photo-existing-thumb" style="aspect-ratio:unset;width:100%;height:auto;"><div class="photo-existing-label">✓ Photo Captured</div><div class="photo-existing-text">Great shot! Want another angle?</div><button class="photo-select-btn replace" onclick="openPhotoPicker(${s.id})">Replace Photo</button></div>`
-          : `<button class="photo-select-btn" onclick="openPhotoPicker(${s.id})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Take your shot</button>`
-        }
+      <!-- ④ Rudy's tip — indigo block, oversized bulb sticking out top -->
+      <div style="position:relative;margin-bottom:1.5rem;margin-top:2rem;">
+        <!-- Big bulb badge floating above -->
+        <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${INDIGO};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(102,126,234,0.55);border:3px solid rgba(255,255,255,0.25);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+        </div>
+        <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 18px rgba(102,126,234,0.3);">
+          <div style="background:${INDIGO};padding:1.6rem 1.1rem 0.85rem;text-align:center;">
+            <div style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:900;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.1rem;">Rudy's Tip</div>
+          </div>
+          <div style="background:${INDIGO};padding:0 1.1rem 1.1rem;">
+            <div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.7;">${s.challenge.tip}</div>
+          </div>
+        </div>
       </div>
-    </div>`;
-  }
+
+      ${hasPhoto ? `<div class="photo-existing" style="margin-bottom:0.5rem;"><img src="${photoCollection[s.id].dataUrl}" class="photo-existing-thumb" style="aspect-ratio:unset;width:100%;height:auto;"><div class="photo-existing-label">✓ Photo Captured</div><div class="photo-existing-text">Great shot! Want another angle?</div></div>` : ''}
+
+    </div>
+    <!-- ⑤ Sticky camera button above nav -->
+    <div id="sticky-shot-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom));left:0;right:0;z-index:50;padding:0.65rem 1.25rem;background:linear-gradient(to top,rgba(0,0,0,0.18) 0%,transparent 100%);pointer-events:none;">
+      <button onclick="openPhotoPicker(${s.id})" style="pointer-events:all;width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:0.85rem 1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.45);display:flex;align-items:center;justify-content:center;gap:0.6rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        ${hasPhoto ? 'Replace Photo' : 'Take your shot 📸'}
+      </button>
+    </div>`;}
+
 
   if(card.type==='quiz'){
     const qa=quizAnswered[s.id],answered=qa!==undefined;
