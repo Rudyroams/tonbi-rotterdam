@@ -497,7 +497,7 @@ function renderCard(card,idx,total){
             <div style="font-size:0.85rem;line-height:1.6;color:rgba(255,255,255,0.8);">When your phone asks <em>"Allow location access?"</em> — tap <strong style="color:white;">Allow</strong>.</div>
           </div>
         </div>
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go!</button>
       </div>
     </div>`;
   }
@@ -556,13 +556,12 @@ function renderCard(card,idx,total){
       <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:visible;">
         <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
-        <!-- Empty gradient circle, no icon, no border -->
-        <div style="position:absolute;bottom:-1.5rem;left:50%;transform:translateX(-50%);z-index:3;width:52px;height:52px;border-radius:50%;background:${RY};box-shadow:0 4px 18px rgba(255,107,53,0.55);"></div>
+        <!-- no floating dot -->
         <div style="position:absolute;bottom:1rem;left:1.25rem;"><div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div><div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;">Local filmmaker &amp; guide</div></div>
       </div>
 
       <!-- Main note text -->
-      <div style="padding:2.5rem 1.25rem 0.25rem;">
+      <div style="padding:1.25rem 1.25rem 0.25rem;">
         <div style="font-size:1.05rem;line-height:1.85;color:var(--text);">${s.rudy}</div>
         <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:1rem;line-height:1.85;color:var(--text);">${s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look."}</div>
       </div>
@@ -573,20 +572,18 @@ function renderCard(card,idx,total){
         <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div>
       </div>
 
-      <!-- Filmmaker's Eye block — no icon in circle -->
-      <div style="position:relative;margin:2rem 1.25rem 0;">
-        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${RY};box-shadow:0 4px 14px rgba(255,107,53,0.5);"></div>
+      <!-- Filmmaker's Eye block — no floating circle -->
+      <div style="position:relative;margin:1.25rem 1.25rem 0;">
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(255,107,53,0.2);">
-          <div style="background:${RY};padding:1.4rem 1.1rem 0.75rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
+          <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
           <div style="background:${RY};padding:0 1.1rem 1rem;"><div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.7;">${s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think."}</div></div>
         </div>
       </div>
 
-      <!-- Local Knowledge block — no icon in circle -->
-      <div style="position:relative;margin:2rem 1.25rem 0;">
-        <div style="position:absolute;top:-1.5rem;left:50%;transform:translateX(-50%);z-index:2;width:44px;height:44px;border-radius:50%;background:${TEAL};box-shadow:0 4px 14px rgba(13,110,138,0.45);"></div>
+      <!-- Local Knowledge block — no floating circle -->
+      <div style="position:relative;margin:1.25rem 1.25rem 0;">
         <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(13,110,138,0.2);">
-          <div style="background:${TEAL};padding:1.4rem 1.1rem 0.75rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Local Knowledge</span></div>
+          <div style="background:${TEAL};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Local Knowledge</span></div>
           <div style="background:${TEAL};padding:0 1.1rem 1rem;"><div style="font-size:0.92rem;font-weight:700;color:white;line-height:1.7;">${s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere."}</div></div>
         </div>
       </div>
@@ -699,10 +696,10 @@ function renderCard(card,idx,total){
       <div style="position:relative;flex-shrink:0;">
         <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;"></div>
-        <!-- Quiz Time! title centred on image - no border -->
+        <!-- Quiz Time! title centred on image - celebration border, no emoji -->
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
-          <div style="background:var(--orange);border-radius:22px;padding:0.55rem 1.3rem;box-shadow:0 4px 20px rgba(255,107,53,0.45);">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;">🎯 Quiz Time!</div>
+          <div style="background:var(--orange);border-radius:22px;padding:0.55rem 1.3rem;box-shadow:0 4px 20px rgba(255,107,53,0.45);outline:3px dashed rgba(255,255,255,0.7);outline-offset:4px;">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;">Quiz Time!</div>
           </div>
         </div>
         <!-- Score badge -->
