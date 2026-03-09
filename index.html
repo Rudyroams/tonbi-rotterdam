@@ -71,7 +71,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .pw-error { color:var(--red); font-size:0.8rem; margin-top:0.6rem; height:1rem; text-align:center; }
 #app { display:none; }
 #app.show { display:block; }
-#home-screen { min-height:100svh; padding-bottom:1rem; }
+#home-screen { min-height:100svh; padding-bottom:1rem; background:linear-gradient(160deg,#ff6b6b 0%,#ff9f43 12%,#ffd32a 24%,#0be881 36%,#00d2d3 50%,#54a0ff 64%,#5f27cd 78%,#ff6b81 100%); }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:var(--white); }
 #overworld-screen { position:absolute; inset:0; overflow:hidden; background:#1a1f2e; }
 #overworld-map { position:absolute; inset:0; width:100%; height:100%; }
@@ -461,7 +461,7 @@ function renderCard(card,idx,total){
 
   if(card.type==='desc'){
     if(s.cloudflareId&&s.cfStyle==='fullscreen'){
-      const sprocket=`<div style="display:flex;flex-direction:column;gap:6px;padding:6px 0;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:10px;height:10px;background:rgba(255,255,255,0.15);border-radius:2px;"></div>`).join('')}</div>`;
+      const holes = (n) => Array(n).fill(0).map(()=>`<div style="width:14px;height:14px;background:white;border-radius:3px;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#0d0d12;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a0a2e 0%,#0d1a3a 40%,#1a2a0a 70%,#2a1a0a 100%);">
@@ -470,40 +470,31 @@ function renderCard(card,idx,total){
           <div style="position:absolute;bottom:-80px;right:-40px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(45,107,228,0.15) 0%,transparent 70%);pointer-events:none;"></div>
           <div style="position:absolute;top:30%;left:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(52,199,89,0.1) 0%,transparent 70%);pointer-events:none;"></div>
           <!-- Filmstrip card -->
-          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;filter:drop-shadow(0 12px 40px rgba(0,0,0,0.6));">
-            <!-- Film strip container -->
-            <div style="background:#1c1c22;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
-              <!-- Top sprocket strip -->
-              <div style="background:#111115;padding:0 12px;display:flex;align-items:center;justify-content:space-between;height:28px;">
-                <div style="display:flex;gap:7px;">${[0,1,2,3,4,5,6,7,8,9].map(()=>`<div style="width:12px;height:10px;background:rgba(255,255,255,0.12);border-radius:2px;"></div>`).join('')}</div>
-              </div>
-              <!-- Main content area with side sprockets -->
-              <div style="display:flex;align-items:stretch;background:#111115;">
-                <!-- Left sprocket column -->
-                <div style="width:22px;background:#0d0d10;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:8px 0;flex-shrink:0;">${[0,1,2,3,4,5].map(()=>`<div style="width:10px;height:10px;background:rgba(255,255,255,0.12);border-radius:2px;"></div>`).join('')}</div>
-                <!-- Film frame / content -->
-                <div style="flex:1;background:#1c1c22;padding:1.4rem 1.2rem 1.25rem;text-align:center;">
+          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;filter:drop-shadow(0 12px 40px rgba(0,0,0,0.7));">
+            <div style="background:#111115;border-radius:10px;overflow:hidden;border-top:3px solid #222228;border-bottom:3px solid #222228;">
+              <!-- Main row: left holes | content | right holes -->
+              <div style="display:flex;align-items:stretch;">
+                <!-- Left sprocket holes -->
+                <div style="width:30px;background:#111115;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:18px 0;gap:10px;flex-shrink:0;">${holes(6)}</div>
+                <!-- Content frame -->
+                <div style="flex:1;background:#1e1e26;padding:1.4rem 1.1rem 1.3rem;text-align:center;border-left:2px solid #222228;border-right:2px solid #222228;">
                   <!-- Stop thumbnail -->
                   <div style="width:64px;height:64px;border-radius:10px;overflow:hidden;margin:0 auto 1rem;border:2px solid rgba(255,107,53,0.5);box-shadow:0 4px 16px rgba(255,107,53,0.25);">
                     <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0.8);">
                   </div>
                   <!-- Label -->
-                  <div style="font-size:0.58rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">Homemade intro video</div>
+                  <div style="font-size:0.58rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.3rem;">Welcome to</div>
                   <!-- Title -->
                   <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:white;line-height:1.2;margin-bottom:0.6rem;">${s.name}</div>
                   <!-- Description -->
-                  <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:1.1rem;">Rudy filmed this himself on location. The video starts muted — tap the screen once it's playing to unmute.</div>
+                  <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:1.1rem;">I made a short intro video for you.<br>It starts muted. Tap the screen and press the <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.2" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> for sound playback.</div>
                   <!-- Play button -->
                   <div style="background:var(--orange);color:white;border-radius:99px;padding:0.65rem 1.5rem;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.92rem;display:inline-flex;align-items:center;gap:0.55rem;box-shadow:0 4px 18px rgba(255,107,53,0.45);">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M5 3 L19 12 L5 21 Z"/></svg>Play video
                   </div>
                 </div>
-                <!-- Right sprocket column -->
-                <div style="width:22px;background:#0d0d10;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:8px 0;flex-shrink:0;">${[0,1,2,3,4,5].map(()=>`<div style="width:10px;height:10px;background:rgba(255,255,255,0.12);border-radius:2px;"></div>`).join('')}</div>
-              </div>
-              <!-- Bottom sprocket strip -->
-              <div style="background:#111115;padding:0 12px;display:flex;align-items:center;height:28px;">
-                <div style="display:flex;gap:7px;">${[0,1,2,3,4,5,6,7,8,9].map(()=>`<div style="width:12px;height:10px;background:rgba(255,255,255,0.12);border-radius:2px;"></div>`).join('')}</div>
+                <!-- Right sprocket holes -->
+                <div style="width:30px;background:#111115;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:18px 0;gap:10px;flex-shrink:0;">${holes(6)}</div>
               </div>
             </div>
           </div>
