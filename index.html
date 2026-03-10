@@ -427,18 +427,38 @@ let pendingPhotoStopId=null;
 function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
 function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(v==='yyy'){const pw=document.getElementById('pw-screen');pw.classList.add('exit');setTimeout(()=>{pw.style.display='none';document.getElementById('app').classList.add('show');try{showScreen('overworld');initOverworldMap();}catch(e){console.error(e);}},500);}
-  else{document.getElementById('pw-err').textContent='Incorrect code — try again.';document.getElementById('pw-in').value='';}
+  if(v==='yyy'){
+    const pw=document.getElementById('pw-screen');
+    pw.classList.add('exit');
+    setTimeout(()=>{
+      pw.style.display='none';
+      document.getElementById('app').classList.add('show');
+      showScreen('overworld');
+      // rAF ensures the DOM has painted and the container has dimensions before Mapbox measures it
+      requestAnimationFrame(()=>{
+        setTimeout(()=>{
+          if(window.mapboxgl){initOverworldMap();}
+          else{window._pendingOwMap=true;}
+        },50);
+      });
+    },500);
+  } else {
+    document.getElementById('pw-err').textContent='Incorrect code — try again.';
+    document.getElementById('pw-in').value='';
+  }
 }
 function showScreen(name){
   document.getElementById('overworld-screen').style.display=name==='overworld'?'block':'none';
   document.getElementById('home-screen').style.display=name==='home'?'block':'none';
   const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
+  if(name==='map'&&window.mapboxgl&&!window._routeMapInitialized){window._routeMapInitialized=true;requestAnimationFrame(()=>initMap());}
 }
 function owStartTour(){const n=stops.find(s=>!quizAnswered[s.id])||stops[0];startJourney(n.id);}
 
 function initOverworldMap(){
-  if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
+  if(!window.mapboxgl||window._owMapInitialized)return;
+  window._owMapInitialized=true;
+  mapboxgl.accessToken=MAPBOX_TOKEN;
   const sc=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
   const lngs=sc.map(c=>c[0]),lats=sc.map(c=>c[1]);
   const owMap=new mapboxgl.Map({container:'overworld-map',style:'mapbox://styles/mapbox/dark-v11',center:[(Math.min(...lngs)+Math.max(...lngs))/2,(Math.min(...lats)+Math.max(...lats))/2-0.004],zoom:13.8,interactive:true,attributionControl:false,pitchWithRotate:false,dragRotate:false});
@@ -1153,6 +1173,6 @@ window.addEventListener('focus',function(){
 });
 
 </script>
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="initMap()"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="if(window._pendingOwMap){initOverworldMap();window._pendingOwMap=false;}"></script>
 </body>
 </html>
