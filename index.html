@@ -492,15 +492,9 @@ function renderCard(card,idx,total){
       <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
         <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
-        <!-- Running shoe icon -->
-        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
-          <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 42 C6 42 10 30 20 28 C26 27 30 32 36 31 C42 30 50 24 54 26 C58 28 58 34 56 38 C54 42 48 44 40 44 L12 44 C9 44 6 43 6 42Z" fill="white"/>
-            <path d="M20 28 L22 22 L28 24 L26 30" fill="white"/>
-            <path d="M28 24 L30 18 L36 20 L34 26" fill="rgba(255,255,255,0.7)"/>
-            <path d="M12 44 L10 48 L52 48 L54 44" fill="rgba(255,255,255,0.5)"/>
-            <path d="M36 31 C40 30 46 32 50 34" stroke="rgba(255,200,100,0.8)" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+        <!-- Shoe emoji icon (cell-phone style) -->
+        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);font-size:1.9rem;line-height:1;">
+          👟
         </div>
         <!-- Text -->
         <div style="display:flex;flex-direction:column;gap:0.3rem;align-items:center;">
@@ -535,10 +529,10 @@ function renderCard(card,idx,total){
             <div style="position:relative;width:100%;height:180px;overflow:hidden;">
               <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;display:block;">
               <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.65) 100%);"></div>
-              <!-- Video icon centred on image -->
+              <!-- Clapperboard icon centred on image -->
               <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
                 <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.6);">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-2v10l-5-2V9z"/></svg>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20"/><path d="M6 4v4"/><path d="M10 4l-2 4"/><path d="M14 4l-2 4"/><path d="M18 4l-2 4"/></svg>
                 </div>
               </div>
               <!-- Stop name overlaid bottom-left -->
@@ -551,7 +545,7 @@ function renderCard(card,idx,total){
             <div style="background:rgba(15,15,22,0.95);backdrop-filter:blur(16px);padding:1.1rem 1.25rem 1.25rem;">
               <div style="font-size:0.88rem;color:rgba(255,255,255,0.82);line-height:1.72;font-weight:400;">I made a short intro video for this stop. It starts muted — tap the screen to show controls, then the <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> icon for sound.</div>
               <div style="margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);border-radius:99px;padding:0.7rem 1.5rem;box-shadow:0 4px 16px rgba(255,107,53,0.4);">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-2v10l-5-2V9z"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
                 <span style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:white;">Play Intro Video</span>
               </div>
             </div>
@@ -748,7 +742,7 @@ function renderCard(card,idx,total){
     // Coupon — warm cream, offset left with extra rotation for playfulness
     const coupon=p.offer?`
       <div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)" style="display:block;width:72%;transform:rotate(-5deg);transform-origin:left center;">
-        <div style="background:#fdf0e0;border-radius:8px;box-shadow:0 8px 26px rgba(0,0,0,0.38),0 2px 6px rgba(0,0,0,0.15);overflow:hidden;border:1px solid rgba(200,130,60,0.25);">
+        <div style="background:white;border-radius:8px;box-shadow:0 8px 26px rgba(0,0,0,0.38),0 2px 6px rgba(0,0,0,0.15);overflow:hidden;border:1px solid rgba(200,130,60,0.25);">
           <!-- Header -->
           <div style="background:var(--orange);padding:0.3rem 0.8rem;display:flex;align-items:center;justify-content:space-between;">
             <div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.12em;">Your Exclusive Offer</div>
@@ -799,23 +793,26 @@ function renderCard(card,idx,total){
 
     return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
 
-      <!-- ① Full-bleed gallery: badge sits at the horizontal AND vertical midpoint of all 4 images -->
-      <div style="position:relative;width:100%;padding-bottom:${coupon?'3.4rem':'0'};">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
-          <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-        </div>
-        <!-- Subtle dark vignette so the badge pops -->
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.22);pointer-events:none;"></div>
-        <!-- "Local Food Tip!" badge — true centre: top:50% left:50% transform -50% -50% -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;">
-          <div style="background:${RY};border-radius:99px;padding:0.45rem 1.4rem;box-shadow:0 4px 22px rgba(255,107,53,0.65),0 1px 6px rgba(0,0,0,0.35);">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;letter-spacing:-0.01em;">Local Food Tip!</div>
+      <!-- ① Full-bleed gallery: badge centred over the 4-image grid -->
+      <div style="width:100%;padding-bottom:${coupon?'3.4rem':'0'};position:relative;">
+        <!-- Grid + badge in their own stacking context -->
+        <div style="position:relative;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+            <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+            <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+            <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+            <div style="height:135px;overflow:hidden;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          </div>
+          <!-- Subtle vignette -->
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.22);pointer-events:none;"></div>
+          <!-- Badge: top:50% left:50% of the 270px-tall grid = exact centre -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;z-index:2;">
+            <div style="background:${RY};border-radius:99px;padding:0.45rem 1.4rem;box-shadow:0 4px 22px rgba(255,107,53,0.65),0 1px 6px rgba(0,0,0,0.35);">
+              <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;letter-spacing:-0.01em;">Local Food Tip!</div>
+            </div>
           </div>
         </div>
-        <!-- Coupon: offset left, hanging below gallery -->
+        <!-- Coupon: offset left, hanging below grid -->
         ${coupon?`<div style="position:absolute;bottom:-3rem;left:0.75rem;z-index:10;">${coupon}</div>`:''}
       </div>
 
@@ -831,14 +828,13 @@ function renderCard(card,idx,total){
 
           <!-- Description + filmstrip side by side -->
           <div style="display:flex;gap:0.85rem;align-items:flex-start;">
-            <div style="flex:1;min-width:0;font-size:0.88rem;line-height:1.72;color:rgba(255,255,255,0.82);">${p.desc}</div>
+            <div style="flex:1;min-width:0;font-size:0.88rem;line-height:1.72;color:rgba(255,255,255,0.82);">${p.desc} ${p.desc} ${p.desc}</div>
             ${filmstrip}
           </div>
 
         </div>
       </div>
     </div>`;
-  }
 
   return '<div class="card"></div>';
 }
