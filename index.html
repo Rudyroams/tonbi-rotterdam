@@ -239,7 +239,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
           <div class="home-logo-icon">🪁</div>
           <div><div class="home-logo-name">Tonbi</div><div class="home-logo-sub">Self-Guided Tour</div></div>
         </div>
-        <div class="home-city-tag">Rotterdam 🇳🇱</div>
+
       </div>
     </div>
     <div class="hero-card">
@@ -351,53 +351,60 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#c0392b 0%,#d4620a 12%,#b8860b 24%,#0a7a3a 36%,#0a7a7a 50%,#1a4fa0 64%,#4a1a8a 78%,#8a1a3a 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="max-width:480px;margin:0 auto;padding:calc(2rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
-    <div style="text-align:center;margin-bottom:1.75rem;">
-      <div style="font-size:2.8rem;margin-bottom:0.5rem;">🪁</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;line-height:1.15;margin-bottom:0.65rem;">Tour Complete!</div>
-      <div style="font-size:0.95rem;color:var(--text2);line-height:1.7;max-width:320px;margin:0 auto;">Thanks for exploring Rotterdam with me. You've walked the same streets my family has walked for generations — I hope the city showed you something real.</div>
-      <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text2);font-style:italic;">— Rudy</div>
+    <!-- Hero -->
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:1rem;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.1;margin-bottom:0.6rem;">Tour Complete!</div>
+      <div style="font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.7;max-width:320px;margin:0 auto;">Thanks for exploring Rotterdam with me. You've walked the same streets my family has walked for generations — I hope the city showed you something real.</div>
+      <div style="margin-top:0.6rem;font-size:0.88rem;color:rgba(255,255,255,0.6);font-style:italic;">— Rudy</div>
     </div>
-    <div id="end-score-card" style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.25rem;">
+    <!-- Score -->
+    <div id="end-score-card" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1.25rem;">
       <div style="text-align:center;flex-shrink:0;">
-        <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:3rem;font-weight:900;color:var(--orange);line-height:1;"></div>
-        <div style="font-size:0.65rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.1rem;">correct</div>
+        <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:3rem;font-weight:900;color:white;line-height:1;"></div>
+        <div style="font-size:0.62rem;color:rgba(255,255,255,0.55);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.1rem;">correct</div>
       </div>
       <div style="flex:1;">
-        <div style="height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin-bottom:0.5rem;">
-          <div id="end-score-bar" style="height:100%;background:var(--orange);border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+        <div style="height:6px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;margin-bottom:0.5rem;">
+          <div id="end-score-bar" style="height:100%;background:linear-gradient(90deg,#ff3b30,#ffcc00);border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
         </div>
-        <div id="end-score-msg" style="font-size:0.85rem;color:var(--text);font-weight:600;line-height:1.4;"></div>
+        <div id="end-score-msg" style="font-size:0.88rem;color:white;font-weight:600;line-height:1.4;"></div>
       </div>
     </div>
-    <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:1.25rem;">
-      <div style="padding:0.85rem 1rem 0.5rem;border-bottom:1px solid var(--border);">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
-        <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;margin-top:0.1rem;">5 Stops · Rotterdam</div>
+    <!-- Route map -->
+    <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;">
+      <div style="padding:0.85rem 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;">5 Stops · Rotterdam</div>
       </div>
       <div id="end-map" style="width:100%;height:220px;"></div>
     </div>
-    <div id="end-photos-section" style="display:none;margin-bottom:1.25rem;">
-      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
-        <div style="padding:0.85rem 1rem 0.75rem;border-bottom:1px solid var(--border);">
-          <div style="font-size:0.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;">Your Photos</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;margin-top:0.1rem;" id="end-photos-count"></div>
+    <!-- Photos -->
+    <div id="end-photos-section" style="display:none;margin-bottom:1rem;">
+      <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;">
+        <div style="padding:0.85rem 1rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Your Photos</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;" id="end-photos-count"></div>
         </div>
         <div id="end-photos-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:3px;"></div>
         <div style="padding:0.85rem 1rem;">
-          <button onclick="downloadCollage()" style="width:100%;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <button onclick="downloadCollage()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 14px rgba(255,107,53,0.4);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download Photo Collage
           </button>
         </div>
       </div>
     </div>
-    <div id="end-no-photos" style="display:none;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem;text-align:center;margin-bottom:1.25rem;color:var(--text2);font-size:0.88rem;line-height:1.6;">
-      📷 No photos captured this time.<br>Next time try the photo challenges — they're worth it!
+    <div id="end-no-photos" style="display:none;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:1.25rem;text-align:center;margin-bottom:1rem;color:rgba(255,255,255,0.65);font-size:0.88rem;line-height:1.6;">
+      No photos captured this time — next time try the photo challenges!
     </div>
-    <button onclick="closeEndScreen()" style="width:100%;background:var(--orange);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
-      Back to Tour 🗺️
+    <button onclick="closeEndScreen()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 8 12 12 16"/><line x1="16" y1="12" x2="8" y2="12"/></svg>
+      Back to Tour
     </button>
     <div style="height:1rem;"></div>
   </div>
@@ -455,7 +462,7 @@ function initOverworldMap(){
 }
 
 function renderLists(){
-  document.getElementById('stop-list').innerHTML=stops.map(s=>`<div class="stop-item" onclick="startJourney(${s.id})"><div class="stop-item-num">${s.id}</div><img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy"><div class="stop-item-body"><div class="stop-item-name">${s.name}</div><div class="stop-item-tag">${s.tagline}</div><div class="stop-item-badges"><span class="pill pill-photo">📸 Challenge</span><span class="pill pill-quiz">❓ Quiz</span></div></div><div class="stop-item-arrow">›</div></div>`).join('');
+  document.getElementById('stop-list').innerHTML=stops.map(s=>`<div class="stop-item" onclick="startJourney(${s.id})"><div class="stop-item-num">${s.id}</div><img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy"><div class="stop-item-body"><div class="stop-item-name">${s.name}</div><div class="stop-item-tag">${s.tagline}</div></div><div class="stop-item-arrow">›</div></div>`).join('');
   document.getElementById('map-pill-list').innerHTML=stops.map(s=>`<a class="map-pill" href="${s.mapUrl}" target="_blank"><div class="map-pill-num">${s.id}</div><div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div><div class="map-pill-link">Open →</div></a>`).join('');
 }
 
@@ -483,21 +490,26 @@ function renderCard(card,idx,total){
     return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
-      <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem 1.75rem 2.5rem;width:100%;">
+      <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
         <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
-        <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);">&#x1F45F;</div>
-        <div>
-          <div style="font-family:'Nunito',sans-serif;font-size:2.1rem;font-weight:900;color:white;margin-bottom:0.5rem;line-height:1.1;">Time to move!</div>
-          <div style="font-size:1.15rem;font-weight:700;color:white;line-height:1.65;max-width:280px;margin:0 auto;">Next stop:<br><strong style="font-size:1.3rem;">${s.name}</strong></div>
-          <div style="font-size:0.98rem;color:rgba(255,255,255,0.72);line-height:1.5;max-width:280px;margin:0.35rem auto 0;">We'll show you exactly how to get there.</div>
+        <!-- Icon -->
+        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 19 12"/><polyline points="13 6 19 12 13 18"/></svg>
         </div>
-        <div style="width:100%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.4);">
-          <div style="position:relative;width:100%;height:155px;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="background:rgba(255,107,53,0.2);border-top:1px solid rgba(255,107,53,0.4);padding:0.9rem 1rem;text-align:left;">
-            <div style="font-size:1.05rem;font-weight:600;line-height:1.65;color:white;letter-spacing:0.01em;">When your phone asks <em>"Allow location access?"</em> — tap <strong style="font-size:1.1rem;">Allow</strong>.</div>
+        <!-- Text block: one consistent style -->
+        <div style="display:flex;flex-direction:column;gap:0.3rem;align-items:center;">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:white;line-height:1.1;">Time to move!</div>
+          <div style="font-size:0.9rem;font-weight:500;color:rgba(255,255,255,0.6);line-height:1.4;">Head to the next stop</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;margin-top:0.15rem;">${s.name}</div>
+        </div>
+        <!-- Image + caption — narrower, centred -->
+        <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
+          <div style="position:relative;width:100%;height:130px;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="background:rgba(255,107,53,0.22);border-top:1px solid rgba(255,107,53,0.4);padding:0.7rem 0.9rem;text-align:left;">
+            <div style="font-size:0.88rem;font-weight:600;line-height:1.55;color:white;">Allow location access when prompted — it lets the map draw your route.</div>
           </div>
         </div>
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:1.1rem;font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go!</button>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go!</button>
       </div>
     </div>`;
   }
@@ -510,21 +522,18 @@ function renderCard(card,idx,total){
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#1a0d30 0%,#0d1a3a 38%,#0a1a14 68%,#1a0a04 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
           <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
-            <div style="background:var(--orange);border-radius:10px;overflow:hidden;border-top:5px solid #0a0a0a;border-bottom:5px solid #0a0a0a;box-shadow:0 8px 32px rgba(255,107,53,0.45);">
+            <div style="background:#0f0f14;border-radius:10px;overflow:hidden;border-top:5px solid var(--orange);border-bottom:5px solid var(--orange);box-shadow:0 8px 32px rgba(0,0,0,0.55);">
               <div style="display:flex;align-items:stretch;">
-                <div style="width:30px;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:6px;">${oholes(8)}</div>
-                <div style="flex:1;background:var(--orange);padding:1.4rem 1rem 1.3rem;text-align:center;">
-                  <div style="width:78px;height:78px;border-radius:12px;overflow:hidden;margin:0 auto 1rem;border:2.5px solid rgba(0,0,0,0.25);box-shadow:0 4px 18px rgba(0,0,0,0.4);">
+                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
+                <div style="flex:1;background:#0f0f14;padding:1.4rem 1rem 1.3rem;text-align:center;">
+                  <div style="width:82px;height:82px;border-radius:12px;overflow:hidden;margin:0 auto 1rem;border:2px solid rgba(255,107,53,0.4);box-shadow:0 4px 18px rgba(0,0,0,0.5);">
                     <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;display:block;">
                   </div>
-                  <div style="font-size:0.6rem;font-weight:800;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Welcome to</div>
+                  <div style="font-size:0.6rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Welcome to</div>
                   <div style="font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;color:white;line-height:1.2;margin-bottom:0.55rem;">${s.name}</div>
-                  <div style="font-size:0.95rem;color:white;line-height:1.72;margin-bottom:1.15rem;font-weight:600;">I made a short intro video. It starts muted, but you can tap the screen and the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> &ldquo;mute&rdquo; icon for sound! Enjoy!</div>
-                  <div style="background:#0a0a0a;color:white;border-radius:99px;padding:0.75rem 1.65rem;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:0.55rem;box-shadow:0 4px 18px rgba(0,0,0,0.5);">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M5 3 L19 12 L5 21 Z"/></svg>Play video
-                  </div>
+                  <div style="font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.72;font-weight:500;">I made a short intro video. It starts muted, but you can tap the screen and the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> &ldquo;mute&rdquo; icon for sound! Enjoy!</div>
                 </div>
-                <div style="width:30px;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:6px;">${oholes(8)}</div>
+                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
               </div>
             </div>
           </div>
@@ -549,9 +558,9 @@ function renderCard(card,idx,total){
         <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-          <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.65rem 2rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
-            <div style="font-family:'Nunito',sans-serif;font-size:2.2rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
-            <div style="font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.82);margin-top:0.15rem;">Local filmmaker &amp; your guide today</div>
+          <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.8rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
+            <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
+            <div style="font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.82);margin-top:0.12rem;">Local filmmaker &amp; your host today</div>
           </div>
         </div>
       </div>
@@ -741,11 +750,11 @@ function renderCard(card,idx,total){
               ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.5rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
               <div style="font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:0.75rem;">${p.desc}</div>
               <div style="width:100%;">${coupon}</div>
-              <div style="margin-top:0.6rem;">
+              <div style="margin-top:0.6rem;margin-right:-0.75rem;">
                 <div style="font-size:0.85rem;color:rgba(255,255,255,0.88);line-height:1.7;">The most authentic herring stand in the market. Third-generation family recipes, fresh daily catch. Don't miss the pickled onion topping.</div>
               </div>
             </div>
-            ${p.cloudflareId?`<div style="flex-shrink:0;width:120px;padding-top:calc(1.5rem + 5%);"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+            ${p.cloudflareId?`<div style="flex-shrink:0;width:120px;padding-top:0.6rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
               <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:4px;">
                 <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:6px 0;align-self:stretch;min-height:100%;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
                 <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:34px;height:34px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
