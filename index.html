@@ -101,9 +101,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .hero-card { margin:0 1.25rem 1.25rem; border-radius:var(--radius); overflow:hidden; position:relative; box-shadow:var(--shadow-lg); }
 .hero-img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
 .hero-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.1) 60%,transparent 100%); padding:1.25rem; display:flex; flex-direction:column; justify-content:flex-end; }
-.hero-label { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:0.3rem; }
-.hero-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:#fff; line-height:1.1; }
-.hero-desc { font-size:0.8rem; color:rgba(255,255,255,0.75); margin-top:0.3rem; line-height:1.5; }
+.hero-label { font-size:0.7rem; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-bottom:0.4rem; font-weight:600; }
+.hero-title { font-family:'Nunito',sans-serif; font-size:2.8rem; font-weight:900; color:#fff; line-height:1.0; letter-spacing:-0.03em; text-shadow:0 2px 12px rgba(0,0,0,0.4); }
+.hero-desc { font-size:0.95rem; color:rgba(255,255,255,0.9); margin-top:0.4rem; line-height:1.5; font-weight:400; }
 .stats-row { display:flex; gap:0.75rem; margin:0 1.25rem 1.25rem; }
 .stat-card { flex:1; background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:var(--radius-sm); padding:0.85rem 0.5rem; text-align:center; border:1px solid rgba(255,255,255,0.15); }
 .stat-num { font-family:'Nunito',sans-serif; font-size:1.5rem; font-weight:900; line-height:1; color:white; }
@@ -111,7 +111,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .start-btn-wrap { margin:0 1.25rem 1.5rem; }
 .start-btn { width:100%; background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.05rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 16px rgba(255,107,53,0.4); transition:transform 0.15s; }
 .start-btn:hover { transform:translateY(-1px); }
-.section-title { font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800; padding:0 1.25rem; margin-bottom:0.75rem; color:white; }
+.section-title { font-family:'Nunito',sans-serif; font-size:1.35rem; font-weight:900; padding:0 1.25rem; margin-bottom:0.75rem; color:white; letter-spacing:-0.01em; }
 .stop-item { margin:0 1.25rem 0.75rem; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:var(--radius); display:flex; align-items:center; overflow:hidden; border:1px solid rgba(255,255,255,0.12); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
 .stop-item:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
 .stop-item-num { width:48px; flex-shrink:0; background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; align-self:stretch; }
@@ -257,7 +257,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Challenges</div></div>
     </div>
     <div class="start-btn-wrap">
-      <button class="start-btn" onclick="startJourney(1)">▶ Start Tour — Stop 1</button>
+      <button class="start-btn" onclick="startJourney(1)" style="font-size:1.25rem;padding:1.15rem;letter-spacing:-0.01em;box-shadow:0 6px 22px rgba(255,107,53,0.45);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="white" stroke="none"/></svg>
+        Begin the Tour
+      </button>
     </div>
     <div class="section-title">Your Route</div>
     <div id="stop-list"></div>
@@ -403,7 +406,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       No photos captured this time — next time try the photo challenges!
     </div>
     <button onclick="closeEndScreen()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 8 12 12 16"/><line x1="16" y1="12" x2="8" y2="12"/></svg>
       Back to Tour
     </button>
     <div style="height:1rem;"></div>
@@ -492,10 +494,8 @@ function renderCard(card,idx,total){
       <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
         <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
-        <!-- Icon -->
-        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 19 12"/><polyline points="13 6 19 12 13 18"/></svg>
-        </div>
+        <!-- Shoe icon — tapping goes straight to map -->
+        <div onclick="nextCard()" style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;font-size:2.2rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);cursor:pointer;">&#x1F45F;</div>
         <!-- Text block: one consistent style -->
         <div style="display:flex;flex-direction:column;gap:0.3rem;align-items:center;">
           <div style="font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:white;line-height:1.1;">Time to move!</div>
@@ -521,20 +521,24 @@ function renderCard(card,idx,total){
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#1a0d30 0%,#0d1a3a 38%,#0a1a14 68%,#1a0a04 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
-          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
-            <div style="background:#0f0f14;border-radius:10px;overflow:hidden;border-top:5px solid var(--orange);border-bottom:5px solid var(--orange);box-shadow:0 8px 32px rgba(0,0,0,0.55);">
-              <div style="display:flex;align-items:stretch;">
-                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
-                <div style="flex:1;background:#0f0f14;padding:1.4rem 1rem 1.3rem;text-align:center;">
-                  <div style="width:82px;height:82px;border-radius:12px;overflow:hidden;margin:0 auto 1rem;border:2px solid rgba(255,107,53,0.4);box-shadow:0 4px 18px rgba(0,0,0,0.5);">
-                    <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;display:block;">
-                  </div>
-                  <div style="font-size:0.6rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Welcome to</div>
-                  <div style="font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;color:white;line-height:1.2;margin-bottom:0.55rem;">${s.name}</div>
-                  <div style="font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.72;font-weight:500;">I made a short intro video. It starts muted, but you can tap the screen and the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> &ldquo;mute&rdquo; icon for sound! Enjoy!</div>
-                </div>
-                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
+          <!-- Smooth gradient popup card -->
+          <div style="width:88%;max-width:310px;border-radius:22px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.7);">
+            <!-- Image header with gradient overlay -->
+            <div style="position:relative;width:100%;height:160px;">
+              <img src="${s.img}" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(15,20,40,0.85) 100%);"></div>
+              <div style="position:absolute;bottom:0.85rem;left:0;right:0;text-align:center;padding:0 1rem;">
+                <div style="font-size:0.6rem;font-weight:800;color:rgba(255,165,80,0.9);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.2rem;">Welcome to</div>
+                <div style="font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:900;color:white;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,0.5);">${s.name}</div>
               </div>
+            </div>
+            <!-- Body with gradient -->
+            <div style="background:linear-gradient(170deg,#1a1040 0%,#0d1a3a 50%,#0a1820 100%);padding:1.1rem 1.25rem 1.35rem;text-align:center;">
+              <div style="font-size:0.9rem;color:rgba(255,255,255,0.82);line-height:1.7;margin-bottom:1.15rem;">I made a short intro video. It starts muted — tap the screen, then the <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> icon for sound!</div>
+              <button onclick="startVideoAfterPopup('${s.id}')" style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);color:white;border:none;border-radius:99px;padding:0.75rem 2rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 4px 18px rgba(255,107,53,0.45);display:inline-flex;align-items:center;gap:0.55rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M5 3L19 12 5 21V3z"/></svg>
+                Play Video
+              </button>
             </div>
           </div>
         </div>
@@ -551,7 +555,7 @@ function renderCard(card,idx,total){
     const GREEN='linear-gradient(160deg,#1a7a3a 0%,#0a6a2a 100%)';
     const RAINBOW='linear-gradient(160deg,#c0392b 0%,#d4620a 12%,#b8860b 24%,#0a7a3a 36%,#0a7a7a 50%,#1a4fa0 64%,#4a1a8a 78%,#8a1a3a 100%)';
     return `<div class="card" data-stop="${s.id}" data-type="rudy" style="padding:0 0 2rem 0;background:${RAINBOW};">
-      <div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+
 
       <!-- Hero image -->
       <div style="position:relative;width:100%;aspect-ratio:4/3;">
@@ -559,7 +563,7 @@ function renderCard(card,idx,total){
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.8rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
             <div style="font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.82);margin-top:0.12rem;">Local filmmaker &amp; your host today</div>
           </div>
         </div>
@@ -744,24 +748,28 @@ function renderCard(card,idx,total){
       <!-- Partner body on semi-transparent dark panel -->
       <div style="margin:1rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+          <!-- Top row: name/link left, filmstrip right -->
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.6rem;">
             <div style="flex:1;min-width:0;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;margin-bottom:0.2rem;">${p.name}</div>
-              ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.5rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
-              <div style="font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:0.75rem;">${p.desc}</div>
-              <div style="width:100%;">${coupon}</div>
-              <div style="margin-top:0.6rem;margin-right:-0.75rem;">
-                <div style="font-size:0.85rem;color:rgba(255,255,255,0.88);line-height:1.7;">The most authentic herring stand in the market. Third-generation family recipes, fresh daily catch. Don't miss the pickled onion topping.</div>
-              </div>
+              ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
             </div>
-            ${p.cloudflareId?`<div style="flex-shrink:0;width:120px;padding-top:0.6rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
-              <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:4px;">
-                <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:6px 0;align-self:stretch;min-height:100%;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
-                <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:34px;height:34px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
-                <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:6px 0;align-self:stretch;min-height:100%;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
+            ${p.cloudflareId?`<div style="flex-shrink:0;width:100px;margin-top:-0.25rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+              <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:3px;">
+                <div style="width:11px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:5px 0;align-self:stretch;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:6px;height:6px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
+                <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:30px;height:30px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
+                <div style="width:11px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:5px 0;align-self:stretch;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:6px;height:6px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
               </div>
-              <div style="text-align:center;margin-top:0.4rem;font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:900;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;">Meet the<br>owner</div>
+              <div style="text-align:center;margin-top:0.35rem;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;">Meet the<br>owner</div>
             </div></div>`:''}
+          </div>
+          <!-- Full-width text section below -->
+          <div style="width:100%;">
+            <div style="font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:0.75rem;">${p.desc}</div>
+            <div style="width:100%;">${coupon}</div>
+            <div style="margin-top:0.6rem;">
+              <div style="font-size:0.85rem;color:rgba(255,255,255,0.88);line-height:1.7;">The most authentic herring stand in the market. Third-generation family recipes, fresh daily catch. Don't miss the pickled onion topping.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -832,9 +840,7 @@ function updateNavBtns(){
     p2.onclick=prevCard;
     document.getElementById('read-text-btn').style.cssText='display:none;';
     const n2=document.getElementById('next-btn');
-    n2.textContent='Play Video ▶';
-    n2.style.cssText='flex:1;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.55rem 1rem;font-family:Nunito,sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,53,0.4);';
-    n2.onclick=function(){startVideoAfterPopup(currentStop.id);};
+    n2.style.display='none';
     return;
   }
 
