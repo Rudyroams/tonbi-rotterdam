@@ -723,48 +723,108 @@ function renderCard(card,idx,total){
     const RAINBOW='linear-gradient(160deg,#c0392b 0%,#d4620a 12%,#b8860b 24%,#0a7a3a 36%,#0a7a7a 50%,#1a4fa0 64%,#4a1a8a 78%,#8a1a3a 100%)';
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
-    const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
+    const sprocketHoles=(n)=>Array(n).fill(0).map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('');
 
-    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
-      <!-- 2×2 gallery with floating badge -->
-      <div style="position:relative;width:100%;margin-bottom:0;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
-          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-          <div style="height:100px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-        </div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-          <div style="background:${RY};border-radius:99px;padding:0.35rem 1.2rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
-            <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;">Local Food Tip!</div>
+    const coupon=p.offer?`
+      <div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)" style="transform:rotate(-2.5deg);display:block;width:92%;margin:0.5rem auto 0.25rem;">
+        <div style="background:#fffdf9;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.32);overflow:hidden;border:1px solid rgba(0,0,0,0.08);">
+          <!-- Coupon header -->
+          <div style="background:var(--orange);padding:0.4rem 0.85rem;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:0.62rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.12em;">Your Exclusive Offer</div>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <!-- Dashed divider -->
+          <div style="display:flex;align-items:center;padding:0 0.85rem;">
+            <div style="width:14px;height:14px;border-radius:50%;background:#f0ede8;margin-left:-1.45rem;flex-shrink:0;"></div>
+            <div style="flex:1;border-top:2px dashed rgba(255,107,53,0.35);margin:0 0.4rem;"></div>
+            <div style="width:14px;height:14px;border-radius:50%;background:#f0ede8;margin-right:-1.45rem;flex-shrink:0;"></div>
+          </div>
+          <!-- Coupon body -->
+          <div style="padding:0.65rem 0.85rem 0.5rem;">
+            <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:#1a1a1a;line-height:1.3;margin-bottom:0.4rem;">${p.offer}</div>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <div style="font-size:0.55rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;">Code</div>
+              <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:var(--orange);letter-spacing:0.12em;">${p.code||'TBR-001'}</div>
+            </div>
+          </div>
+          <!-- Dashed divider -->
+          <div style="display:flex;align-items:center;padding:0 0.85rem;">
+            <div style="width:14px;height:14px;border-radius:50%;background:#f0ede8;margin-left:-1.45rem;flex-shrink:0;"></div>
+            <div style="flex:1;border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.4rem;"></div>
+            <div style="width:14px;height:14px;border-radius:50%;background:#f0ede8;margin-right:-1.45rem;flex-shrink:0;"></div>
+          </div>
+          <!-- Tap hint -->
+          <div style="padding:0.3rem 0.85rem 0.45rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            <div style="font-size:0.6rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.05em;">Tap to show at counter</div>
           </div>
         </div>
-      </div>
+      </div>`:'';
 
-      <!-- Partner body on semi-transparent dark panel -->
-      <div style="margin:1rem 1.1rem 0;">
-        <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
-            <div style="flex:1;min-width:0;">
-              <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;margin-bottom:0.2rem;">${p.name}</div>
-              ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.5rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
-              <div style="font-size:0.88rem;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:0.75rem;">${p.desc}</div>
-              <div style="width:100%;">${coupon}</div>
-              <div style="margin-top:0.6rem;margin-right:-0.75rem;">
-                <div style="font-size:0.85rem;color:rgba(255,255,255,0.88);line-height:1.7;">The most authentic herring stand in the market. Third-generation family recipes, fresh daily catch. Don't miss the pickled onion topping.</div>
+    const filmstrip=p.cloudflareId?`
+      <div style="cursor:pointer;display:flex;flex-direction:column;align-items:center;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+        <div style="background:var(--orange);border-radius:8px;box-shadow:0 6px 22px rgba(255,107,53,0.5);display:flex;flex-direction:row;align-items:stretch;width:90px;padding:4px;transform:rotate(3deg);">
+          <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:5px 0;">${sprocketHoles(7)}</div>
+          <div style="position:relative;flex:1;aspect-ratio:1/1.6;overflow:hidden;border-radius:3px;background:#111;">
+            <img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.6);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div style="width:30px;height:30px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
               </div>
             </div>
-            ${p.cloudflareId?`<div style="flex-shrink:0;width:120px;padding-top:0.6rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
-              <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:4px;">
-                <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:6px 0;align-self:stretch;min-height:100%;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
-                <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:34px;height:34px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
-                <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:6px 0;align-self:stretch;min-height:100%;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
-              </div>
-              <div style="text-align:center;margin-top:0.4rem;font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:900;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;">Meet the<br>owner</div>
-            </div></div>`:''}
+          </div>
+          <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:5px 0;">${sprocketHoles(7)}</div>
+        </div>
+        <div style="margin-top:0.45rem;font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:900;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.05em;text-align:center;">Meet the owner</div>
+      </div>`:'';
+
+    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
+
+      <!-- ① Hero image full width with badge overlay -->
+      <div style="position:relative;width:100%;">
+        <img src="${p.img}" style="width:100%;height:200px;object-fit:cover;display:block;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
+        <div style="position:absolute;top:12px;left:12px;">
+          <div style="background:${RY};border-radius:99px;padding:0.25rem 0.85rem;box-shadow:0 3px 14px rgba(255,107,53,0.5);display:inline-block;">
+            <div style="font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.08em;">🍽️ Local Food Tip</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:14px;left:14px;right:14px;">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:white;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,0.5);">${p.name}</div>
+          ${p.type?`<div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:0.15rem;font-weight:600;">${p.type}</div>`:''}
+        </div>
+      </div>
+
+      <!-- ② Info panel -->
+      <div style="margin:0.9rem 1.1rem 0;">
+        <div style="background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
+
+          <!-- Maps link -->
+          ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.95);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.75rem;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${p.location||'Open in Google Maps'}
+          </a>`:''}
+
+          <!-- Description + filmstrip side by side -->
+          <div style="display:flex;gap:1rem;align-items:flex-start;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:0.9rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
+            </div>
+            ${filmstrip}
           </div>
         </div>
       </div>
+
+      <!-- ③ Photo gallery strip -->
+      <div style="margin:0.9rem 1.1rem 0;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:var(--radius-sm);overflow:hidden;">
+          ${imgs.map(src=>`<div style="aspect-ratio:1;overflow:hidden;"><img data-gallery="1" data-src="${src}" src="${src}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- ④ Coupon -->
+      ${coupon}
+
     </div>`;
   }
 
