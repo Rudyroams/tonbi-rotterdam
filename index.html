@@ -757,10 +757,6 @@ function renderCard(card,idx,total){
             <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;white-space:nowrap;">Local Food Tip!</div>
           </div>
         </div>
-        <!-- Coupon: half-width, nudged left -->
-        <div style="position:absolute;bottom:-30px;left:0.75rem;width:52%;z-index:10;">
-          ${coupon}
-        </div>
       </div>
 
       <!-- Panel 1: name + maps + filmstrip + first text block, all in one frosted window -->
@@ -784,8 +780,15 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Image between panel 1 and 2 -->
-      <div style="margin:0.75rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
+      <!-- Coupon stuck between panel 1 and image, overlapping both -->
+      <div style="position:relative;height:0;z-index:20;">
+        <div style="position:absolute;top:-28px;left:0.75rem;width:52%;transform:rotate(-3deg);filter:drop-shadow(0 4px 12px rgba(0,0,0,0.45));">
+          ${coupon}
+        </div>
+      </div>
+
+      <!-- Image between panel 1 and 2 — extra top margin to give coupon room -->
+      <div style="margin:3.5rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
         <img src="${imgs[0]}" style="width:100%;height:110px;object-fit:cover;display:block;">
       </div>
 
