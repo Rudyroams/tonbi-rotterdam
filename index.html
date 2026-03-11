@@ -745,14 +745,14 @@ function renderCard(card,idx,total){
     return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
       <!-- 2×2 gallery with floating badge — grid-auto-rows locks all cells to same height -->
       <div style="position:relative;width:100%;margin-bottom:0;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:110px;gap:3px;">
-          <div style="height:110px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:110px;object-fit:cover;display:block;"></div>
-          <div style="height:110px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:110px;object-fit:cover;display:block;"></div>
-          <div style="height:110px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:110px;object-fit:cover;display:block;"></div>
-          <div style="height:110px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:110px;object-fit:cover;display:block;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:145px;gap:3px;">
+          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
         </div>
-        <!-- Badge pinned to exact centre of the grid (220px total) -->
-        <div style="position:absolute;top:0;left:0;right:0;height:223px;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <!-- Badge pinned to exact centre of the grid (293px = 145×2 + 3gap) -->
+        <div style="position:absolute;top:0;left:0;right:0;height:293px;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:${RY};border-radius:99px;padding:0.35rem 1.2rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
             <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;white-space:nowrap;">Local Food Tip!</div>
           </div>
@@ -760,7 +760,7 @@ function renderCard(card,idx,total){
       </div>
 
       <!-- Panel 1: name + maps + filmstrip + first text block, all in one frosted window -->
-      <div style="margin:2.5rem 1.1rem 0;">
+      <div style="margin:1.8rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <div style="flex:1;min-width:0;">
