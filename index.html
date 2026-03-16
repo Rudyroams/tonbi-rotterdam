@@ -77,7 +77,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .pw-error { color:var(--red); font-size:0.8rem; margin-top:0.6rem; height:1rem; text-align:center; }
 #app { display:none; }
 #app.show { display:block; }
-#home-screen { min-height:100svh; padding-bottom:1rem; }
+#app.show { position:fixed; inset:0; }
+#home-screen { min-height:100svh; padding-bottom:1rem; overflow-y:auto; }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:var(--white); }
 /* ── Overworld illustrated map ── */
 #overworld-screen { position:absolute; inset:0; overflow:hidden; }
@@ -427,7 +428,7 @@ const videoActivated={};
 function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
 function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(v==='yyy'){const pw=document.getElementById('pw-screen');pw.classList.add('exit');setTimeout(()=>{pw.style.display='none';document.getElementById('app').classList.add('show');try{showScreen('home');}catch(e){console.error(e);}},500);}
+  if(v==='qqq'){const pw=document.getElementById('pw-screen');pw.classList.add('exit');setTimeout(()=>{pw.style.display='none';document.getElementById('app').classList.add('show');try{showScreen('overworld');}catch(e){console.error(e);}},500);}
   else{document.getElementById('pw-err').textContent='Incorrect code — try again.';document.getElementById('pw-in').value='';}
 }
 function showScreen(name){
