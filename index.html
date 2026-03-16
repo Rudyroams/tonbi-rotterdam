@@ -87,7 +87,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-start-btn:active { transform:scale(0.98); }
 .ow-list-link { display:block; text-align:center; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.55); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
 /* ── Node styles ── */
-.ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; }
+.ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:transform 0.2s; }
 .ow-node-wrap:active .ow-node-img { transform:scale(0.92); }
 .ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
@@ -98,6 +98,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 @keyframes owFloat { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-7px)} }
 @keyframes stampPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 70%{transform:scale(1.2) rotate(4deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
 @keyframes pathReveal { from{stroke-dashoffset:var(--path-len)} to{stroke-dashoffset:0} }
+@keyframes owRipple { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.4);opacity:0} }
 .home-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
 .home-logo { display:flex; align-items:center; gap:0.6rem; }
 .home-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.3); }
@@ -429,6 +430,7 @@ const stops=[
 
 const photoCollection={};
 const quizAnswered={};
+const stopsCompleted={};  // tracks which stops have been fully completed
 let currentStop=null,currentCardIdx=0,cards=[];
 let pendingPhotoStopId=null;
 
@@ -457,7 +459,7 @@ function showScreen(name){
   const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
   if(name==='overworld')renderOwNodes();
 }
-function owStartTour(){const n=stops.find(s=>!quizAnswered[s.id])||stops[0];startJourney(n.id);}
+function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
 
 // ── Illustrated overworld map ──
 // 3-column diagonal zigzag: cols at x=90, 195, 300 — rows spaced evenly y=185 to 655
@@ -484,8 +486,8 @@ function renderOwNodes(){
 
   stops.forEach((stop,i)=>{
     const pos=OW_STOP_POS[i];
-    const isDone=quizAnswered[stop.id]!==undefined;
-    const isNext=!isDone&&(i===0||quizAnswered[stops[i-1]?.id]!==undefined);
+    const isDone=stopsCompleted[stop.id]===true;
+    const isNext=!isDone&&(i===0||stopsCompleted[stops[i-1]?.id]===true);
     const isLocked=!isDone&&!isNext;
 
     const wrap=document.createElement('div');
@@ -511,7 +513,25 @@ function renderOwNodes(){
     label.textContent=stop.name;
     wrap.appendChild(label);
 
-    wrap.addEventListener('click',()=>{ if(!isLocked) startJourney(stop.id); });
+    // Tap feedback: scale bounce + ripple on active/done nodes
+    if(!isLocked){
+      wrap.addEventListener('pointerdown',()=>{
+        img.style.transition='transform 0.12s';
+        img.style.transform='translate(0,0) scale(0.88)';
+      });
+      wrap.addEventListener('pointerup',()=>{
+        img.style.transform='translate(0,0) scale(1.08)';
+        setTimeout(()=>{ img.style.transform=''; img.style.transition='transform 0.2s'; },150);
+        // Ripple
+        const ripple=document.createElement('div');
+        ripple.style.cssText='position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;background:rgba(255,107,53,0.35);transform:scale(0);animation:owRipple 0.5s ease-out forwards;pointer-events:none;z-index:-1;';
+        wrap.appendChild(ripple);
+        setTimeout(()=>ripple.remove(),550);
+      });
+      wrap.addEventListener('pointercancel',()=>{ img.style.transform=''; });
+      wrap.addEventListener('click',()=>{ startJourney(stop.id); });
+    }
+
     container.appendChild(wrap);
   });
 }
@@ -525,7 +545,7 @@ function renderOwPaths(){
   stops.forEach((stop,i)=>{
     if(i===0)return;
     const from=OW_STOP_POS[i-1], to=OW_STOP_POS[i];
-    const prevDone=quizAnswered[stops[i-1].id]!==undefined;
+    const prevDone=stopsCompleted[stops[i-1].id]===true;
     const len=Math.sqrt((to.x-from.x)**2+(to.y-from.y)**2);
 
     const line=document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -1023,11 +1043,11 @@ function stopCFVideo(){var i=document.querySelector('.card[data-type="desc"] ifr
 function nextCard(){
   stopCFVideo();
   if(currentCardIdx===cards.length-1){
-    // Always return to overworld map after finishing a stop
-    closeJourney(currentStop.id===stops.length);
-    if(currentStop.id<stops.length){
-      setTimeout(()=>showScreen('overworld'),100);
-    }
+    // Mark this stop as completed
+    stopsCompleted[currentStop.id]=true;
+    const isLast=currentStop.id===stops.length;
+    closeJourney(isLast);
+    if(!isLast) setTimeout(()=>showScreen('overworld'),100);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
