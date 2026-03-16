@@ -88,15 +88,16 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-list-link { display:block; text-align:center; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.55); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
 /* ── Node styles ── */
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
-.ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:transform 0.2s; }
-.ow-node-wrap:active .ow-node-img { transform:scale(0.92); }
+.ow-node-inner { position:relative; display:inline-block; }
+.ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
 .ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
-.ow-node-wrap.next-stop .ow-node-img { animation:owFloat 2.2s ease-in-out infinite; }
-.ow-node-label { position:absolute; top:calc(100% + 2px); left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.22rem 0.6rem; border-radius:10px; white-space:nowrap; border:1px solid rgba(255,255,255,0.15); pointer-events:none; }
+.ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
+.ow-node-label { display:block; margin-top:5px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.22rem 0.6rem; border-radius:10px; white-space:nowrap; border:1px solid rgba(255,255,255,0.15); pointer-events:none; }
 .ow-node-wrap.locked .ow-node-label { opacity:0.4; }
-.ow-node-stamp { position:absolute; top:-6px; right:-6px; width:28px; height:28px; background:var(--green); border-radius:50%; border:2.5px solid white; display:flex; align-items:center; justify-content:center; font-size:0.85rem; box-shadow:0 2px 8px rgba(52,199,89,0.5); animation:stampPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-@keyframes owFloat { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-7px)} }
-@keyframes stampPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 70%{transform:scale(1.2) rotate(4deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+.ow-node-stamp { position:absolute; top:8px; right:8px; width:32px; height:32px; background:var(--green); border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:1rem; box-shadow:0 2px 10px rgba(52,199,89,0.6); opacity:0; }
+@keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes stampPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 65%{transform:scale(1.25) rotate(4deg);opacity:1} 85%{transform:scale(0.92) rotate(-2deg)} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+@keyframes nodeUnlock { 0%{filter:brightness(0) opacity(0.3)} 40%{filter:brightness(1.3) opacity(1)} 100%{filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)) opacity(1)} }
 @keyframes pathReveal { from{stroke-dashoffset:var(--path-len)} to{stroke-dashoffset:0} }
 @keyframes owRipple { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.4);opacity:0} }
 .home-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
@@ -494,46 +495,97 @@ function renderOwNodes(){
     wrap.className='ow-node-wrap'+(isDone?' done':isNext?' next-stop':' locked');
     wrap.style.left=(pos.x*scaleX)+'px';
     wrap.style.top=(pos.y*scaleY)+'px';
+    wrap.id='ow-wrap-'+stop.id;
+
+    // Inner container — this is what floats, keeping label stable
+    const inner=document.createElement('div');
+    inner.className='ow-node-inner';
+    inner.style.position='relative';
 
     const img=document.createElement('img');
     img.className='ow-node-img';
+    img.id='ow-img-'+stop.id;
     img.src=`https://rudyroams.github.io/tonbi-rotterdam/images/stop-${stop.id}.png`;
     img.alt=stop.name;
-    wrap.appendChild(img);
+    inner.appendChild(img);
 
-    if(isDone){
-      const stamp=document.createElement('div');
-      stamp.className='ow-node-stamp';
-      stamp.textContent='✓';
-      wrap.appendChild(stamp);
-    }
+    // Stamp — always present, hidden until done
+    const stamp=document.createElement('div');
+    stamp.className='ow-node-stamp';
+    stamp.id='ow-stamp-'+stop.id;
+    stamp.textContent='✓';
+    if(isDone) stamp.style.opacity='1';
+    inner.appendChild(stamp);
+
+    wrap.appendChild(inner);
 
     const label=document.createElement('div');
     label.className='ow-node-label';
     label.textContent=stop.name;
     wrap.appendChild(label);
 
-    // Tap feedback: scale bounce + ripple on active/done nodes
+    // Tap feedback on active/done nodes
     if(!isLocked){
-      wrap.addEventListener('pointerdown',()=>{
-        img.style.transition='transform 0.12s';
-        img.style.transform='translate(0,0) scale(0.88)';
+      inner.addEventListener('pointerdown',()=>{
+        img.style.transition='transform 0.1s';
+        img.style.transform='scale(0.88)';
       });
-      wrap.addEventListener('pointerup',()=>{
-        img.style.transform='translate(0,0) scale(1.08)';
-        setTimeout(()=>{ img.style.transform=''; img.style.transition='transform 0.2s'; },150);
-        // Ripple
+      inner.addEventListener('pointerup',()=>{
+        img.style.transform='scale(1.08)';
+        setTimeout(()=>{ img.style.transform='scale(1)'; },150);
         const ripple=document.createElement('div');
-        ripple.style.cssText='position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;background:rgba(255,107,53,0.35);transform:scale(0);animation:owRipple 0.5s ease-out forwards;pointer-events:none;z-index:-1;';
-        wrap.appendChild(ripple);
-        setTimeout(()=>ripple.remove(),550);
+        ripple.style.cssText='position:absolute;top:50%;left:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(255,107,53,0.3);transform:scale(0);animation:owRipple 0.55s ease-out forwards;pointer-events:none;';
+        inner.appendChild(ripple);
+        setTimeout(()=>ripple.remove(),600);
       });
-      wrap.addEventListener('pointercancel',()=>{ img.style.transform=''; });
+      inner.addEventListener('pointercancel',()=>{ img.style.transform='scale(1)'; });
       wrap.addEventListener('click',()=>{ startJourney(stop.id); });
     }
 
     container.appendChild(wrap);
   });
+}
+
+// Called from nextCard — sequences: stamp on completed stop, then unlock next stop
+function animateStopCompletion(completedId, nextId){
+  // 1. Stamp slams onto completed stop
+  const stamp=document.getElementById('ow-stamp-'+completedId);
+  if(stamp){
+    stamp.style.animation='stampPop 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    stamp.style.opacity='1';
+  }
+
+  // 2. After stamp settles, animate path + unlock next stop
+  if(!nextId) return;
+  setTimeout(()=>{
+    // Redraw paths with new completed state
+    renderOwPaths();
+
+    // Unlock next node: fade from silhouette to full color
+    const nextImg=document.getElementById('ow-img-'+nextId);
+    const nextWrap=document.getElementById('ow-wrap-'+nextId);
+    if(nextImg&&nextWrap){
+      nextImg.style.animation='nodeUnlock 0.9s ease-out forwards';
+      nextWrap.classList.remove('locked');
+      nextWrap.classList.add('next-stop');
+      // Add click handler now that it's unlocked
+      nextWrap.addEventListener('click',()=>startJourney(nextId));
+      const nextInner=nextWrap.querySelector('.ow-node-inner');
+      if(nextInner){
+        nextInner.addEventListener('pointerdown',()=>{
+          const img=nextInner.querySelector('.ow-node-img');
+          if(img){img.style.transition='transform 0.1s';img.style.transform='scale(0.88)';}
+        });
+        nextInner.addEventListener('pointerup',()=>{
+          const img=nextInner.querySelector('.ow-node-img');
+          if(img){img.style.transform='scale(1.08)';setTimeout(()=>{img.style.transform='scale(1)';},150);}
+        });
+      }
+      // Remove locked label dimming
+      const lbl=nextWrap.querySelector('.ow-node-label');
+      if(lbl) lbl.style.opacity='1';
+    }
+  }, 700);
 }
 
 function renderOwPaths(){
@@ -1045,9 +1097,17 @@ function nextCard(){
   if(currentCardIdx===cards.length-1){
     // Mark this stop as completed
     stopsCompleted[currentStop.id]=true;
-    const isLast=currentStop.id===stops.length;
-    closeJourney(isLast);
-    if(!isLast) setTimeout(()=>showScreen('overworld'),100);
+    const completedId=currentStop.id;
+    const nextId=completedId<stops.length?completedId+1:null;
+    const isLast=completedId===stops.length;
+
+    // Close journey and go to overworld
+    document.getElementById('journey-screen').classList.remove('show');
+    if(isLast){ showEndScreen(); return; }
+
+    showScreen('overworld');
+    // Let overworld render first, then run completion animation
+    setTimeout(()=>animateStopCompletion(completedId, nextId), 120);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
