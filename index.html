@@ -8,6 +8,10 @@
 <meta name="apple-mobile-web-app-title" content="Tonbi">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Tonbi · Rotterdam</title>
+<!-- v2.1 cache bust -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <style>
 #mapbox-map { width:100%; height:420px; }
@@ -1335,8 +1339,9 @@ function prevCard(){stopCFVideo();if(currentCardIdx>0){
 function closeJourney(showEnd){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
-  if(showEnd){showEndScreen();}
-  else{showScreen('overworld');}
+  // Always go to overworld — never directly to end screen
+  // End screen is reached via the Finish Tour button on the overworld
+  showScreen('overworld');
 }
 function closeEndScreen(){
   document.getElementById('end-screen').style.display='none';
