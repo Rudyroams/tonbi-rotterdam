@@ -636,7 +636,7 @@ function wireNodeTap(wrap, inner, stopId){
 }
 
 // Full cinematic completion sequence — called 2s after returning to overworld
-function animateStopCompletion(completedId, nextId){
+function animateStopCompletion(completedId, nextId, isLast){
   const stamp=document.getElementById('ow-stamp-'+completedId);
   const completedImg=document.getElementById('ow-img-'+completedId);
 
@@ -655,7 +655,26 @@ function animateStopCompletion(completedId, nextId){
     owFlash('rgba(52,199,89,0.22)', 220);
   }, 700);
 
-  if(!nextId) return;
+  if(!nextId){
+    // Last stop — after stamp animation, show Finish Tour button
+    if(isLast){
+      setTimeout(()=>{
+        owFlash('rgba(255,204,0,0.3)', 400);
+        const lbl=document.getElementById('ow-start-label');
+        const btn=document.getElementById('ow-start-btn');
+        if(lbl) lbl.textContent='🎉 Finish Tour';
+        if(btn){
+          btn.style.animation='stampShake 0.5s ease-in-out forwards';
+          btn.onclick=showEndScreen;
+          setTimeout(()=>{ if(btn) btn.style.animation=''; }, 600);
+        }
+        // Also show bonus link
+        const bonusLink=document.getElementById('ow-bonus-link');
+        if(bonusLink) bonusLink.style.display='flex';
+      }, 1200);
+    }
+    return;
+  }
 
   // ── 3 (t=1800ms): Draw the new path segment ──
   setTimeout(()=>{
@@ -1218,9 +1237,9 @@ function updateNavBtns(){
   prev.onclick=prevCard;
 
   if(isLast){
-    next.textContent=isLastStop?'🎉 Finish Tour':'Back to Map →';
-    next.className=isLastStop?'card-next-btn final':'card-next-btn';
-    if(isLastStop)next.onclick=function(){closeJourney(true);};
+    next.textContent='Back to Map →';
+    next.className='card-next-btn';
+    next.onclick=nextCard;
   } else if(isNav){
     next.textContent="I've Arrived ✓";next.className='card-next-btn';next.onclick=nextCard;
     // Ensure back button is always visible on map with readable style
@@ -1272,21 +1291,17 @@ function stopCFVideo(){var i=document.querySelector('.card[data-type="desc"] ifr
 function nextCard(){
   stopCFVideo();
   if(currentCardIdx===cards.length-1){
-    // Mark this stop as completed
     stopsCompleted[currentStop.id]=true;
     saveProgress();
     const completedId=currentStop.id;
-    justCompletedStopId=completedId; // suppress instant stamp reveal
+    justCompletedStopId=completedId;
     const nextId=completedId<stops.length?completedId+1:null;
     const isLast=completedId===stops.length;
 
-    // Close journey and go to overworld
+    // Always go to overworld first
     document.getElementById('journey-screen').classList.remove('show');
-    if(isLast){ showEndScreen(); return; }
-
     showScreen('overworld');
-    // 2 second pause so user can see the map before anything animates
-    setTimeout(()=>animateStopCompletion(completedId, nextId), 2000);
+    setTimeout(()=>animateStopCompletion(completedId, nextId, isLast), 2000);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
@@ -1324,25 +1339,10 @@ function closeJourney(showEnd){
   else{showScreen('overworld');}
 }
 function closeEndScreen(){
-  const endScreen=document.getElementById('end-screen');
-  endScreen.style.display='none';
-  justCompletedStopId=null;
-
-  // Show overworld
+  document.getElementById('end-screen').style.display='none';
+  // Overworld was already correctly rendered before end screen appeared — just show it
   document.getElementById('overworld-screen').style.display='block';
   document.getElementById('home-screen').style.display='none';
-  document.getElementById('map-screen').classList.remove('show');
-
-  // Force full re-render after two animation frames to guarantee layout is ready
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    // Rebuild nodes and paths from scratch with current stopsCompleted state
-    const container=document.getElementById('ow-nodes');
-    if(container) container.innerHTML='';
-    const svg=document.getElementById('ow-svg-layer');
-    if(svg) svg.querySelectorAll('.ow-path').forEach(el=>el.remove());
-    renderOwNodes();
-    renderOwPaths();
-  }));
 }
 
 function showEndScreen(){
