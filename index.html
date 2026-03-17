@@ -1320,8 +1320,19 @@ function closeJourney(showEnd){
   else{showScreen('overworld');}
 }
 function closeEndScreen(){
-  document.getElementById('end-screen').style.display='none';
-  showScreen('overworld');
+  const endScreen=document.getElementById('end-screen');
+  endScreen.style.display='none';
+  justCompletedStopId=null; // all stamps should be visible on the completed map
+  // Show overworld and re-render after DOM settles
+  document.getElementById('overworld-screen').style.display='block';
+  document.getElementById('home-screen').style.display='none';
+  document.getElementById('map-screen').classList.remove('show');
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      renderOwNodes();
+      renderOwPaths();
+    });
+  });
 }
 
 function showEndScreen(){
