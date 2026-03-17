@@ -95,11 +95,38 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-node-label { display:block; margin-top:5px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.22rem 0.6rem; border-radius:10px; white-space:nowrap; border:1px solid rgba(255,255,255,0.15); pointer-events:none; }
 .ow-node-wrap.locked .ow-node-label { opacity:0.4; }
 .ow-node-stamp { position:absolute; top:8px; right:8px; width:32px; height:32px; background:var(--green); border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:1rem; box-shadow:0 2px 10px rgba(52,199,89,0.6); opacity:0; }
-@keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-@keyframes stampPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 65%{transform:scale(1.25) rotate(4deg);opacity:1} 85%{transform:scale(0.92) rotate(-2deg)} 100%{transform:scale(1) rotate(0deg);opacity:1} }
-@keyframes nodeUnlock { 0%{filter:brightness(0) opacity(0.3)} 40%{filter:brightness(1.3) opacity(1)} 100%{filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)) opacity(1)} }
+@keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes stampPop {
+  0%   {transform:scale(0) rotate(-30deg);opacity:0;}
+  50%  {transform:scale(1.5) rotate(6deg);opacity:1;}
+  70%  {transform:scale(0.85) rotate(-3deg);}
+  85%  {transform:scale(1.15) rotate(2deg);}
+  100% {transform:scale(1) rotate(0deg);opacity:1;}
+}
+@keyframes nodeUnlock {
+  0%   {filter:brightness(0) opacity(0.3);transform:scale(0.85);}
+  30%  {filter:brightness(2.5) opacity(1) saturate(1.8);transform:scale(1.18);}
+  55%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
+  75%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
+  100% {filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));transform:scale(1);}
+}
+@keyframes pathDraw {
+  from {stroke-dashoffset:var(--path-len);}
+  to   {stroke-dashoffset:0;}
+}
+@keyframes pathGlow {
+  0%,100% {stroke:rgba(255,107,53,0.6);}
+  50%     {stroke:#ffcc00;}
+}
 @keyframes pathReveal { from{stroke-dashoffset:var(--path-len)} to{stroke-dashoffset:0} }
-@keyframes owRipple { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.4);opacity:0} }
+@keyframes owRipple { 0%{transform:scale(0);opacity:0.9} 100%{transform:scale(2.8);opacity:0} }
+@keyframes stampShake {
+  0%,100%{transform:scale(1) rotate(0deg);}
+  20%{transform:scale(1.08) rotate(-5deg);}
+  40%{transform:scale(1.08) rotate(5deg);}
+  60%{transform:scale(1.08) rotate(-3deg);}
+  80%{transform:scale(1.08) rotate(3deg);}
+}
 .home-header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
 .home-logo { display:flex; align-items:center; gap:0.6rem; }
 .home-logo-icon { width:36px; height:36px; border-radius:10px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.1rem; box-shadow:0 2px 8px rgba(0,0,0,0.3); }
@@ -463,13 +490,14 @@ function showScreen(name){
 function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
 
 // ── Illustrated overworld map ──
-// 3-column diagonal zigzag: cols at x=90, 195, 300 — rows spaced evenly y=185 to 655
+// Reverse-S path: left→right, drop, right→left, drop, left→right...
+// 2-column layout: left col x=110, right col x=275
 const OW_STOP_POS = [
-  {x: 90,  y: 185},  // Stop 1 — left
-  {x: 195, y: 305},  // Stop 2 — centre
-  {x: 300, y: 415},  // Stop 3 — right
-  {x: 90,  y: 530},  // Stop 4 — left
-  {x: 195, y: 645},  // Stop 5 — centre
+  {x: 110, y: 175},  // Stop 1 — top left
+  {x: 275, y: 175},  // Stop 2 — top right
+  {x: 275, y: 360},  // Stop 3 — mid right
+  {x: 110, y: 360},  // Stop 4 — mid left
+  {x: 195, y: 545},  // Stop 5 — bottom centre
 ];
 
 function initOverworldMap(){
@@ -546,46 +574,96 @@ function renderOwNodes(){
   });
 }
 
-// Called from nextCard — sequences: stamp on completed stop, then unlock next stop
+// Called from nextCard — full cinematic completion sequence
 function animateStopCompletion(completedId, nextId){
-  // 1. Stamp slams onto completed stop
   const stamp=document.getElementById('ow-stamp-'+completedId);
-  if(stamp){
-    stamp.style.animation='stampPop 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards';
-    stamp.style.opacity='1';
+  const completedImg=document.getElementById('ow-img-'+completedId);
+  const completedWrap=document.getElementById('ow-wrap-'+completedId);
+
+  // ── Step 1 (t=0): Completed icon bounces/shakes with excitement ──
+  if(completedImg){
+    completedImg.style.animation='stampShake 0.5s ease-in-out forwards';
   }
 
-  // 2. After stamp settles, animate path + unlock next stop
-  if(!nextId) return;
+  // ── Step 2 (t=600ms): Green stamp slams in ──
   setTimeout(()=>{
-    // Redraw paths with new completed state
-    renderOwPaths();
+    if(completedImg) completedImg.style.animation='';
+    if(stamp){
+      stamp.style.transition='none';
+      stamp.style.opacity='1';
+      stamp.style.animation='stampPop 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    }
+    // Small screen flash
+    const flash=document.createElement('div');
+    flash.style.cssText='position:fixed;inset:0;z-index:999;background:rgba(52,199,89,0.18);pointer-events:none;transition:opacity 0.4s;';
+    document.body.appendChild(flash);
+    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),400);},200);
+  }, 600);
 
-    // Unlock next node: fade from silhouette to full color
+  if(!nextId) return;
+
+  // ── Step 3 (t=1800ms): Path draws itself ──
+  setTimeout(()=>{
+    const svg=document.getElementById('ow-svg-layer');
+    if(!svg) return;
+    // Find and animate the specific path segment
+    const from=OW_STOP_POS[completedId-1], to=OW_STOP_POS[nextId-1];
+    const len=Math.sqrt((to.x-from.x)**2+(to.y-from.y)**2);
+    // Remove old grey path for this segment
+    svg.querySelectorAll('.ow-path').forEach(el=>el.remove());
+    // Redraw all paths up to this point as done
+    renderOwPaths();
+    // Now find the newly drawn orange path and animate it
+    const paths=[...svg.querySelectorAll('.ow-path')];
+    const newPath=paths[completedId-1]; // index matches segment
+    if(newPath&&newPath.getAttribute('stroke')==='#ff6b35'){
+      newPath.style.strokeDasharray=len;
+      newPath.style.setProperty('--path-len', len);
+      newPath.style.strokeDashoffset=len;
+      newPath.style.animation=`pathDraw 0.8s ease-out forwards`;
+      // Brief golden glow after draw completes
+      setTimeout(()=>{
+        newPath.style.animation='pathGlow 0.6s ease-in-out 2';
+        setTimeout(()=>{ newPath.style.animation=''; newPath.style.stroke='#ff6b35'; }, 1200);
+      }, 850);
+    }
+  }, 1800);
+
+  // ── Step 4 (t=2900ms): Next stop unlocks with big flash ──
+  setTimeout(()=>{
     const nextImg=document.getElementById('ow-img-'+nextId);
     const nextWrap=document.getElementById('ow-wrap-'+nextId);
-    if(nextImg&&nextWrap){
-      nextImg.style.animation='nodeUnlock 0.9s ease-out forwards';
-      nextWrap.classList.remove('locked');
-      nextWrap.classList.add('next-stop');
-      // Add click handler now that it's unlocked
-      nextWrap.addEventListener('click',()=>startJourney(nextId));
-      const nextInner=nextWrap.querySelector('.ow-node-inner');
-      if(nextInner){
-        nextInner.addEventListener('pointerdown',()=>{
-          const img=nextInner.querySelector('.ow-node-img');
-          if(img){img.style.transition='transform 0.1s';img.style.transform='scale(0.88)';}
-        });
-        nextInner.addEventListener('pointerup',()=>{
-          const img=nextInner.querySelector('.ow-node-img');
-          if(img){img.style.transform='scale(1.08)';setTimeout(()=>{img.style.transform='scale(1)';},150);}
-        });
-      }
-      // Remove locked label dimming
-      const lbl=nextWrap.querySelector('.ow-node-label');
-      if(lbl) lbl.style.opacity='1';
+    if(!nextImg||!nextWrap) return;
+
+    // Screen flash — golden this time
+    const flash=document.createElement('div');
+    flash.style.cssText='position:fixed;inset:0;z-index:999;background:rgba(255,204,0,0.22);pointer-events:none;transition:opacity 0.5s;';
+    document.body.appendChild(flash);
+    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),500);},300);
+
+    // Unlock animation on the icon
+    nextImg.style.animation='nodeUnlock 1.1s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    nextWrap.classList.remove('locked');
+    nextWrap.classList.add('next-stop');
+
+    // Fix label opacity
+    const lbl=nextWrap.querySelector('.ow-node-label');
+    if(lbl) lbl.style.opacity='1';
+
+    // Wire up interactions
+    nextWrap.addEventListener('click',()=>startJourney(nextId));
+    const nextInner=nextWrap.querySelector('.ow-node-inner');
+    if(nextInner){
+      nextInner.addEventListener('pointerdown',()=>{
+        const img=nextInner.querySelector('.ow-node-img');
+        if(img){img.style.transition='transform 0.1s';img.style.transform='scale(0.88)';}
+      });
+      nextInner.addEventListener('pointerup',()=>{
+        const img=nextInner.querySelector('.ow-node-img');
+        if(img){img.style.transform='scale(1.08)';setTimeout(()=>{img.style.transform='scale(1)';},150);}
+      });
     }
-  }, 700);
+  }, 2900);
 }
 
 function renderOwPaths(){
@@ -1106,8 +1184,8 @@ function nextCard(){
     if(isLast){ showEndScreen(); return; }
 
     showScreen('overworld');
-    // Let overworld render first, then run completion animation
-    setTimeout(()=>animateStopCompletion(completedId, nextId), 120);
+    // 2 second pause so user can see the map before anything animates
+    setTimeout(()=>animateStopCompletion(completedId, nextId), 2000);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
