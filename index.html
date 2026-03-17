@@ -85,15 +85,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-bottom { position:absolute; bottom:0; left:0; right:0; z-index:20; padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.2) 60%,transparent 100%); }
 .ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.65rem; transition:transform 0.15s; }
 .ow-start-btn:active { transform:scale(0.98); }
-.ow-list-link { display:block; text-align:center; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.55); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
+.ow-list-link { display:flex; align-items:center; justify-content:center; gap:0.45rem; text-align:center; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.55); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
 /* ── Node styles ── */
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-inner { position:relative; display:inline-block; }
 .ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
 .ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
-.ow-node-label { display:block; margin-top:5px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.22rem 0.6rem; border-radius:10px; white-space:nowrap; border:1px solid rgba(255,255,255,0.15); pointer-events:none; }
-.ow-node-wrap.locked .ow-node-label { opacity:0.4; }
+.ow-node-label { display:block; margin-top:2px; background:var(--orange); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; box-shadow:0 2px 6px rgba(255,107,53,0.35); }
 .ow-node-stamp { position:absolute; top:8px; right:8px; width:32px; height:32px; background:var(--green); border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:1rem; box-shadow:0 2px 10px rgba(52,199,89,0.6); opacity:0; }
 @keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes stampPop {
@@ -265,7 +264,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
         <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg><span id="ow-start-label">Start Tour</span>
       </button>
-      <a class="ow-list-link" onclick="showPartnersPage()">🍽️ Restaurants &amp; Partners</a>
+      <a class="ow-list-link" onclick="showPartnersPage()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Restaurants &amp; Partners</a>
     </div>
   </div>
 
@@ -463,6 +462,7 @@ const stops=[
 const photoCollection={};
 const quizAnswered={};
 const stopsCompleted={};  // tracks which stops have been fully completed
+let justCompletedStopId=null; // the stop just finished — stamp hidden until animation
 let currentStop=null,currentCardIdx=0,cards=[];
 let pendingPhotoStopId=null;
 
@@ -566,7 +566,7 @@ function renderOwNodes(){
     stamp.textContent='✓';
     // Always start hidden — shown via animation (or instantly for previously done stops on re-render)
     stamp.style.opacity='0';
-    if(isDone){
+    if(isDone && stop.id !== justCompletedStopId){
       // Already done on a previous visit — show immediately without animation
       requestAnimationFrame(()=>{ stamp.style.opacity='1'; });
     }
@@ -642,6 +642,7 @@ function animateStopCompletion(completedId, nextId){
       stamp.style.opacity='1';
       stamp.style.animation='stampPop 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards';
     }
+    justCompletedStopId=null; // allow normal rendering from now on
     owFlash('rgba(52,199,89,0.22)', 220);
   }, 700);
 
@@ -679,24 +680,27 @@ function owFlash(color, holdMs){
   setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),460);}, holdMs);
 }
 
-// Draw only the new segment from completedId → nextId, leave existing paths intact
+// Draw only the new segment — dots appear one by one from start to end
 function drawNewPathSegment(completedId, nextId){
   const svg=document.getElementById('ow-svg-layer');
   if(!svg) return;
-  // Remove only the grey placeholder for this segment (it's the (completedId)th path element, 0-indexed = completedId-1)
+
+  // Remove the grey placeholder for this segment
   const existing=[...svg.querySelectorAll('.ow-path')];
   const placeholder=existing[completedId-1];
   if(placeholder) placeholder.remove();
 
   const from=OW_STOP_POS[completedId-1], to=OW_STOP_POS[nextId-1];
   const pathD=makeCurvedPath(from, to);
-  // Measure path length for dash animation
+
+  // Measure path length
   const tempPath=document.createElementNS('http://www.w3.org/2000/svg','path');
   tempPath.setAttribute('d', pathD);
   svg.appendChild(tempPath);
-  const len=tempPath.getTotalLength()||200;
+  const totalLen=tempPath.getTotalLength()||200;
   tempPath.remove();
 
+  // Build the orange dotted path — but start fully hidden (dashoffset hides all dots)
   const newPath=document.createElementNS('http://www.w3.org/2000/svg','path');
   newPath.setAttribute('d', pathD);
   newPath.setAttribute('fill','none');
@@ -704,28 +708,41 @@ function drawNewPathSegment(completedId, nextId){
   newPath.setAttribute('stroke-width','4');
   newPath.setAttribute('stroke-linecap','round');
   newPath.setAttribute('stroke-linejoin','round');
-  // Dotted orange completed path
-  newPath.setAttribute('stroke-dasharray','10 7');
-  newPath.setAttribute('stroke-dashoffset', len*2); // start hidden
+  const DOT=10, GAP=7, UNIT=DOT+GAP; // dot size + gap
+  const numDots=Math.floor(totalLen/UNIT);
+  // Set dasharray so each dot is exactly DOT px, with GAP between
+  newPath.setAttribute('stroke-dasharray',`${DOT} ${GAP}`);
+  // Offset by totalLen so nothing is visible initially
+  newPath.setAttribute('stroke-dashoffset', String(totalLen));
   newPath.setAttribute('class','ow-path ow-path-done');
   newPath.style.opacity='0.92';
-  // Insert at the correct index position (before the next grey paths)
+
+  // Insert at correct position
   const allPaths=[...svg.querySelectorAll('.ow-path')];
-  const insertBefore=allPaths[completedId-1]; // slot index after removal
+  const insertBefore=allPaths[completedId-1];
   if(insertBefore) svg.insertBefore(newPath, insertBefore);
   else svg.appendChild(newPath);
 
-  // Animate draw — slow and satisfying
-  newPath.style.transition=`stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1)`;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    newPath.style.strokeDashoffset='0';
-  }));
-
-  // Glow pulse after draw
-  setTimeout(()=>{
-    newPath.style.animation='pathGlow 0.7s ease-in-out 2';
-    setTimeout(()=>{ newPath.style.animation=''; }, 1400);
-  }, 1500);
+  // Reveal dots one by one by animating dashoffset from totalLen → 0
+  // Each dot step = UNIT px of dashoffset change
+  const totalSteps=numDots+2;
+  const msPerDot=90; // ms between each dot appearing
+  let step=0;
+  function revealNextDot(){
+    if(step>totalSteps) return;
+    const offset=Math.max(0, totalLen - step*UNIT);
+    newPath.setAttribute('stroke-dashoffset', String(offset));
+    step++;
+    if(step<=totalSteps) setTimeout(revealNextDot, msPerDot);
+    else {
+      // Path fully drawn — glow pulse
+      setTimeout(()=>{
+        newPath.style.animation='pathGlow 0.7s ease-in-out 2';
+        setTimeout(()=>{ newPath.style.animation=''; }, 1400);
+      }, 200);
+    }
+  }
+  revealNextDot();
 }
 
 // Generate a curved SVG path between two points with a gentle arc
@@ -1249,6 +1266,7 @@ function nextCard(){
     // Mark this stop as completed
     stopsCompleted[currentStop.id]=true;
     const completedId=currentStop.id;
+    justCompletedStopId=completedId; // suppress instant stamp reveal
     const nextId=completedId<stops.length?completedId+1:null;
     const isLast=completedId===stops.length;
 
@@ -1451,54 +1469,104 @@ window.addEventListener('focus',function(){
 // ── Partners page ──
 function showPartnersPage(){
   let ov=document.getElementById('partners-overlay');
-  if(!ov){
-    ov=document.createElement('div');
-    ov.id='partners-overlay';
-    ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
-    const RY='linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%)';
+  if(ov){ ov.style.display='block'; ov.scrollTop=0; return; }
+  ov=document.createElement('div');
+  ov.id='partners-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
 
-    // Collect all partners from all stops
-    const allPartners=[];
-    stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
+  const allPartners=[];
+  stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
 
-    const cards=allPartners.map(p=>`
-      <div style="background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;">
-        <img src="${p.img}" style="width:100%;height:160px;object-fit:cover;display:block;">
-        <div style="padding:1rem 1.1rem 1.25rem;">
-          <div style="font-size:0.6rem;font-weight:700;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">Stop ${p.stopId} · ${p.stopName}</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:white;margin-bottom:0.4rem;">${p.name}</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:1rem;">${p.desc}</div>
-          ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:0.35rem;color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;margin-bottom:1rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
-          ${p.offer?`<div onclick="couponTap(this)" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" style="cursor:pointer;background:#fffdf9;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 16px rgba(0,0,0,0.25);">
-            <div style="background:var(--orange);padding:0.3rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
-              <div style="font-size:0.6rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            </div>
-            <div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.75rem;"></div>
-            <div style="padding:0.6rem 0.75rem 0.5rem;">
-              <div style="font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:900;color:#1a1a1a;margin-bottom:0.25rem;">${p.offer}</div>
-              <div style="display:flex;align-items:center;gap:0.4rem;"><span style="font-size:0.55rem;font-weight:700;color:#999;text-transform:uppercase;">Code</span><span style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</span></div>
-            </div>
-            <div style="border-top:2px dashed rgba(0,0,0,0.08);margin:0 0.75rem;"></div>
-            <div style="padding:0.3rem 0.75rem;background:rgba(255,107,53,0.06);text-align:center;font-size:0.65rem;font-weight:800;color:var(--orange);">Tap to enlarge</div>
-          </div>`:''}
+  function miniCoupon(p){
+    if(!p.offer) return '';
+    return `<div style="position:absolute;bottom:12px;right:-8px;width:130px;transform:rotate(4deg);pointer-events:none;z-index:5;">
+      <div style="background:#fffdf9;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 14px rgba(0,0,0,0.35);">
+        <div style="background:var(--orange);padding:0.2rem 0.5rem;"><div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.08em;">Your Offer</div></div>
+        <div style="border-top:1.5px dashed rgba(255,107,53,0.3);margin:0 0.5rem;"></div>
+        <div style="padding:0.35rem 0.5rem 0.3rem;">
+          <div style="font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:900;color:#1a1a1a;line-height:1.2;margin-bottom:0.2rem;">${p.offer}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--orange);letter-spacing:0.08em;">${p.code||'TBR-001'}</div>
         </div>
-      </div>`).join('');
+      </div>
+    </div>`;
+  }
 
-    ov.innerHTML=`
-      <div style="max-width:480px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
+  const listCards=allPartners.map((p,idx)=>`
+    <div onclick="showPartnerDetail(${idx})" style="cursor:pointer;background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:visible;margin-bottom:1rem;position:relative;">
+      <div style="position:relative;overflow:visible;">
+        <img src="${p.img}" style="width:100%;height:175px;object-fit:cover;display:block;border-radius:var(--radius) var(--radius) 0 0;">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);border-radius:var(--radius) var(--radius) 0 0;pointer-events:none;"></div>
+        <div style="position:absolute;bottom:12px;left:12px;pointer-events:none;">
+          <div style="font-size:0.58rem;font-weight:700;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.08em;">Stop ${p.stopId} · ${p.stopName}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;color:white;line-height:1.2;">${p.name}</div>
+        </div>
+        ${miniCoupon(p)}
+      </div>
+    </div>`).join('');
+
+  ov.innerHTML=`
+    <div style="max-width:480px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
+      <div id="partners-list-view">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
           <div>
             <div style="font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:white;">Restaurants &amp; Partners</div>
             <div style="font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:0.1rem;">Rudy's picks along the route</div>
           </div>
-          <button onclick="document.getElementById('partners-overlay').style.display='none'" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:36px;height:36px;color:white;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+          <button onclick="document.getElementById('partners-overlay').style.display='none'" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:50%;width:36px;height:36px;color:white;font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">✕</button>
         </div>
-        ${cards.length>0?cards:`<div style="text-align:center;color:rgba(255,255,255,0.5);padding:3rem 1rem;">No partners listed yet — check back soon!</div>`}
-      </div>`;
-    document.body.appendChild(ov);
-  }
+        ${allPartners.length>0?listCards:`<div style="text-align:center;color:rgba(255,255,255,0.5);padding:3rem 1rem;">No partners listed yet — check back soon!</div>`}
+      </div>
+      <div id="partners-detail-view" style="display:none;"></div>
+    </div>`;
+
+  document.body.appendChild(ov);
+  // Store partners data for detail view
+  ov._partners=allPartners;
   ov.style.display='block';
+  ov.scrollTop=0;
+}
+
+function showPartnerDetail(idx){
+  const ov=document.getElementById('partners-overlay');
+  if(!ov||!ov._partners) return;
+  const p=ov._partners[idx];
+  const listView=document.getElementById('partners-list-view');
+  const detailView=document.getElementById('partners-detail-view');
+  listView.style.display='none';
+
+  // Reuse the existing partner card renderer but add a back button
+  const RY='linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%)';
+  const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
+  const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;">Tap to Enlarge</div></div></div></div>`:'';
+
+  detailView.innerHTML=`
+    <!-- Back button -->
+    <button onclick="document.getElementById('partners-list-view').style.display='block';document.getElementById('partners-detail-view').style.display='none';document.getElementById('partners-overlay').scrollTop=0;" style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:0.45rem 1rem;color:white;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;margin-bottom:1.25rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>Back to Restaurants
+    </button>
+    <!-- Gallery grid -->
+    <div style="position:relative;width:100%;margin-bottom:0;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="background:${RY};border-radius:99px;padding:0.22rem 1rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
+          <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;">Local Food Tip!</div>
+        </div>
+      </div>
+    </div>
+    <!-- Partner info panel -->
+    <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:0 0 var(--radius) var(--radius);padding:1.1rem 1.1rem 1.25rem;">
+      <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;margin-bottom:0.25rem;">${p.name}</div>
+      ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
+      <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);margin-bottom:1rem;">${p.desc}</div>
+      ${coupon}
+    </div>`;
+
+  detailView.style.display='block';
   ov.scrollTop=0;
 }
 
