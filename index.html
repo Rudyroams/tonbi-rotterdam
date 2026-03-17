@@ -465,8 +465,11 @@ const stops=[
 
 const photoCollection={};
 const quizAnswered={};
-const stopsCompleted={};  // tracks which stops have been fully completed
-let justCompletedStopId=null; // the stop just finished — stamp hidden until animation
+// Persist completed stops across sessions
+const _saved=JSON.parse(localStorage.getItem('tonbi_completed')||'{}');
+const stopsCompleted=_saved;
+function saveProgress(){ try{localStorage.setItem('tonbi_completed',JSON.stringify(stopsCompleted));}catch(e){} }
+let justCompletedStopId=null;
 let currentStop=null,currentCardIdx=0,cards=[];
 let pendingPhotoStopId=null;
 
@@ -1271,6 +1274,7 @@ function nextCard(){
   if(currentCardIdx===cards.length-1){
     // Mark this stop as completed
     stopsCompleted[currentStop.id]=true;
+    saveProgress();
     const completedId=currentStop.id;
     justCompletedStopId=completedId; // suppress instant stamp reveal
     const nextId=completedId<stops.length?completedId+1:null;
@@ -1322,17 +1326,23 @@ function closeJourney(showEnd){
 function closeEndScreen(){
   const endScreen=document.getElementById('end-screen');
   endScreen.style.display='none';
-  justCompletedStopId=null; // all stamps should be visible on the completed map
-  // Show overworld and re-render after DOM settles
+  justCompletedStopId=null;
+
+  // Show overworld
   document.getElementById('overworld-screen').style.display='block';
   document.getElementById('home-screen').style.display='none';
   document.getElementById('map-screen').classList.remove('show');
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      renderOwNodes();
-      renderOwPaths();
-    });
-  });
+
+  // Force full re-render after two animation frames to guarantee layout is ready
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    // Rebuild nodes and paths from scratch with current stopsCompleted state
+    const container=document.getElementById('ow-nodes');
+    if(container) container.innerHTML='';
+    const svg=document.getElementById('ow-svg-layer');
+    if(svg) svg.querySelectorAll('.ow-path').forEach(el=>el.remove());
+    renderOwNodes();
+    renderOwPaths();
+  }));
 }
 
 function showEndScreen(){
