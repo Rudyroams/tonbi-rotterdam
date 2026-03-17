@@ -268,7 +268,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
         <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg><span id="ow-start-label">Start Tour</span>
       </button>
-      <a class="ow-list-link" id="ow-bonus-link" onclick="showBonusVideo()" style="display:none;color:rgba(255,220,100,0.75);margin-bottom:0.3rem;">
+      <a class="ow-list-link" id="ow-select-stop-link" onclick="showScreen('home')" style="display:none;color:rgba(255,255,255,0.65);margin-bottom:0.1rem;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>Select a Stop
+      </a>
+      <a class="ow-list-link" id="ow-bonus-link" onclick="showBonusVideo()" style="display:none;color:rgba(255,220,100,0.75);margin-bottom:0.1rem;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,220,100,0.75)"><path d="M5 3l14 9-14 9V3z"/></svg>Watch: Behind the Tour
       </a>
       <a class="ow-list-link" onclick="showPartnersPage()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Restaurants &amp; Partners</a>
@@ -530,8 +533,10 @@ function renderOwNodes(){
   const btn=document.getElementById('ow-start-btn');
   if(lbl&&btn){
     if(allDone){
-      lbl.textContent='Select a Stop →';
-      btn.onclick=()=>showScreen('home');
+      lbl.textContent='🎉 Finish Tour';
+      btn.onclick=showEndScreen;
+      const selectLink=document.getElementById('ow-select-stop-link');
+      if(selectLink) selectLink.style.display='flex';
       const bonusLink=document.getElementById('ow-bonus-link');
       if(bonusLink) bonusLink.style.display='flex';
     } else if(anyDone){
@@ -672,7 +677,8 @@ function animateStopCompletion(completedId, nextId, isLast){
           btn.onclick=showEndScreen;
           setTimeout(()=>{ if(btn) btn.style.animation=''; }, 600);
         }
-        // Also show bonus link
+        const selectLink=document.getElementById('ow-select-stop-link');
+        if(selectLink) selectLink.style.display='flex';
         const bonusLink=document.getElementById('ow-bonus-link');
         if(bonusLink) bonusLink.style.display='flex';
       }, 1200);
