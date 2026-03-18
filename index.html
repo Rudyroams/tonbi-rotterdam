@@ -694,7 +694,7 @@ function showScreen(name){
   const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
   if(name==='overworld')renderOwNodes();
 }
-function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
+function owStartTour(){const n=stops.find(s=>stopsCompleted[s.id]!==true&&stopsCompleted[s.id]!=='skipped')||stops[0];startJourney(n.id);}
 
 function owSkipStop(){
   const nextStop=stops.find(s=>!stopsCompleted[s.id]);
@@ -732,7 +732,7 @@ function skipSubstop(){
     updateCardPosition();
     updateProgressDots();
     updateNavBtns();
-    setTimeout(()=>{ initStopMap(currentStop.id); }, 100);
+    setTimeout(()=>{ const ac=cards[currentCardIdx]; initStopMap(currentStop.id, ac?.substop?.id); }, 100);
   }
 }
 
@@ -753,6 +753,7 @@ function initOverworldMap(){
 }
 
 function renderOwNodes(){
+  if(_owAnimating) return; // don't wipe nodes while completion animation is running
   const container=document.getElementById('ow-nodes');
   if(!container)return;
   // Update button label based on progress
@@ -888,7 +889,10 @@ function wireNodeTap(wrap, inner, stopId){
 }
 
 // Full cinematic completion sequence — called 2s after returning to overworld
+let _owAnimating=false; // guard against renderOwNodes resetting during completion animation
+
 function animateStopCompletion(completedId, nextId, isLast){
+  _owAnimating=true;
   const stamp=document.getElementById('ow-stamp-'+completedId);
   const completedImg=document.getElementById('ow-img-'+completedId);
 
@@ -923,6 +927,7 @@ function animateStopCompletion(completedId, nextId, isLast){
         if(selHeader) selHeader.style.display='block';
         const filmstrip=document.getElementById('ow-bonus-filmstrip');
         if(filmstrip){ buildFilmstrip(); filmstrip.style.display='block'; }
+        _owAnimating=false;
       }, 800);
     }
     return;
@@ -950,6 +955,8 @@ function animateStopCompletion(completedId, nextId, isLast){
 
     const nextInner=nextWrap.querySelector('.ow-node-inner');
     if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
+
+    setTimeout(()=>{ _owAnimating=false; }, 1200); // animation settled
   }, 2700);
 }
 
@@ -1144,6 +1151,7 @@ function getNextSubstopNavIdx(){
 function renderCard(card,idx,total){
   const stop=card.stop;
   const s=card.substop||card.stop; // use substop data for content, fallback to stop
+  const domId=stop.id; // always integer — used for DOM element IDs
 
   if(card.type==='transition'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
@@ -1174,15 +1182,18 @@ function renderCard(card,idx,total){
       </div>
     </div>`;
   }
-  if(card.type==='nav'){return `<div class="card nav-card" data-stop="${s.id}" data-type="nav"><div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${s.id}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;}
+  if(card.type==='nav'){
+    const substopId=s.id; // substop id — unique per substop
+    return `<div class="card nav-card" data-stop="${domId}" data-type="nav"><div id="stop-map-${substopId}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${substopId}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;
+  }
 
   if(card.type==='desc'){
     if(s.cloudflareId&&s.cfStyle==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
-      return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
-        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
-          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
+      return `<div class="card" data-stop="${domId}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
+        <iframe id="cf-vid-${domId}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <div id="sound-popup-${domId}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
+          <div onclick="startVideoAfterPopup(${domId})" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
             <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:12px;padding:7px 0 7px 0;box-shadow:0 8px 32px rgba(0,0,0,0.55);">
               <div style="background:rgba(6,6,8,0.75);border-radius:6px;overflow:hidden;margin:0;">
               <div style="display:flex;align-items:stretch;">
@@ -1202,7 +1213,7 @@ function renderCard(card,idx,total){
           </div>
         </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);pointer-events:none;"><div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div><div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div></div>
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
+        <div id="text-section-${domId}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${domId} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-${domId}').style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
       </div>`;}
 
     return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-section"><div class="arrival-text-body">${s.desc}</div></div></div>`;
@@ -1348,13 +1359,16 @@ function renderCard(card,idx,total){
   if(card.type==='quiz'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    const qa=quizAnswered[s.id],answered=qa!==undefined;
+    const quizKey=s.id; // use substop id as quiz key so each substop quiz is independent
+    const qa=quizAnswered[quizKey],answered=qa!==undefined;
     const attempted=Object.keys(quizAnswered).length;
-    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
+    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
+      for(const st of stops){ for(const ss of (st.substops||[])){ if(ss.id==sid&&ss.quiz) return ans===ss.quiz.correct; } } return false;
+    }).length;
     const opts=s.quiz.opts.map((opt,i)=>{
       let cls='',icon='',stamp='';
       if(answered){if(i===s.quiz.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
-      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
+      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz('${quizKey}',${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
     const wasCorrect=answered&&qa===s.quiz.correct;
     return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
@@ -1566,7 +1580,7 @@ function updateNavBtns(){
     document.getElementById('card-bottom').style.cssText='display:flex;background:transparent;border-top:none;padding:0.65rem 1.25rem calc(0.65rem + env(safe-area-inset-bottom));gap:0.5rem;';
   } else if(isCFFS){
     next.textContent='Continue →';next.className='card-next-btn';
-    next.onclick=function(){skipToCard(4);}; // 4 = rudy's notes, skip text card
+    next.onclick=nextCard; // advance to next card (rudy or whatever follows)
     tb.textContent='Text only';
     tb.onclick=function(){skipToTextFullscreen(currentStop.id);};
     // Style card-bottom for video: floating above video controls, side-padded, transparent
@@ -1632,9 +1646,9 @@ function nextCard(){
     setTimeout(()=>{
       const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
       const ac=cards[currentCardIdx];
-      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id),100);
-      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac.stop.id),300);
-      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac.stop.id),200);
+      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(currentStop.id, ac.substop?.id),100);
+      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(currentStop.id),300);
+      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(currentStop.id),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),450);
     },400);
@@ -1642,17 +1656,14 @@ function nextCard(){
 }
 
 function prevCard(){stopCFVideo();if(currentCardIdx>0){
-  // If we're on rudy (idx 4) or beyond, going back should always land on desc (idx 2)
-  if(currentCardIdx===4){currentCardIdx=2;}
-  else{currentCardIdx--;}
+  currentCardIdx--;
   updateCardPosition();updateProgressDots();updateNavBtns();
-  // If landing on desc card, re-show popup (reset to pre-video state)
   const ac=cards[currentCardIdx];
   if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),150);
-  if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cfStyle==='fullscreen'){
-    const iframe=document.getElementById('cf-vid-'+ac.stop.id);
+  if(ac&&ac.type==='desc'&&ac.substop&&ac.substop.cfStyle==='fullscreen'){
+    const iframe=document.getElementById('cf-vid-'+currentStop.id);
     if(iframe){iframe.src='';iframe.style.display='none';}
-    const popup=document.getElementById('sound-popup-'+ac.stop.id);
+    const popup=document.getElementById('sound-popup-'+currentStop.id);
     if(popup){popup.style.display='flex';}
     document.getElementById('card-bottom').style.display='none';
   }
@@ -1776,10 +1787,12 @@ function closeLowresOverlay(){document.getElementById('lowres-overlay').style.di
 
 const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
 
-function initStopMap(stopId){
+function initStopMap(stopId, substopId, destCoordOverride){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
   const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
-  const destCoord=coords[stopId-1],containerId='stop-map-'+stopId,container=document.getElementById(containerId);
+  const destCoord=destCoordOverride||coords[stopId-1];
+  const containerId='stop-map-'+(substopId||stopId);
+  const container=document.getElementById(containerId);
   if(!container||container._mapInitialized)return;container._mapInitialized=true;
   const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
   const stop=stops.find(x=>x.id===stopId);
@@ -1842,7 +1855,13 @@ function showPartnersPage(){
   ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
 
   const allPartners=[];
-  stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
+  stops.forEach(s=>{
+    (s.substops||[]).forEach(ss=>{
+      if(ss.partners) ss.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id}));
+    });
+    // Also check legacy top-level partners
+    if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id}));
+  });
 
   function miniCoupon(p){
     if(!p.offer) return '';
