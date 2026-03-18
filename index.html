@@ -94,7 +94,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-progress-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:11; }
 .ow-progress-ring circle { transition:stroke-dashoffset 0.35s ease; }
 /* Transition video overlay — transparent bg, video crossfades over map */
-#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:transparent; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity 0.45s ease; }
+#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:transparent; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity 1.2s ease; }
 #ow-transition-overlay.active { pointer-events:all; }
 #ow-transition-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
@@ -117,26 +117,17 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 /* ── Node styles ── */
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-inner { position:relative; display:inline-block; }
-.ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
-.ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
+.ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
 .ow-node-label { display:block; margin-top:3px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; border:1px solid rgba(255,255,255,0.12); }
 .ow-node-wrap.next-stop .ow-node-label { background:var(--orange); border-color:transparent; box-shadow:0 2px 6px rgba(255,107,53,0.4); color:white; }
 .ow-node-stamp { position:absolute; top:6px; right:6px; width:34px; height:34px; background:transparent; border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
 @keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes stampPop {
   0%   {transform:scale(0) rotate(-30deg);opacity:0;}
   50%  {transform:scale(1.5) rotate(6deg);opacity:1;}
   70%  {transform:scale(0.85) rotate(-3deg);}
   85%  {transform:scale(1.15) rotate(2deg);}
   100% {transform:scale(1) rotate(0deg);opacity:1;}
-}
-@keyframes nodeUnlock {
-  0%   {filter:brightness(0) opacity(0.3);transform:scale(0.85);}
-  30%  {filter:brightness(2.5) opacity(1) saturate(1.8);transform:scale(1.18);}
-  55%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
-  75%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
-  100% {filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));transform:scale(1);}
 }
 @keyframes pathDraw {
   from {stroke-dashoffset:var(--path-len);}
@@ -798,14 +789,12 @@ function renderOwNodes(){
   stops.forEach((stop,i)=>{
     const pos=OW_STOP_POS[i];
     const isDone=stopsCompleted[stop.id]===true;
-    // next stop appears LOCKED (silhouette) on map render — animateStopCompletion reveals it
     const isNext=!isDone&&(i===0||stopsCompleted[stops[i-1]?.id]===true);
-    const isLocked=!isDone; // everything not done starts locked visually
+    const isVisible=isDone||isNext; // only done and next-up stops show their icon
 
     const wrap=document.createElement('div');
-    // Only stop 1 (never completed anything) gets next-stop class immediately
     const noCompletions=Object.keys(stopsCompleted).length===0;
-    wrap.className='ow-node-wrap'+(isDone?' done':(isNext&&noCompletions)?' next-stop':' locked');
+    wrap.className='ow-node-wrap'+(isDone?' done':(isNext||noCompletions)?' next-stop':'');
     wrap.style.left=(pos.x*scaleX)+'px';
     wrap.style.top=(pos.y*scaleY)+'px';
     wrap.id='ow-wrap-'+stop.id;
@@ -819,6 +808,8 @@ function renderOwNodes(){
     img.id='ow-img-'+stop.id;
     img.src=`https://rudyroams.github.io/tonbi-rotterdam/images/stop-${stop.id}.png`;
     img.alt=stop.name;
+    // Hide icon entirely if stop is not yet reached
+    if(!isVisible) img.style.opacity='0';
     inner.appendChild(img);
 
     const stamp=document.createElement('div');
@@ -842,13 +833,11 @@ function renderOwNodes(){
     const label=document.createElement('div');
     label.className='ow-node-label';
     label.textContent=stop.name;
-    if(!isDone&&!isNext) label.style.display='none';
-    if(!isDone&&isNext&&!noCompletions) label.style.display='none'; // hidden until animation unlocks
+    if(!isVisible) label.style.display='none';
     wrap.appendChild(label);
 
-    // Tap interactions — only wired for done stops and stop 1 on fresh start
-    const tappable=isDone||(isNext&&noCompletions);
-    if(tappable) wireNodeTap(wrap, inner, stop.id);
+    // Only wire tap for visible stops
+    if(isVisible) wireNodeTap(wrap, inner, stop.id);
 
     container.appendChild(wrap);
   });
@@ -936,16 +925,14 @@ function animateStopCompletion(completedId, nextId, isLast){
   setTimeout(()=>{ unlockNextStop(nextId); }, 900);
 }
 
-// Unlock a stop node — appears instantly with no pop or animation
+// Unlock a stop node — make icon visible, wire tap, then start float
 function unlockNextStop(nextId){
   const nextImg=document.getElementById('ow-img-'+nextId);
   const nextWrap=document.getElementById('ow-wrap-'+nextId);
-  if(!nextImg||!nextWrap) return;
+  if(!nextWrap) return;
 
-  // Reveal immediately — no pop, no scale, no flash
-  nextWrap.classList.remove('locked');
-  nextImg.style.animation='none';
-  nextImg.style.filter='';
+  // Reveal icon
+  if(nextImg) nextImg.style.opacity='1';
 
   const lbl=nextWrap.querySelector('.ow-node-label');
   if(lbl){ lbl.style.display='block'; lbl.style.opacity='1'; }
@@ -953,8 +940,7 @@ function unlockNextStop(nextId){
   const nextInner=nextWrap.querySelector('.ow-node-inner');
   if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
 
-  // Add the float animation after a short delay so the icon is already visible
-  // when it starts — avoids any pop-in feel
+  // Float animation starts after a beat
   setTimeout(()=>nextWrap.classList.add('next-stop'), 600);
 }
 
@@ -2167,7 +2153,7 @@ function _finishTransition(overlay, video, onComplete, newStateIdx){
   // Crossfade video OUT
   overlay.style.opacity='0';
   // After fade completes, clean up and fire callback
-  const FADE_MS=450;
+  const FADE_MS=1200;
   setTimeout(()=>{
     overlay.classList.remove('active');
     video.src='';
