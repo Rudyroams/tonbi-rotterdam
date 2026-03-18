@@ -563,6 +563,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
+<!-- ── Overworld transition video overlay ── -->
+<div id="ow-transition-overlay">
+  <video id="ow-transition-video" playsinline webkit-playsinline muted preload="none"></video>
+</div>
+
 <script>
 const stops=[
   {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",coords:[4.4871,51.9090],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
@@ -2074,10 +2079,6 @@ function closeBonusVideo(){
     ov.style.display='none';
   }
 }
-<!-- ── Overworld transition video overlay ── -->
-<div id="ow-transition-overlay">
-  <video id="ow-transition-video" playsinline webkit-playsinline muted preload="none"></video>
-</div>
 // ═══════════════════════════════════════════════════════════════════════
 // MAP STATE SYSTEM
 // ═══════════════════════════════════════════════════════════════════════
