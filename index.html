@@ -290,9 +290,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <!-- Bonus video filmstrip — pinned bottom right above test buttons, built by JS -->
     <div id="ow-bonus-filmstrip" style="display:none;position:absolute;bottom:calc(6.5rem + env(safe-area-inset-bottom));right:0.75rem;z-index:25;"></div>
     <div class="ow-bottom">
-      <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
-        <span id="ow-start-label">Start Tour</span>
-      </button>
+      <div style="display:flex;gap:0.5rem;align-items:stretch;margin-bottom:0.6rem;">
+        <button id="ow-skip-btn" onclick="skipCurrentStop()" style="display:none;flex-shrink:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius-sm);padding:0.55rem 0.85rem;font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;color:rgba(255,255,255,0.6);cursor:pointer;white-space:nowrap;line-height:1.2;">
+          Skip<br>Stop
+        </button>
+        <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()" style="flex:1;margin-bottom:0;">
+          <span id="ow-start-label">Start Tour</span>
+        </button>
+      </div>
       <a class="ow-link-item" onclick="showPartnersPage()" style="display:flex;align-items:center;justify-content:center;gap:0.45rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:rgba(255,255,255,0.55);cursor:pointer;text-decoration:none;padding:0.2rem 0;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
         Restaurants &amp; Partners
@@ -546,7 +551,11 @@ const stops=[
     subStops:[
       {id:"1a",name:"De Boeg Monument",tagline:"The prow of a ship — Rotterdam's maritime soul",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=De+Boeg+Rotterdam",coords:[4.4855,51.9085],rudy:"This bronze prow is where Rotterdam's harbor history is condensed into a single sculpture. Face it, then turn around — that's the view my grandfather had every morning.",challenge:{title:"Prow & Bridge",desc:"Shoot the bronze prow with the Erasmus Bridge behind it, perfectly framed.",tip:"Get close to the prow and shoot wide. The bridge behind gives it scale."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"De Boeg represents Rotterdam's relationship with what?",opts:["The sea and harbor trade","The bombing of 1940","The city council"],correct:0,explanation:"The prow sculpture is a tribute to Rotterdam's centuries-long identity as a harbor city."}}
     ]},
-  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",coords:[4.4917,51.9186],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
+  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",coords:[4.4917,51.9186],
+    preSubStops:[
+      {id:"2pre",name:"Blaak Station",tagline:"The flying saucers you walk under without noticing",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Blaak+Station+Rotterdam",coords:[4.4902,51.9185],rudy:"Everyone rushes through Blaak to catch the metro, but stop for a minute and look up. Those massive concrete discs were designed in 1987 — they look like something from a science fiction film and they're just a train station.",challenge:{title:"Saucer Overhead",desc:"Stand directly beneath one of the circular concrete canopies and shoot straight up.",tip:"Use portrait mode to blur the edges and make the concrete really pop against the sky."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"Blaak Station opened in which year?",opts:["1993","1987","It was always there"],correct:0,explanation:"Blaak metro station opened in 1993, designed by architect Harry Reijnders with those distinctive flying saucer canopies."}}
+    ],
+    cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
   {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",coords:[4.4917,51.9193],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
   {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",coords:[4.4877,51.9188],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
   {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",coords:[4.4866,51.9200],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
@@ -641,6 +650,19 @@ function showScreen(name){
 }
 function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
 
+function skipCurrentStop(){
+  // Find the next incomplete stop and mark it as complete, then re-render
+  const nextStop=stops.find(s=>!stopsCompleted[s.id]);
+  if(!nextStop||nextStop.id>=stops.length)return; // don't skip the last stop
+  // Confirm intent — skip is permanent for this session
+  if(!confirm(`Skip Stop ${nextStop.id} — ${nextStop.name}?\n\nYou can always come back to it from the map.`))return;
+  stopsCompleted[nextStop.id]=true;
+  saveProgress();
+  justCompletedStopId=null; // no animation for skipped stop
+  renderOwNodes();
+  renderOwPaths();
+}
+
 // ── Illustrated overworld map ──
 // Reverse-S path: left→right, drop, right→left, drop, left→right...
 // 2-column layout: left col x=110, right col x=275
@@ -679,6 +701,16 @@ function renderOwNodes(){
     } else {
       lbl.textContent='Start Tour';
       btn.onclick=owStartTour;
+    }
+  }
+  // Skip button — visible only when there's a next incomplete stop (not on first stop, not when all done)
+  const skipBtn=document.getElementById('ow-skip-btn');
+  if(skipBtn){
+    const nextStop=stops.find(s=>!stopsCompleted[s.id]);
+    const showSkip=!allDone&&anyDone&&nextStop&&nextStop.id<stops.length;
+    skipBtn.style.display=showSkip?'block':'none';
+    if(showSkip&&nextStop){
+      skipBtn.innerHTML=`Skip<br><span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">Stop ${nextStop.id}</span>`;
     }
   }
   container.innerHTML='';
@@ -914,7 +946,7 @@ function drawNewPathSegment(completedId, nextId){
     step++;
     // Vary timing slightly for organic feel: faster in middle, slower at ends
     const progress=step/totalSteps;
-    const speed=progress<0.15||progress>0.85 ? 130 : 75;
+    const speed=progress<0.15||progress>0.85 ? 200 : 150;
     setTimeout(revealNextDot, speed);
   }
   setTimeout(revealNextDot, 80);
@@ -1002,6 +1034,22 @@ function setupRudyScrollHint(card){
 function buildCards(stop){
   const result=[];
 
+  // ── Pre-stop sub-stop segments (appear BEFORE main stop transition) ──
+  if(stop.preSubStops&&stop.preSubStops.length>0){
+    stop.preSubStops.forEach((ss,si)=>{
+      const ssCards=[];
+      ssCards.push({type:'substop-intro', stop, subStop:ss, isPre:true});
+      ssCards.push({type:'nav',           stop, subStop:ss, isPre:true});
+      if(ss.rudy)      ssCards.push({type:'rudy',  stop, subStop:ss, isPre:true});
+      if(ss.challenge) ssCards.push({type:'photo', stop, subStop:ss, isPre:true});
+      if(ss.quiz)      ssCards.push({type:'quiz',  stop, subStop:ss, isPre:true});
+      if(ss.partners&&ss.partners.length>0)
+        ss.partners.forEach((p,pi)=>ssCards.push({type:'partner',stop,subStop:ss,partner:p,partnerIdx:pi,isPre:true}));
+      ssCards.forEach(c=>{ c.label=ss.name; c._segId='pre_'+si; });
+      result.push(...ssCards);
+    });
+  }
+
   // ── Main stop segment ──
   const mainCards=[
     {type:'transition', stop},
@@ -1017,11 +1065,10 @@ function buildCards(stop){
   mainCards.forEach(c=>{ c.label=stop.name; c._segId='main'; });
   result.push(...mainCards);
 
-  // ── Sub-stop segments ──
+  // ── Post-stop sub-stop segments ──
   if(stop.subStops&&stop.subStops.length>0){
     stop.subStops.forEach((ss,si)=>{
       const ssCards=[];
-      // Brief "keep exploring" interstitial — treated like transition (hidden from dots)
       ssCards.push({type:'substop-intro', stop, subStop:ss});
       ssCards.push({type:'nav',           stop, subStop:ss});
       if(ss.rudy)      ssCards.push({type:'rudy',  stop, subStop:ss});
@@ -1039,7 +1086,6 @@ function buildCards(stop){
   segIds.forEach(sid=>{
     const indices=result.reduce((acc,c,i)=>{ if(c._segId===sid)acc.push(i); return acc; },[]);
     const last=indices[indices.length-1];
-    // Content starts after nav, substop-intro, and transition
     const firstContent=indices.find(i=>!['nav','substop-intro','transition'].includes(result[i].type));
     const segStart=firstContent!=null?firstContent:indices[0];
     result.forEach((c,i)=>{ if(c._segId===sid){ c.segStart=segStart; c.segEnd=last; }});
@@ -1108,28 +1154,30 @@ function renderCard(card,idx,total){
   }
   if(card.type==='substop-intro'){
     const ss=card.subStop;
+    const isPre=card.isPre||false;
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
+    const eyebrow=isPre
+      ? `On the way to Stop ${s.id}`
+      : `Keep Exploring · Stop ${s.id}`;
+    const btnLabel=isPre ? `Let's stop here first 👀` : `Let's go! 👟`;
     return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
         <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
-        <!-- Pin icon -->
         <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <!-- Text -->
         <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
-          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">Keep Exploring · Stop ${s.id}</div>
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">${eyebrow}</div>
           <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${ss.name}</div>
           <div style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:260px;margin-top:0.15rem;">${ss.tagline||'Another spot worth your time.'}</div>
         </div>
-        <!-- Sub-stop image -->
         <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
           <img src="${ss.img||s.img}" alt="${ss.name}" style="width:100%;height:130px;object-fit:cover;display:block;">
         </div>
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">${btnLabel}</button>
       </div>
     </div>`;
   }
