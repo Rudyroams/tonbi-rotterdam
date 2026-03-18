@@ -82,14 +82,22 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 #ow-svg-layer { position:absolute; inset:0; width:100%; height:100%; z-index:5; pointer-events:none; overflow:visible; }
 #ow-nodes { position:absolute; inset:0; z-index:10; }
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
-.ow-logo { display:flex; align-items:center; gap:0.65rem; }
+.ow-logo { display:flex; align-items:center; justify-content:space-between; gap:0.65rem; }
+.ow-logo-left { display:flex; align-items:center; gap:0.65rem; }
 .ow-logo-icon { width:40px; height:40px; border-radius:12px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 4px 14px rgba(255,107,53,0.5); flex-shrink:0; }
 .ow-logo-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.5); }
 .ow-logo-sub { font-size:0.65rem; color:rgba(255,255,255,0.7); letter-spacing:0.05em; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
+#ow-select-stop-header { display:none; text-align:right; pointer-events:none; }
+#ow-select-stop-header span { display:block; font-size:0.6rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.08em; line-height:1.4; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
 .ow-bottom { position:absolute; bottom:0; left:0; right:0; z-index:20; padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.2) 60%,transparent 100%); }
-.ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.65rem; transition:transform 0.15s; }
+.ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.6rem; transition:transform 0.15s; }
 .ow-start-btn:active { transform:scale(0.98); }
-.ow-list-link { display:flex; align-items:center; justify-content:center; gap:0.45rem; text-align:center; font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.55); cursor:pointer; padding:0.25rem; text-decoration:none; pointer-events:all; }
+.ow-links-row { display:flex; align-items:center; justify-content:center; gap:1.25rem; }
+.ow-link-item { display:flex; align-items:center; gap:0.35rem; font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.5); cursor:pointer; text-decoration:none; padding:0.2rem 0; pointer-events:all; white-space:nowrap; }
+.ow-link-item:hover { color:rgba(255,255,255,0.8); }
+.ow-link-item.gold { color:rgba(255,220,100,0.8); }
+.ow-link-item.gold:hover { color:rgba(255,220,100,1); }
+.ow-link-divider { width:1px; height:14px; background:rgba(255,255,255,0.2); flex-shrink:0; }
 /* ── Node styles ── */
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-inner { position:relative; display:inline-block; }
@@ -260,19 +268,31 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div id="ow-nodes"></div>
     <div class="ow-header">
       <div class="ow-logo">
-        <div class="ow-logo-icon">🪁</div>
-        <div><div class="ow-logo-name">Tonbi · Rotterdam</div><div class="ow-logo-sub">SELF-GUIDED WALKING TOUR</div></div>
+        <div class="ow-logo-left">
+          <div class="ow-logo-icon">🪁</div>
+          <div><div class="ow-logo-name">Tonbi · Rotterdam</div><div class="ow-logo-sub">SELF-GUIDED WALKING TOUR</div></div>
+        </div>
+        <div id="ow-select-stop-header">
+          <span>Tap a stop</span>
+          <span>to replay it</span>
+        </div>
       </div>
     </div>
     <div class="ow-bottom">
-      <div id="ow-select-stop-link" style="display:none;text-align:center;font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.04em;margin-bottom:0.5rem;">Tap a stop to replay it</div>
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
-        <svg width="16" height="16" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg><span id="ow-start-label">Start Tour</span>
+        <span id="ow-start-label">Start Tour</span>
       </button>
-      <button id="ow-bonus-link" onclick="showBonusVideo()" style="display:none;width:100%;background:rgba(255,220,100,0.15);color:rgba(255,220,100,0.95);border:1.5px solid rgba(255,220,100,0.4);border-radius:var(--radius-sm);padding:0.7rem;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:800;cursor:pointer;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.5rem;backdrop-filter:blur(8px);">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="rgba(255,220,100,0.95)"><path d="M5 3l14 9-14 9V3z"/></svg>Watch: Behind the Tour
-      </button>
-      <a class="ow-list-link" onclick="showPartnersPage()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Restaurants &amp; Partners</a>
+      <div class="ow-links-row">
+        <a class="ow-link-item" id="ow-bonus-link" onclick="showBonusVideo()" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,220,100,0.9)"><path d="M5 3l14 9-14 9V3z"/></svg>
+          <span style="color:rgba(255,220,100,0.85);">Bonus BTS Video</span>
+        </a>
+        <div class="ow-link-divider" id="ow-links-divider" style="display:none;"></div>
+        <a class="ow-link-item" id="ow-partners-link" onclick="showPartnersPage()" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+          Restaurants &amp; Partners
+        </a>
+      </div>
     </div>
   </div>
 
@@ -533,10 +553,16 @@ function renderOwNodes(){
     if(allDone){
       lbl.textContent='🎉 Finish Tour';
       btn.onclick=showEndScreen;
-      const selectLink=document.getElementById('ow-select-stop-link');
-      if(selectLink) selectLink.style.display='block';
+      // Show select-stop text in header
+      const selHeader=document.getElementById('ow-select-stop-header');
+      if(selHeader) selHeader.style.display='block';
+      // Show bonus link and divider
       const bonusBtn=document.getElementById('ow-bonus-link');
-      if(bonusBtn){ bonusBtn.style.display='flex'; }
+      if(bonusBtn) bonusBtn.style.display='flex';
+      const divider=document.getElementById('ow-links-divider');
+      if(divider) divider.style.display='block';
+      const partnersLink=document.getElementById('ow-partners-link');
+      if(partnersLink) partnersLink.style.display='flex';
     } else if(anyDone){
       lbl.textContent='Continue Tour →';
       btn.onclick=owStartTour;
@@ -675,10 +701,14 @@ function animateStopCompletion(completedId, nextId, isLast){
           btn.onclick=showEndScreen;
           setTimeout(()=>{ if(btn) btn.style.animation=''; }, 600);
         }
-        const selectLink=document.getElementById('ow-select-stop-link');
-        if(selectLink) selectLink.style.display='block';
+        const selHeader=document.getElementById('ow-select-stop-header');
+        if(selHeader) selHeader.style.display='block';
         const bonusBtn=document.getElementById('ow-bonus-link');
-        if(bonusBtn){ bonusBtn.style.display='flex'; }
+        if(bonusBtn) bonusBtn.style.display='flex';
+        const divider=document.getElementById('ow-links-divider');
+        if(divider) divider.style.display='block';
+        const partnersLink=document.getElementById('ow-partners-link');
+        if(partnersLink) partnersLink.style.display='flex';
       }, 1200);
     }
     return;
