@@ -279,32 +279,19 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
     </div>
-    <!-- Reset button — small, top-left corner, for testing only -->
-    <button onclick="resetProgress()" style="position:absolute;top:calc(0.5rem + env(safe-area-inset-top));right:1rem;z-index:25;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.3);font-size:0.55rem;font-weight:700;padding:0.2rem 0.5rem;cursor:pointer;pointer-events:all;letter-spacing:0.05em;">RESET</button>
-    <!-- Bonus video filmstrip — pinned bottom right, overlaps button -->
-    <div id="ow-bonus-filmstrip" onclick="showBonusVideo()" style="display:none;position:absolute;bottom:calc(4.5rem + env(safe-area-inset-bottom));right:1rem;z-index:25;cursor:pointer;transform:rotate(3deg);transform-origin:center bottom;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.5));">
-      <div style="background:var(--orange);border-radius:7px;display:flex;flex-direction:row;align-items:stretch;width:90px;padding:4px;gap:2px;">
-        <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
-          ${[0,1,2,3,4,5].map(()=>`<div style="width:7px;height:7px;background:rgba(248,247,245,0.9);border-radius:2px;flex-shrink:0;"></div>`).join('')}
-        </div>
-        <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:3px;background:#111;">
-          <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);">
-          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div>
-          </div>
-        </div>
-        <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
-          ${[0,1,2,3,4,5].map(()=>`<div style="width:7px;height:7px;background:rgba(248,247,245,0.9);border-radius:2px;flex-shrink:0;"></div>`).join('')}
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:3px;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:900;color:rgba(255,220,100,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,0.5);">BTS<br>Video</div>
+    <!-- Reset + Finish test buttons — bottom left, small -->
+    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;z-index:25;display:flex;gap:0.4rem;pointer-events:all;">
+      <button onclick="resetProgress()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">RESET</button>
+      <button onclick="finishAllStops()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">FINISH</button>
     </div>
+    <!-- Bonus video filmstrip — pinned bottom right, built by JS -->
+    <div id="ow-bonus-filmstrip" style="display:none;position:absolute;bottom:calc(5rem + env(safe-area-inset-bottom));right:1rem;z-index:25;"></div>
     <div class="ow-bottom">
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
         <span id="ow-start-label">Start Tour</span>
       </button>
-      <a class="ow-link-item" onclick="showPartnersPage()" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;padding:0.15rem 0;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+      <a class="ow-link-item" onclick="showPartnersPage()" style="display:flex;align-items:center;justify-content:center;gap:0.45rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:rgba(255,255,255,0.55);cursor:pointer;text-decoration:none;padding:0.2rem 0;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
         Restaurants &amp; Partners
       </a>
     </div>
@@ -429,21 +416,28 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#0a2a35 0%,#0d3d5c 40%,#1a1040 75%,#2d0a3a 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="max-width:480px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
 
-    <!-- Hero title -->
+    <!-- Hero title — orange pill -->
     <div style="text-align:center;margin-bottom:1rem;">
-      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:0.75rem;font-size:1.75rem;">🎉</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.1;margin-bottom:0.5rem;">Tour Complete!</div>
-      <div style="font-size:0.9rem;color:rgba(255,255,255,0.75);line-height:1.7;max-width:300px;margin:0 auto;">Thanks for exploring Rotterdam with me. I hope the city showed you something real.</div>
-      <div style="margin-top:0.4rem;font-size:0.82rem;color:rgba(255,255,255,0.5);font-style:italic;">— Rudy</div>
+      <div style="display:inline-block;background:var(--orange);border-radius:99px;padding:0.5rem 1.75rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:0.75rem;">
+        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:white;line-height:1.1;">Tour Complete!</div>
+      </div>
+      <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:300px;margin:0 auto;">Thanks for exploring Rotterdam with me. I hope the city showed you something real.</div>
+      <div style="margin-top:0.35rem;font-size:0.82rem;color:rgba(255,255,255,0.45);font-style:italic;">— Rudy</div>
     </div>
 
     <!-- Landscape image -->
-    <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;box-shadow:0 8px 28px rgba(0,0,0,0.4);">
+    <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:0 8px 28px rgba(0,0,0,0.5);">
       <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="width:100%;aspect-ratio:16/7;object-fit:cover;display:block;">
     </div>
+
+    <!-- Bonus video button — right below image -->
+    <button onclick="showBonusVideo()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);margin-bottom:1rem;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
+      Watch Bonus BTS Video
+    </button>
 
     <!-- Score card -->
     <div id="end-score-card" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;">
@@ -461,9 +455,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
       <!-- Skipped quizzes -->
-      <div id="end-skipped-row" style="display:none;background:rgba(255,255,255,0.06);border-radius:10px;padding:0.55rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
-        <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Quizzes skipped</div>
-        <div id="end-skipped-num" style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:rgba(255,165,80,0.9);"></div>
+      <div id="end-skipped-row" style="display:none;background:rgba(255,255,255,0.06);border-radius:10px;padding:0.45rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.5);">Quizzes skipped</div>
+        <div id="end-skipped-num" style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:rgba(255,165,80,0.85);"></div>
       </div>
     </div>
 
@@ -495,12 +489,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       </div>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-
-    <!-- Bonus video button -->
-    <button onclick="showBonusVideo()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);margin-bottom:1rem;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
-      Watch Bonus BTS Video
-    </button>
 
     <!-- Route map -->
     <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;">
@@ -543,6 +531,38 @@ function resetProgress(){
   justCompletedStopId=null;
   renderOwNodes();
   renderOwPaths();
+}
+function finishAllStops(){
+  stops.forEach(s=>{ stopsCompleted[s.id]=true; });
+  saveProgress();
+  justCompletedStopId=null;
+  renderOwNodes();
+  renderOwPaths();
+}
+function buildFilmstrip(){
+  const el=document.getElementById('ow-bonus-filmstrip');
+  if(!el||el._built) return;
+  el._built=true;
+  const holes=Array(6).fill('<div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;flex-shrink:0;"></div>').join('');
+  el.style.cursor='pointer';
+  el.style.transform='rotate(3deg)';
+  el.style.transformOrigin='center bottom';
+  el.style.filter='drop-shadow(0 6px 20px rgba(0,0,0,0.55))';
+  el.onclick=showBonusVideo;
+  el.innerHTML=`
+    <div style="background:var(--orange);border-radius:8px;display:flex;flex-direction:row;align-items:stretch;width:108px;padding:4px;gap:3px;">
+      <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+      <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:4px;background:#111;">
+        <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.55);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div style="width:32px;height:32px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+    </div>
+    <div style="text-align:center;margin-top:4px;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;color:rgba(255,220,100,0.92);text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;text-shadow:0 1px 5px rgba(0,0,0,0.6);">BTS<br>Video</div>`;
 }
 let justCompletedStopId=null;
 let currentStop=null,currentCardIdx=0,cards=[];
@@ -606,7 +626,7 @@ function renderOwNodes(){
       const selHeader=document.getElementById('ow-select-stop-header');
       if(selHeader) selHeader.style.display='block';
       const filmstrip=document.getElementById('ow-bonus-filmstrip');
-      if(filmstrip) filmstrip.style.display='block';
+      if(filmstrip){ buildFilmstrip(); filmstrip.style.display='block'; }
     } else if(anyDone){
       lbl.textContent='Continue Tour →';
       btn.onclick=owStartTour;
@@ -748,7 +768,7 @@ function animateStopCompletion(completedId, nextId, isLast){
         const selHeader=document.getElementById('ow-select-stop-header');
         if(selHeader) selHeader.style.display='block';
         const filmstrip=document.getElementById('ow-bonus-filmstrip');
-        if(filmstrip) filmstrip.style.display='block';
+        if(filmstrip){ buildFilmstrip(); filmstrip.style.display='block'; }
       }, 1200);
     }
     return;
