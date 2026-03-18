@@ -102,13 +102,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-inner { position:relative; display:inline-block; }
 .ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
-.ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0); }
+.ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
 .ow-node-label { display:block; margin-top:3px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; border:1px solid rgba(255,255,255,0.12); }
 .ow-node-wrap.next-stop .ow-node-label { background:var(--orange); border-color:transparent; box-shadow:0 2px 6px rgba(255,107,53,0.4); color:white; }
 .ow-node-stamp { position:absolute; top:6px; right:6px; width:34px; height:34px; background:transparent; border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
-.ow-node-wrap.skipped .ow-node-img { filter:saturate(0) opacity(0.45); }
-.ow-node-wrap.skipped .ow-node-label { background:rgba(120,120,130,0.7); box-shadow:none; display:block; opacity:0.6; }
 @keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes stampPop {
   0%   {transform:scale(0) rotate(-30deg);opacity:0;}
@@ -118,10 +116,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   100% {transform:scale(1) rotate(0deg);opacity:1;}
 }
 @keyframes nodeUnlock {
-  0%   {filter:brightness(0) opacity(0);transform:scale(0.85);}
-  15%  {filter:brightness(2.2) opacity(1) saturate(1.8);transform:scale(1.18);}
-  45%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
-  70%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
+  0%   {filter:brightness(0) opacity(0.3);transform:scale(0.85);}
+  30%  {filter:brightness(2.5) opacity(1) saturate(1.8);transform:scale(1.18);}
+  55%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
+  75%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
   100% {filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));transform:scale(1);}
 }
 @keyframes pathDraw {
@@ -292,12 +290,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <!-- Bonus video filmstrip — pinned bottom right above test buttons, built by JS -->
     <div id="ow-bonus-filmstrip" style="display:none;position:absolute;bottom:calc(6.5rem + env(safe-area-inset-bottom));right:0.75rem;z-index:25;"></div>
     <div class="ow-bottom">
-      <div id="ow-action-row" style="display:flex;gap:0.5rem;margin-bottom:0.6rem;">
-        <button id="ow-skip-btn" onclick="owSkipStop()" style="display:none;flex:0 0 auto;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);border:1.5px solid rgba(255,255,255,0.2);border-radius:var(--radius-sm);padding:0.9rem 1rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;white-space:nowrap;backdrop-filter:blur(8px);">Skip stop →</button>
-        <button class="ow-start-btn" id="ow-start-btn" style="flex:1;margin-bottom:0;">
-          <span id="ow-start-label">Start Tour</span>
-        </button>
-      </div>
+      <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
+        <span id="ow-start-label">Start Tour</span>
+      </button>
       <a class="ow-link-item" onclick="showPartnersPage()" style="display:flex;align-items:center;justify-content:center;gap:0.45rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;color:rgba(255,255,255,0.55);cursor:pointer;text-decoration:none;padding:0.2rem 0;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
         Restaurants &amp; Partners
@@ -356,10 +351,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div class="jt-bar-top">
       <div id="dp-prog" style="min-width:70px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:800;color:rgba(255,255,255,0.85);"></div>
       <div class="jt-stop-label" id="jt-label" style="flex:1;text-align:center;font-size:1.05rem;"></div>
-      <div style="display:flex;align-items:center;gap:0.4rem;">
-        <button id="skip-substop-btn" onclick="skipSubstop()" style="display:none;background:none;border:none;color:rgba(255,255,255,0.45);font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;padding:0.2rem 0.4rem;white-space:nowrap;">Skip →</button>
-        <button class="jt-close" onclick="closeJourney()">✕</button>
-      </div>
+      <button class="jt-close" onclick="closeJourney()">✕</button>
     </div>
     <div class="progress-dots" id="progress-dots"></div>
   </div>
@@ -549,63 +541,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <script>
 const stops=[
-  {id:1,name:"Erasmus Bridge",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
-    substops:[
-      {id:"1-1",name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",
-        address:"Boompjeskade, 3011 XE Rotterdam",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",
-        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",
-        desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",
-        rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",
-        challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},
-        quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
-        partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}]}
-    ]},
-  {id:2,name:"Witte Huis",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
-    substops:[
-      {id:"2-1",name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",
-        address:"Geldersekade 1, 3011 EG Rotterdam",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",
-        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",
-        desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",
-        rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",
-        challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},
-        quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}}
-    ]},
-  {id:3,name:"Oude Haven",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
-    substops:[
-      {id:"3-1",name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",
-        address:"Oudehaven, 3011 KN Rotterdam",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",
-        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",
-        desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",
-        rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",
-        challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},
-        quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}}
-    ]},
-  {id:4,name:"Cube Houses",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
-    substops:[
-      {id:"4-1",name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",
-        address:"Overblaak 70, 3011 MH Rotterdam",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",
-        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",
-        desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",
-        rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",
-        challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},
-        quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}}
-    ]},
-  {id:5,name:"Markthal",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
-    substops:[
-      {id:"5-1",name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",
-        img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",
-        address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",
-        cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",
-        desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",
-        rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",
-        challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},
-        quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
-        partners:[{name:"Markthal Herring Stand",type:"Street Food",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. Non-negotiable Rotterdam food culture.",location:"Inside Markthal, central aisle",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",offer:"Free soft drink with any purchase",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-001",emoji:"🐟",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"]}]}
-    ]}
+  {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
+    partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}]},
+  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
+  {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
+  {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
+  {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
+    partners:[{name:"Markthal Herring Stand",type:"Street Food",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. Non-negotiable Rotterdam food culture.",location:"Inside Markthal, central aisle",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",offer:"Free soft drink with any purchase",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-001",emoji:"🐟",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"]}]}
 ];
 
 const photoCollection={};
@@ -694,47 +636,7 @@ function showScreen(name){
   const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
   if(name==='overworld')renderOwNodes();
 }
-function owStartTour(){const n=stops.find(s=>stopsCompleted[s.id]!==true&&stopsCompleted[s.id]!=='skipped')||stops[0];startJourney(n.id);}
-
-function owSkipStop(){
-  const nextStop=stops.find(s=>!stopsCompleted[s.id]);
-  if(!nextStop) return;
-  if(!confirm(`Skip "${nextStop.name}"?`)) return;
-  stopsCompleted[nextStop.id]='skipped';
-  saveProgress();
-  justCompletedStopId=null;
-  renderOwNodes();
-  renderOwPaths();
-  // Animate the next (now-active) stop if there is one
-  const nextActive=stops.find(s=>!stopsCompleted[s.id]);
-  if(nextActive){
-    setTimeout(()=>{
-      const nextWrap=document.getElementById('ow-wrap-'+nextActive.id);
-      const nextImg=document.getElementById('ow-img-'+nextActive.id);
-      if(nextWrap&&nextImg){
-        nextWrap.classList.remove('locked');
-        nextWrap.classList.add('next-stop');
-        nextImg.style.animation='nodeUnlock 0.9s ease-out forwards';
-        const lbl=nextWrap.querySelector('.ow-node-label');
-        if(lbl) lbl.style.display='block';
-        const nextInner=nextWrap.querySelector('.ow-node-inner');
-        if(nextInner) wireNodeTap(nextWrap, nextInner, nextActive.id);
-      }
-    }, 300);
-  }
-}
-
-function skipSubstop(){
-  const nextNavIdx=getNextSubstopNavIdx();
-  if(nextNavIdx!==null){
-    stopCFVideo();
-    currentCardIdx=nextNavIdx;
-    updateCardPosition();
-    updateProgressDots();
-    updateNavBtns();
-    setTimeout(()=>{ const ac=cards[currentCardIdx]; initStopMap(currentStop.id, ac?.substop?.id); }, 100);
-  }
-}
+function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
 
 // ── Illustrated overworld map ──
 // Reverse-S path: left→right, drop, right→left, drop, left→right...
@@ -753,7 +655,6 @@ function initOverworldMap(){
 }
 
 function renderOwNodes(){
-  if(_owAnimating) return; // don't wipe nodes while completion animation is running
   const container=document.getElementById('ow-nodes');
   if(!container)return;
   // Update button label based on progress
@@ -777,27 +678,22 @@ function renderOwNodes(){
       btn.onclick=owStartTour;
     }
   }
-  // Show/hide overworld skip button
-  const skipBtn=document.getElementById('ow-skip-btn');
-  if(skipBtn){
-    const nextActive=stops.find(s=>!stopsCompleted[s.id]);
-    skipBtn.style.display=(nextActive&&anyDone&&!allDone)?'block':'none';
-  }
-  const owScreen=document.getElementById('overworld-screen');
-  const W=owScreen.offsetWidth||390, H=owScreen.offsetHeight||844;
+  container.innerHTML='';
+  const screen=document.getElementById('overworld-screen');
+  const W=screen.offsetWidth||390, H=screen.offsetHeight||844;
   const scaleX=W/390, scaleY=H/844;
-
-  container.innerHTML=''; // clear before rebuilding
 
   stops.forEach((stop,i)=>{
     const pos=OW_STOP_POS[i];
     const isDone=stopsCompleted[stop.id]===true;
-    const isSkipped=stopsCompleted[stop.id]==='skipped';
-    const isNext=!isDone&&!isSkipped&&(i===0||stopsCompleted[stops[i-1]?.id]!==undefined);
-    const isLocked=!isDone&&!isSkipped&&!isNext;
+    // next stop appears LOCKED (silhouette) on map render — animateStopCompletion reveals it
+    const isNext=!isDone&&(i===0||stopsCompleted[stops[i-1]?.id]===true);
+    const isLocked=!isDone; // everything not done starts locked visually
 
     const wrap=document.createElement('div');
-    wrap.className='ow-node-wrap'+(isDone?' done':isSkipped?' skipped':isNext?' next-stop':' locked');
+    // Only stop 1 (never completed anything) gets next-stop class immediately
+    const noCompletions=Object.keys(stopsCompleted).length===0;
+    wrap.className='ow-node-wrap'+(isDone?' done':(isNext&&noCompletions)?' next-stop':' locked');
     wrap.style.left=(pos.x*scaleX)+'px';
     wrap.style.top=(pos.y*scaleY)+'px';
     wrap.id='ow-wrap-'+stop.id;
@@ -821,18 +717,11 @@ function renderOwNodes(){
       <circle cx="17" cy="17" r="14" fill="#2ecc71" stroke="white" stroke-width="2.5" stroke-dasharray="3 1.5" stroke-linecap="round"/>
       <path d="M10 17.5 C11.5 16 13.5 19.5 15.5 21.5 C18 18.5 21 13.5 24 12" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </svg>`;
-    // Always start hidden — shown via animation or instantly
+    // Always start hidden — shown via animation (or instantly for previously done stops on re-render)
     stamp.style.opacity='0';
     if(isDone && stop.id !== justCompletedStopId){
+      // Already done on a previous visit — show immediately without animation
       requestAnimationFrame(()=>{ stamp.style.opacity='1'; });
-    }
-
-    // Skipped badge — arrow forward, shown immediately
-    if(isSkipped){
-      const skipBadge=document.createElement('div');
-      skipBadge.style.cssText='position:absolute;top:6px;right:6px;width:28px;height:28px;background:rgba(120,120,140,0.85);border-radius:50%;border:2.5px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));';
-      skipBadge.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
-      inner.appendChild(skipBadge);
     }
     inner.appendChild(stamp);
 
@@ -841,10 +730,12 @@ function renderOwNodes(){
     const label=document.createElement('div');
     label.className='ow-node-label';
     label.textContent=stop.name;
-    if(isLocked) label.style.display='none'; // locked = no label
+    if(!isDone&&!isNext) label.style.display='none';
+    if(!isDone&&isNext&&!noCompletions) label.style.display='none'; // hidden until animation unlocks
     wrap.appendChild(label);
 
-    const tappable=isDone||isSkipped||isNext;
+    // Tap interactions — only wired for done stops and stop 1 on fresh start
+    const tappable=isDone||(isNext&&noCompletions);
     if(tappable) wireNodeTap(wrap, inner, stop.id);
 
     container.appendChild(wrap);
@@ -859,30 +750,37 @@ function wireNodeTap(wrap, inner, stopId){
   inner.addEventListener('pointerup',()=>{
     const img=inner.querySelector('.ow-node-img');
     if(img){img.style.transform='scale(1.08)';setTimeout(()=>{img.style.transform='scale(1)';},150);}
+    const ripple=document.createElement('div');
+    ripple.style.cssText='position:absolute;top:50%;left:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(255,107,53,0.3);transform:scale(0);animation:owRipple 0.55s ease-out forwards;pointer-events:none;';
+    inner.appendChild(ripple);
+    setTimeout(()=>ripple.remove(),600);
   });
   inner.addEventListener('pointercancel',()=>{
     const img=inner.querySelector('.ow-node-img');
     if(img) img.style.transform='scale(1)';
   });
+  // Step 8-11: tap on next stop → activation effect → grow → pause → start journey
   wrap.addEventListener('click',()=>{
     const img=inner.querySelector('.ow-node-img');
+    // Activation: grow + golden flash
     if(img){
-      img.style.transition='transform 0.2s cubic-bezier(0.34,1.56,0.64,1)';
-      img.style.transform='scale(1.25)';
+      img.style.transition='transform 0.25s cubic-bezier(0.34,1.56,0.64,1)';
+      img.style.transform='scale(1.4)';
     }
     const flash=document.createElement('div');
-    flash.style.cssText='position:fixed;inset:0;z-index:999;background:rgba(255,204,0,0.2);pointer-events:none;transition:opacity 0.3s;';
+    flash.style.cssText='position:fixed;inset:0;z-index:999;background:rgba(255,204,0,0.25);pointer-events:none;transition:opacity 0.4s;';
     document.body.appendChild(flash);
-    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),300);},150);
-    setTimeout(()=>startJourney(stopId), 350);
+    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),400);},250);
+    // After grow pause, navigate
+    setTimeout(()=>{
+      if(img){img.style.transform='scale(1)';img.style.transition='transform 0.2s';}
+      setTimeout(()=>startJourney(stopId), 300);
+    }, 900);
   });
 }
 
 // Full cinematic completion sequence — called 2s after returning to overworld
-let _owAnimating=false; // guard against renderOwNodes resetting during completion animation
-
 function animateStopCompletion(completedId, nextId, isLast){
-  _owAnimating=true;
   const stamp=document.getElementById('ow-stamp-'+completedId);
   const completedImg=document.getElementById('ow-img-'+completedId);
 
@@ -917,7 +815,6 @@ function animateStopCompletion(completedId, nextId, isLast){
         if(selHeader) selHeader.style.display='block';
         const filmstrip=document.getElementById('ow-bonus-filmstrip');
         if(filmstrip){ buildFilmstrip(); filmstrip.style.display='block'; }
-        _owAnimating=false;
       }, 800);
     }
     return;
@@ -945,8 +842,6 @@ function animateStopCompletion(completedId, nextId, isLast){
 
     const nextInner=nextWrap.querySelector('.ow-node-inner');
     if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
-
-    setTimeout(()=>{ _owAnimating=false; }, 1200); // animation settled
   }, 2700);
 }
 
@@ -1084,64 +979,15 @@ function startVideoAfterPopup(stopId){const popup=document.getElementById('sound
 }
 function setupRudyScrollHint(stopId){const card=document.querySelector(`.card[data-stop="${stopId}"][data-type="rudy"]`),hint=document.getElementById('rudy-scroll-hint-'+stopId);if(!card||!hint)return;card.addEventListener('scroll',function(){if(card.scrollTop>60)hint.style.display='none';},{passive:true});}
 
-// currentSubstopId tracks which substop we're in during a journey
-let currentSubstopIdx=0;
-
 function buildCards(stop){
-  const allCards=[];
-  // First card is always the inter-stop transition
-  allCards.push({type:'transition', stop, substop:stop.substops[0]});
-
-  stop.substops.forEach((substop, si)=>{
-    // Nav card for every substop
-    allCards.push({type:'nav', stop, substop});
-    // Optional content cards — only add if data exists on the substop
-    if(substop.cloudflareId) allCards.push({type:'desc', stop, substop});
-    if(substop.desc&&!substop.cloudflareId) allCards.push({type:'desc', stop, substop});
-    if(substop.rudy) allCards.push({type:'rudy', stop, substop});
-    if(substop.challenge) allCards.push({type:'photo', stop, substop});
-    if(substop.quiz) allCards.push({type:'quiz', stop, substop});
-    if(substop.partners) substop.partners.forEach((partner,pi)=>allCards.push({type:'partner',stop,substop,partner,partnerIdx:pi}));
-  });
-
-  // Tag each card with its substop index for dot rendering
-  let si=0;
-  allCards.forEach((card,i)=>{
-    if(card.type==='nav'&&i>0) si++;
-    card._substopIdx=si;
-  });
-  // transition card shares substop 0's group
-  if(allCards[0]) allCards[0]._substopIdx=0;
-
-  return allCards;
-}
-
-// Get the cards belonging to the current substop (for dot rendering)
-function getCurrentSubstopCards(){
-  const si=cards[currentCardIdx]?._substopIdx??0;
-  return cards.filter(c=>c._substopIdx===si&&c.type!=='transition'&&c.type!=='nav');
-}
-
-function getCurrentSubstopCardIndex(){
-  const si=cards[currentCardIdx]?._substopIdx??0;
-  const substopCards=cards.filter(c=>c._substopIdx===si&&c.type!=='transition'&&c.type!=='nav');
-  const myCard=cards[currentCardIdx];
-  return substopCards.indexOf(myCard);
-}
-
-// Get first card index of the next substop (for skip)
-function getNextSubstopNavIdx(){
-  const si=cards[currentCardIdx]?._substopIdx??0;
-  for(let i=currentCardIdx+1;i<cards.length;i++){
-    if(cards[i]._substopIdx>si&&cards[i].type==='nav') return i;
-  }
-  return null;
+  const base=['transition','nav','desc','text','rudy','photo','quiz'];
+  const cards=base.map(type=>({type,stop}));
+  if(stop.partners&&stop.partners.length>0)stop.partners.forEach((partner,pi)=>cards.push({type:'partner',stop,partner,partnerIdx:pi}));
+  return cards;
 }
 
 function renderCard(card,idx,total){
-  const stop=card.stop;
-  const s=card.substop||card.stop; // use substop data for content, fallback to stop
-  const domId=stop.id; // always integer — used for DOM element IDs
+  const s=card.stop;
 
   if(card.type==='transition'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
@@ -1172,18 +1018,15 @@ function renderCard(card,idx,total){
       </div>
     </div>`;
   }
-  if(card.type==='nav'){
-    const substopId=s.id; // substop id — unique per substop
-    return `<div class="card nav-card" data-stop="${domId}" data-type="nav"><div id="stop-map-${substopId}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${substopId}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;
-  }
+  if(card.type==='nav'){return `<div class="card nav-card" data-stop="${s.id}" data-type="nav"><div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${s.id}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;}
 
   if(card.type==='desc'){
     if(s.cloudflareId&&s.cfStyle==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
-      return `<div class="card" data-stop="${domId}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
-        <iframe id="cf-vid-${domId}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-        <div id="sound-popup-${domId}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
-          <div onclick="startVideoAfterPopup(${domId})" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
+      return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
+        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
+          <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
             <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:12px;padding:7px 0 7px 0;box-shadow:0 8px 32px rgba(0,0,0,0.55);">
               <div style="background:rgba(6,6,8,0.75);border-radius:6px;overflow:hidden;margin:0;">
               <div style="display:flex;align-items:stretch;">
@@ -1203,7 +1046,7 @@ function renderCard(card,idx,total){
           </div>
         </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);pointer-events:none;"><div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div><div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div></div>
-        <div id="text-section-${domId}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${domId} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-${domId}').style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
       </div>`;}
 
     return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-section"><div class="arrival-text-body">${s.desc}</div></div></div>`;
@@ -1349,16 +1192,13 @@ function renderCard(card,idx,total){
   if(card.type==='quiz'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    const quizKey=s.id; // use substop id as quiz key so each substop quiz is independent
-    const qa=quizAnswered[quizKey],answered=qa!==undefined;
+    const qa=quizAnswered[s.id],answered=qa!==undefined;
     const attempted=Object.keys(quizAnswered).length;
-    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{
-      for(const st of stops){ for(const ss of (st.substops||[])){ if(ss.id==sid&&ss.quiz) return ans===ss.quiz.correct; } } return false;
-    }).length;
+    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
     const opts=s.quiz.opts.map((opt,i)=>{
       let cls='',icon='',stamp='';
       if(answered){if(i===s.quiz.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
-      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz('${quizKey}',${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
+      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
     const wasCorrect=answered&&qa===s.quiz.correct;
     return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
@@ -1473,19 +1313,16 @@ function startJourney(stopId){
 }
 
 function renderJourney(){
-  const substop=cards[currentCardIdx]?.substop||currentStop.substops[0];
-  document.getElementById('jt-label').textContent=substop.name;
+  document.getElementById('jt-label').textContent=currentStop.name;
   document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
   var _cur=cards[currentCardIdx];
   var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
-  var isCFFS=_cur&&_cur.type==='desc'&&_cur.substop&&_cur.substop.cfStyle==='fullscreen';
+  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
   document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
   var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
-  // Dots = cards in current substop (excluding nav/transition)
-  const substopCards=getCurrentSubstopCards();
-  const substopIdx=getCurrentSubstopCardIndex();
-  document.getElementById('progress-dots').innerHTML=substopCards.map((_,i)=>`<div class="dot ${i===substopIdx?'active':i<substopIdx?'done':''}" style="width:${i===substopIdx?'20px':'8px'}"></div>`).join('');
+  const contentCards=cards.slice(2),contentIdx=currentCardIdx-2;
+  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`<div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   updateCardPosition(false);updateNavBtns();
   setTimeout(reloadGalleryImages,100);
@@ -1501,24 +1338,12 @@ function updateCardPosition(animate=true){
 function updateProgressDots(){
   var _cur=cards[currentCardIdx];
   var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
-  var isCFFS=_cur&&_cur.type==='desc'&&_cur.substop&&_cur.substop.cfStyle==='fullscreen';
+  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
   document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
   document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
   var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
-  // Update substop name in header
-  const substop=_cur?.substop||currentStop.substops[0];
-  document.getElementById('jt-label').textContent=substop.name;
-  // Dots scoped to current substop
-  const substopCards=getCurrentSubstopCards();
-  const substopIdx=getCurrentSubstopCardIndex();
-  document.querySelectorAll('.dot').forEach((d,i)=>{
-    d.className='dot'+(i===substopIdx?' active':i<substopIdx?' done':'');
-    d.style.width=i===substopIdx?'20px':'8px';
-  });
-  // Rebuild if count changed (entering new substop)
-  if(document.querySelectorAll('.dot').length!==substopCards.length){
-    document.getElementById('progress-dots').innerHTML=substopCards.map((_,i)=>`<div class="dot ${i===substopIdx?'active':i<substopIdx?'done':''}" style="width:${i===substopIdx?'20px':'8px'}"></div>`).join('');
-  }
+  const ci=currentCardIdx-2;
+  document.querySelectorAll('.dot').forEach((d,i)=>{d.className='dot'+(i===ci?' active':i<ci?' done':'');d.style.width=i===ci?'20px':'8px';});
 }
 
 function updateNavBtns(){
@@ -1527,10 +1352,9 @@ function updateNavBtns(){
   const cc=cards[currentCardIdx];
   const isTransition=cc&&cc.type==='transition',isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
-  const isCFFS=cc&&cc.type==='desc'&&cc.substop&&cc.substop.cfStyle==='fullscreen';
+  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
 
   // Show nav bar even on popup — "Continue" plays the video
-  const substopId=currentStop.id+'-'+(cc?._substopIdx??0);
   const popup=currentStop&&document.getElementById('sound-popup-'+currentStop.id);
   const popupVisible=popup&&popup.style.display!=='none';
   if(isCFFS&&popupVisible){
@@ -1570,7 +1394,7 @@ function updateNavBtns(){
     document.getElementById('card-bottom').style.cssText='display:flex;background:transparent;border-top:none;padding:0.65rem 1.25rem calc(0.65rem + env(safe-area-inset-bottom));gap:0.5rem;';
   } else if(isCFFS){
     next.textContent='Continue →';next.className='card-next-btn';
-    next.onclick=nextCard; // advance to next card (rudy or whatever follows)
+    next.onclick=function(){skipToCard(4);}; // 4 = rudy's notes, skip text card
     tb.textContent='Text only';
     tb.onclick=function(){skipToTextFullscreen(currentStop.id);};
     // Style card-bottom for video: floating above video controls, side-padded, transparent
@@ -1591,13 +1415,6 @@ function updateNavBtns(){
   next.style.visibility=isTransition?'hidden':'visible';
   document.getElementById('card-bottom').style.display=isTransition?'none':'flex';
   document.getElementById('card-bottom').classList.toggle('on-map',isNav);
-
-  // Skip substop button — show when there's a next substop to skip to
-  const skipBtn=document.getElementById('skip-substop-btn');
-  if(skipBtn){
-    const hasNextSubstop=getNextSubstopNavIdx()!==null;
-    skipBtn.style.display=(hasNextSubstop&&!isNav&&!isTransition&&!isCFFS)?'inline-block':'none';
-  }
 
   // Camera button — only on photo card
   const isPhoto=cc&&cc.type==='photo';
@@ -1630,22 +1447,15 @@ function nextCard(){
     // Always go to overworld first
     document.getElementById('journey-screen').classList.remove('show');
     showScreen('overworld');
-    // If last stop, set button immediately (don't wait for animation)
-    if(isLast){
-      const lbl=document.getElementById('ow-start-label');
-      const btn=document.getElementById('ow-start-btn');
-      if(lbl) lbl.textContent='🎉 Finish Tour';
-      if(btn) btn.onclick=showEndScreen;
-    }
     setTimeout(()=>animateStopCompletion(completedId, nextId, isLast), 2000);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
       const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
       const ac=cards[currentCardIdx];
-      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(currentStop.id, ac.substop?.id),100);
-      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(currentStop.id),300);
-      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(currentStop.id),200);
+      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id),100);
+      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac.stop.id),300);
+      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac.stop.id),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),450);
     },400);
@@ -1653,14 +1463,17 @@ function nextCard(){
 }
 
 function prevCard(){stopCFVideo();if(currentCardIdx>0){
-  currentCardIdx--;
+  // If we're on rudy (idx 4) or beyond, going back should always land on desc (idx 2)
+  if(currentCardIdx===4){currentCardIdx=2;}
+  else{currentCardIdx--;}
   updateCardPosition();updateProgressDots();updateNavBtns();
+  // If landing on desc card, re-show popup (reset to pre-video state)
   const ac=cards[currentCardIdx];
   if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),150);
-  if(ac&&ac.type==='desc'&&ac.substop&&ac.substop.cfStyle==='fullscreen'){
-    const iframe=document.getElementById('cf-vid-'+currentStop.id);
+  if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cfStyle==='fullscreen'){
+    const iframe=document.getElementById('cf-vid-'+ac.stop.id);
     if(iframe){iframe.src='';iframe.style.display='none';}
-    const popup=document.getElementById('sound-popup-'+currentStop.id);
+    const popup=document.getElementById('sound-popup-'+ac.stop.id);
     if(popup){popup.style.display='flex';}
     document.getElementById('card-bottom').style.display='none';
   }
@@ -1784,12 +1597,10 @@ function closeLowresOverlay(){document.getElementById('lowres-overlay').style.di
 
 const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
 
-function initStopMap(stopId, substopId, destCoordOverride){
+function initStopMap(stopId){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
   const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
-  const destCoord=destCoordOverride||coords[stopId-1];
-  const containerId='stop-map-'+(substopId||stopId);
-  const container=document.getElementById(containerId);
+  const destCoord=coords[stopId-1],containerId='stop-map-'+stopId,container=document.getElementById(containerId);
   if(!container||container._mapInitialized)return;container._mapInitialized=true;
   const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
   const stop=stops.find(x=>x.id===stopId);
@@ -1845,21 +1656,14 @@ window.addEventListener('focus',function(){
 
 // ── Partners page ──
 function showPartnersPage(){
-  // Always rebuild so images load correctly
   let ov=document.getElementById('partners-overlay');
-  if(ov) ov.remove();
+  if(ov){ ov.style.display='block'; ov.scrollTop=0; return; }
   ov=document.createElement('div');
   ov.id='partners-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
 
   const allPartners=[];
-  stops.forEach(s=>{
-    (s.substops||[]).forEach(ss=>{
-      if(ss.partners) ss.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id}));
-    });
-    // Also check legacy top-level partners
-    if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id}));
-  });
+  stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
 
   function miniCoupon(p){
     if(!p.offer) return '';
@@ -1878,7 +1682,7 @@ function showPartnersPage(){
   const listCards=allPartners.map((p,idx)=>`
     <div onclick="showPartnerDetail(${idx})" style="cursor:pointer;background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:visible;margin-bottom:1rem;position:relative;">
       <div style="position:relative;overflow:visible;">
-        <img src="${p.img}" loading="eager" crossorigin="anonymous" style="width:100%;height:175px;object-fit:cover;display:block;border-radius:var(--radius) var(--radius) 0 0;">
+        <img src="${p.img}" style="width:100%;height:175px;object-fit:cover;display:block;border-radius:var(--radius) var(--radius) 0 0;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);border-radius:var(--radius) var(--radius) 0 0;pointer-events:none;"></div>
         <div style="position:absolute;bottom:12px;left:12px;pointer-events:none;">
           <div style="font-size:0.58rem;font-weight:700;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.08em;">Stop ${p.stopId} · ${p.stopName}</div>
@@ -1931,10 +1735,10 @@ function showPartnerDetail(idx){
     <!-- Gallery grid -->
     <div style="position:relative;width:100%;margin-bottom:0;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
-        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[0]}" loading="eager" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[1]}" loading="eager" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[2]}" loading="eager" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[3]}" loading="eager" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[1]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[2]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div style="aspect-ratio:4/3;overflow:hidden;"><img src="${imgs[3]}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
       </div>
       <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
         <div style="background:${RY};border-radius:99px;padding:0.22rem 1rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
