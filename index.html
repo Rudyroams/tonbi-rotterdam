@@ -541,12 +541,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <script>
 const stops=[
-  {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
-    partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}]},
-  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
-  {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
-  {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
-  {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
+  {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",coords:[4.4871,51.9090],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
+    partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}],
+    subStops:[
+      {id:"1a",name:"De Boeg Monument",tagline:"The prow of a ship — Rotterdam's maritime soul",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=De+Boeg+Rotterdam",coords:[4.4855,51.9085],rudy:"This bronze prow is where Rotterdam's harbor history is condensed into a single sculpture. Face it, then turn around — that's the view my grandfather had every morning.",challenge:{title:"Prow & Bridge",desc:"Shoot the bronze prow with the Erasmus Bridge behind it, perfectly framed.",tip:"Get close to the prow and shoot wide. The bridge behind gives it scale."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"De Boeg represents Rotterdam's relationship with what?",opts:["The sea and harbor trade","The bombing of 1940","The city council"],correct:0,explanation:"The prow sculpture is a tribute to Rotterdam's centuries-long identity as a harbor city."}}
+    ]},
+  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",coords:[4.4917,51.9186],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
+  {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",coords:[4.4917,51.9193],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
+  {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",coords:[4.4877,51.9188],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
+  {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",coords:[4.4866,51.9200],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
     partners:[{name:"Markthal Herring Stand",type:"Street Food",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. Non-negotiable Rotterdam food culture.",location:"Inside Markthal, central aisle",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",offer:"Free soft drink with any purchase",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-001",emoji:"🐟",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"]}]}
 ];
 
@@ -977,17 +980,102 @@ function jumpToDescCard(stopId){currentCardIdx=2;updateCardPosition();updateProg
 function startVideoAfterPopup(stopId){const popup=document.getElementById('sound-popup-'+stopId);if(popup)popup.style.display='none';const iframe=document.getElementById('cf-vid-'+stopId);if(iframe){iframe.src=iframe.dataset.src;iframe.style.display='block';iframe.style.zIndex='3';}
   updateNavBtns();
 }
-function setupRudyScrollHint(stopId){const card=document.querySelector(`.card[data-stop="${stopId}"][data-type="rudy"]`),hint=document.getElementById('rudy-scroll-hint-'+stopId);if(!card||!hint)return;card.addEventListener('scroll',function(){if(card.scrollTop>60)hint.style.display='none';},{passive:true});}
+function setupRudyScrollHint(card){
+  // Accept card object or legacy stopId
+  const ss = card && typeof card === 'object' ? card.subStop : null;
+  const stopId = card && typeof card === 'object' ? card.stop.id : card;
+  const hintId = ss ? 'rudy-scroll-hint-ss-'+ss.id : 'rudy-scroll-hint-'+stopId;
+  const dataStop = ss ? 'ss-'+ss.id : String(stopId);
+  const cardEl=document.querySelector(`.card[data-stop="${dataStop}"][data-type="rudy"]`);
+  const hint=document.getElementById(hintId);
+  if(!cardEl||!hint)return;
+  cardEl.addEventListener('scroll',function(){if(cardEl.scrollTop>60)hint.style.display='none';},{passive:true});
+}
 
+// ─── buildCards ─────────────────────────────────────────────────────────────
+// Returns a flat card array. Each card is tagged with:
+//   .label     — displayed in the top bar
+//   ._segId    — segment identifier ('main' | 'ss_0' | 'ss_1' ...)
+//   .segStart  — absolute index of first content card in this segment
+//   .segEnd    — absolute index of last card in this segment
+//   .subStop   — sub-stop data object (null for main segment)
 function buildCards(stop){
-  const base=['transition','nav','desc','text','rudy','photo','quiz'];
-  const cards=base.map(type=>({type,stop}));
-  if(stop.partners&&stop.partners.length>0)stop.partners.forEach((partner,pi)=>cards.push({type:'partner',stop,partner,partnerIdx:pi}));
-  return cards;
+  const result=[];
+
+  // ── Main stop segment ──
+  const mainCards=[
+    {type:'transition', stop},
+    {type:'nav',        stop},
+    {type:'desc',       stop},
+    {type:'text',       stop},
+    {type:'rudy',       stop},
+    {type:'photo',      stop},
+    {type:'quiz',       stop},
+  ];
+  if(stop.partners&&stop.partners.length>0)
+    stop.partners.forEach((partner,pi)=>mainCards.push({type:'partner',stop,partner,partnerIdx:pi}));
+  mainCards.forEach(c=>{ c.label=stop.name; c._segId='main'; });
+  result.push(...mainCards);
+
+  // ── Sub-stop segments ──
+  if(stop.subStops&&stop.subStops.length>0){
+    stop.subStops.forEach((ss,si)=>{
+      const ssCards=[];
+      // Brief "keep exploring" interstitial — treated like transition (hidden from dots)
+      ssCards.push({type:'substop-intro', stop, subStop:ss});
+      ssCards.push({type:'nav',           stop, subStop:ss});
+      if(ss.rudy)      ssCards.push({type:'rudy',  stop, subStop:ss});
+      if(ss.challenge) ssCards.push({type:'photo', stop, subStop:ss});
+      if(ss.quiz)      ssCards.push({type:'quiz',  stop, subStop:ss});
+      if(ss.partners&&ss.partners.length>0)
+        ss.partners.forEach((p,pi)=>ssCards.push({type:'partner',stop,subStop:ss,partner:p,partnerIdx:pi}));
+      ssCards.forEach(c=>{ c.label=ss.name; c._segId='ss_'+si; });
+      result.push(...ssCards);
+    });
+  }
+
+  // ── Post-pass: stamp segStart / segEnd on every card ──
+  const segIds=[...new Set(result.map(c=>c._segId))];
+  segIds.forEach(sid=>{
+    const indices=result.reduce((acc,c,i)=>{ if(c._segId===sid)acc.push(i); return acc; },[]);
+    const last=indices[indices.length-1];
+    // Content starts after nav, substop-intro, and transition
+    const firstContent=indices.find(i=>!['nav','substop-intro','transition'].includes(result[i].type));
+    const segStart=firstContent!=null?firstContent:indices[0];
+    result.forEach((c,i)=>{ if(c._segId===sid){ c.segStart=segStart; c.segEnd=last; }});
+  });
+
+  return result;
+}
+
+// Return the absolute index of the nav card that heads the segment of cardIdx
+function getSegNavIdx(idx){
+  const seg=cards[idx]&&cards[idx]._segId;
+  if(!seg)return 0;
+  for(let i=idx;i>=0;i--){ if(cards[i]._segId===seg&&cards[i].type==='nav')return i; }
+  return 0;
+}
+
+// Return the absolute index of the transition card before the segment of cardIdx (main only)
+function getSegTransitionIdx(idx){
+  const seg=cards[idx]&&cards[idx]._segId;
+  if(seg!=='main')return null;
+  const ti=cards.findIndex(c=>c.type==='transition');
+  return ti>=0?ti:null;
 }
 
 function renderCard(card,idx,total){
   const s=card.stop;
+  // For sub-stop cards, use sub-stop data where it exists
+  const ss=card.subStop||null;
+  // Effective data sources — fall back to main stop if sub-stop doesn't override
+  const eImg   = ss ? ss.img   : s.img;
+  const eName  = ss ? ss.name  : s.name;
+  const eRudy  = ss ? ss.rudy  : s.rudy;
+  const eChallenge = ss ? ss.challenge : s.challenge;
+  const eQuiz  = ss ? ss.quiz  : s.quiz;
+  // Unique key prefix for DOM IDs — avoids collisions between main and sub-stop cards
+  const eKey   = ss ? 'ss-'+ss.id : String(s.id);
 
   if(card.type==='transition'){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
@@ -1018,8 +1106,59 @@ function renderCard(card,idx,total){
       </div>
     </div>`;
   }
-  if(card.type==='nav'){return `<div class="card nav-card" data-stop="${s.id}" data-type="nav"><div id="stop-map-${s.id}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div><div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;"><div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div><div class="arrival-title" style="line-height:1.1;">${s.name}</div></div><div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div><div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;"><div id="route-info-${s.id}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div><a href="${s.mapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps</a></div></div>`;}
+  if(card.type==='substop-intro'){
+    const ss=card.subStop;
+    const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
+    const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
+    return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
+        <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
+        <!-- Pin icon -->
+        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <!-- Text -->
+        <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">Keep Exploring · Stop ${s.id}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${ss.name}</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:260px;margin-top:0.15rem;">${ss.tagline||'Another spot worth your time.'}</div>
+        </div>
+        <!-- Sub-stop image -->
+        <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
+          <img src="${ss.img||s.img}" alt="${ss.name}" style="width:100%;height:130px;object-fit:cover;display:block;">
+        </div>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
+      </div>
+    </div>`;
+  }
 
+  if(card.type==='nav'){
+    // For sub-stops: use sub-stop name, mapUrl, and a unique container ID
+    const ss=card.subStop;
+    const navName=ss?ss.name:s.name;
+    const navMapUrl=ss?ss.mapUrl:s.mapUrl;
+    // Unique container ID avoids map re-init collision between main + sub-stop nav cards
+    const mapContainerId=ss?`stop-map-${s.id}-ss-${ss.id}`:`stop-map-${s.id}`;
+    const routeInfoId=ss?`route-info-${s.id}-ss-${ss.id}`:`route-info-${s.id}`;
+    const subLabel=ss?`<div style="font-size:0.55rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.1rem;">Sub-stop</div>`:'';
+    return `<div class="card nav-card" data-stop="${s.id}" data-type="nav" data-substop="${ss?ss.id:''}">
+      <div id="${mapContainerId}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;"></div>
+      <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(0.85rem + env(safe-area-inset-top)) 1.25rem 2rem;background:linear-gradient(to bottom,rgba(255,255,255,0.90) 45%,rgba(255,255,255,0));pointer-events:none;">
+        ${subLabel}
+        <div style="font-size:0.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.2rem;">Make your way to</div>
+        <div class="arrival-title" style="line-height:1.1;">${navName}</div>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:9;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(255,255,255,0.5) 50%,transparent 100%);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:11;background:rgba(255,255,255,0.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.35);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;display:flex;flex-direction:column;min-width:160px;">
+        <div id="${routeInfoId}" style="display:none;padding:0.3rem 0.85rem 0.22rem;font-size:0.62rem;font-weight:700;color:var(--orange);border-bottom:1px solid rgba(255,255,255,0.4);white-space:nowrap;line-height:1.3;text-align:center;"></div>
+        <a href="${navMapUrl}" target="_blank" style="padding:0.3rem 0.85rem;color:var(--orange);font-size:0.62rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:0.35rem;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="white"/></svg>Open in Google Maps
+        </a>
+      </div>
+    </div>`;
+  }
   if(card.type==='desc'){
     if(s.cloudflareId&&s.cfStyle==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
@@ -1053,21 +1192,32 @@ function renderCard(card,idx,total){
   }
 
   if(card.type==='rudy'){
+    const ss=card.subStop;
+    // Use sub-stop fields when available, fall back to main stop
+    const rudyImg  = ss ? ss.img  : s.img;
+    const rudyName = ss ? ss.name : s.name;
+    const rudyText = ss ? ss.rudy : s.rudy;
+    const rudyExtra= ss ? (ss.rudyExtra||'') : (s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look.");
+    const rudyFilm = ss ? (ss.rudyFilm||'') : (s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think.");
+    const rudyLocal= ss ? (ss.rudyLocal||'') : (s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere.");
+    // Unique scroll hint ID per card
+    const hintId=ss?`rudy-scroll-hint-${s.id}-ss-${ss.id}`:`rudy-scroll-hint-${s.id}`;
+    // Sub-stop badge
+    const subBadge=ss?`<div style="font-size:0.7rem;font-weight:700;color:rgba(255,165,80,0.9);text-transform:uppercase;letter-spacing:0.12em;margin-top:0.2rem;">Sub-stop · ${s.name}</div>`:'';
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
-    const TEAL='linear-gradient(160deg,#0f9b8e 0%,#0d6e8a 100%)';
-    const GREEN='linear-gradient(160deg,#1a7a3a 0%,#0a6a2a 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    return `<div class="card" data-stop="${s.id}" data-type="rudy" style="padding:0 0 2rem 0;background:${RAINBOW};">
-      <div id="rudy-scroll-hint-${s.id}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+    return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="rudy" style="padding:0 0 2rem 0;background:${RAINBOW};">
+      <div id="${hintId}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
 
       <!-- Hero image -->
       <div style="position:relative;width:100%;aspect-ratio:4/3;">
-        <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <img src="${rudyImg}" alt="${rudyName}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.8rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
             <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
             <div style="font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.82);margin-top:0.12rem;">Local filmmaker &amp; your host today</div>
+            ${subBadge}
           </div>
         </div>
       </div>
@@ -1075,28 +1225,28 @@ function renderCard(card,idx,total){
       <!-- Main note text — dark frosted panel -->
       <div style="margin:1rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:1.05rem;line-height:1.85;color:white;">${s.rudy}</div>
-          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);font-size:1rem;line-height:1.85;color:rgba(255,255,255,0.85);">${s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look."}</div>
+          <div style="font-size:1.05rem;line-height:1.85;color:white;">${rudyText}</div>
+          ${rudyExtra?`<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);font-size:1rem;line-height:1.85;color:rgba(255,255,255,0.85);">${rudyExtra}</div>`:''}
         </div>
       </div>
 
       <!-- Photo of the stop -->
       <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);position:relative;">
-        <img src="${s.img}" alt="${s.name}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${s.name}</div>
+        <img src="${rudyImg}" alt="${rudyName}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${rudyName}</div>
       </div>
 
-      <!-- Filmmaker's Eye -->
+      ${rudyFilm?`<!-- Filmmaker's Eye -->
       <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(255,107,53,0.25);">
         <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
-        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think."}</div></div>
-      </div>
+        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${rudyFilm}</div></div>
+      </div>`:''}
 
-      <!-- Local Knowledge -->
+      ${rudyLocal?`<!-- Local Knowledge -->
       <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(10,100,50,0.3);">
         <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Local Knowledge</span></div>
-        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere."}</div></div>
-      </div>
+        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${rudyLocal}</div></div>
+      </div>`:''}
       <div style="height:1rem;"></div>
     </div>`;
   }
@@ -1104,7 +1254,12 @@ function renderCard(card,idx,total){
   if(card.type==='text')return `<div class="card" data-stop="${s.id}" data-type="text" style="padding:1.5rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;margin-bottom:0.35rem;">${s.name}</div><div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div><div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.desc}</div><a onclick="jumpToDescCard(${s.id})" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.88rem;padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video</a></div>`;
 
   if(card.type==='photo'){
-    const hasPhoto=photoCollection[s.id];
+    const ss=card.subStop;
+    const photoKey=ss?`${s.id}-${ss.id}`:String(s.id);
+    const challenge=ss?ss.challenge:s.challenge;
+    const photoImg=ss?ss.img:s.img;
+    const photoName=ss?ss.name:s.name;
+    const hasPhoto=photoCollection[photoKey];
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
     const INDIGO='linear-gradient(160deg,#667eea 0%,#764ba2 100%)';
@@ -1114,7 +1269,7 @@ function renderCard(card,idx,total){
     const icoPin=`<svg width="16" height="16" viewBox="0 0 24 24" ${W}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
     const icoFilm=`<svg width="16" height="16" viewBox="0 0 24 24" ${W}><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="2" y1="17" x2="7" y2="17"/></svg>`;
     const hdr=(ico,label)=>`<div style="background:${RY};padding:0.75rem 1.1rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">${ico}<span style="font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:white;">${label}</span></div>`;
-    return `<div class="card" data-stop="${s.id}" data-type="photo" style="padding:1.25rem 1.25rem 5.5rem;background:${RAINBOW};">
+    return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="photo" style="padding:1.25rem 1.25rem 5.5rem;background:${RAINBOW};">
 
       <!-- ① Hero block: floating camera badge + photo + desc footer -->
       <div style="position:relative;margin-top:1.75rem;margin-bottom:1rem;">
@@ -1126,14 +1281,14 @@ function renderCard(card,idx,total){
             <span style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;letter-spacing:-0.01em;">Photo Challenge!</span>
           </div>
           <div style="position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#111;">
-            <img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+            <img src="${photoImg}" alt="${photoName}" style="width:100%;height:100%;object-fit:cover;display:block;">
             <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
             <div style="position:absolute;bottom:0.9rem;left:0.9rem;right:0.9rem;">
-              <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${s.challenge.title}</div>
+              <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${challenge.title}</div>
             </div>
           </div>
           <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;">
-            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.65;">${s.challenge.desc}</div>
+            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.65;">${challenge.desc}</div>
           </div>
         </div>
       </div>
@@ -1168,9 +1323,8 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- ④ Rudy's tip — indigo block, oversized bulb sticking out top -->
+      <!-- ④ Rudy's tip -->
       <div style="position:relative;margin-bottom:1.5rem;margin-top:2rem;">
-        <!-- Big bulb badge floating above -->
         <div style="position:absolute;top:-1.75rem;left:50%;transform:translateX(-50%);z-index:2;width:52px;height:52px;border-radius:50%;background:${INDIGO};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(102,126,234,0.55);">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18" fill="none"/><line x1="10" y1="22" x2="14" y2="22" fill="none"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" fill="none"/></svg>
         </div>
@@ -1179,47 +1333,60 @@ function renderCard(card,idx,total){
             <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.1rem;">Rudy's Tip</div>
           </div>
           <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0 1.1rem 1.1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;">
-            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.7;">${s.challenge.tip}</div>
+            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.7;">${challenge.tip}</div>
           </div>
         </div>
       </div>
 
-      ${hasPhoto ? `<div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.35);margin-bottom:0.5rem;"><div style="background:${RY};padding:0.6rem 1.1rem;display:flex;align-items:center;gap:0.5rem;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg><span style="font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:900;color:white;">Photo Captured!</span></div><img src="${photoCollection[s.id].dataUrl}" style="width:100%;display:block;object-fit:contain;max-height:55vh;background:#111;"></div>` : ''}
+      ${hasPhoto ? `<div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.35);margin-bottom:0.5rem;"><div style="background:${RY};padding:0.6rem 1.1rem;display:flex;align-items:center;gap:0.5rem;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg><span style="font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:900;color:white;">Photo Captured!</span></div><img src="${photoCollection[photoKey].dataUrl}" style="width:100%;display:block;object-fit:contain;max-height:55vh;background:#111;"></div>` : ''}
 
     </div>`;}
 
 
   if(card.type==='quiz'){
+    const ss=card.subStop;
+    const quizData=ss?ss.quiz:s.quiz;
+    // Composite key so sub-stop quizzes don't collide with main stop quizzes
+    const quizKey=ss?`${s.id}-${ss.id}`:String(s.id);
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    const qa=quizAnswered[s.id],answered=qa!==undefined;
+    const qa=quizAnswered[quizKey],answered=qa!==undefined;
     const attempted=Object.keys(quizAnswered).length;
-    const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
-    const opts=s.quiz.opts.map((opt,i)=>{
+    const scored=Object.entries(quizAnswered).filter(([k,ans])=>{
+      // Main stop keys are numeric strings; sub-stop keys are "N-id"
+      const isSubKey=k.includes('-');
+      if(isSubKey){
+        const [stopId,ssId]=k.split('-');
+        const st=stops.find(x=>x.id===parseInt(stopId));
+        const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);
+        return ssData&&ans===ssData.quiz.correct;
+      } else {
+        const st=stops.find(x=>x.id===parseInt(k));
+        return st&&ans===st.quiz.correct;
+      }
+    }).length;
+    const opts=quizData.opts.map((opt,i)=>{
       let cls='',icon='',stamp='';
-      if(answered){if(i===s.quiz.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
-      return `<button class="quiz-o ${cls}${answered&&(i===s.quiz.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz(${s.id},${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
+      if(answered){if(i===quizData.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
+      return `<button class="quiz-o ${cls}${answered&&(i===quizData.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz('${quizKey}',${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
-    const wasCorrect=answered&&qa===s.quiz.correct;
-    return `<div class="card" data-stop="${s.id}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
-      <!-- Hero image with Quiz Time! title, no floating circle -->
+    const wasCorrect=answered&&qa===quizData.correct;
+    return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
       <div style="position:relative;flex-shrink:0;">
-        <img class="quiz-card-img" src="${s.quiz.img}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
+        <img class="quiz-card-img" src="${quizData.img}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);border-radius:99px;padding:0.55rem 1.5rem;box-shadow:0 4px 20px rgba(255,107,53,0.5);">
             <div style="font-family:'Nunito',sans-serif;font-size:1.9rem;font-weight:900;color:white;">Quiz Time!</div>
           </div>
         </div>
-        <!-- Score badge -->
         <div style="position:absolute;bottom:10px;right:10px;z-index:3;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);border-radius:20px;padding:0.25rem 0.6rem;display:flex;align-items:center;gap:0.3rem;border:1px solid rgba(255,255,255,0.15);">🏆<span style="font-size:0.75rem;font-weight:800;color:white;">${scored}/${attempted}</span></div>
       </div>
-      <!-- Question + options on dark panel -->
       <div style="margin:1.1rem 1.1rem 1.1rem;">
         <div style="background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${s.quiz.q}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${quizData.q}</div>
           <div class="quiz-opts" style="margin-top:0.25rem;">${opts}</div>
-          ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${s.quiz.explanation}</div>`:''}
+          ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${quizData.explanation}</div>`:''}
         </div>
       </div>
     </div>`;
@@ -1313,19 +1480,47 @@ function startJourney(stopId){
 }
 
 function renderJourney(){
-  document.getElementById('jt-label').textContent=currentStop.name;
-  document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
-  var _cur=cards[currentCardIdx];
-  var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
-  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
-  document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
-  document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
-  var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
-  const contentCards=cards.slice(2),contentIdx=currentCardIdx-2;
-  document.getElementById('progress-dots').innerHTML=contentCards.map((_,i)=>`<div class="dot ${i===contentIdx?'active':i<contentIdx?'done':''}" style="width:${i===contentIdx?'20px':'8px'}"></div>`).join('');
+  // Rebuild top bar
+  _refreshJtBar();
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   updateCardPosition(false);updateNavBtns();
   setTimeout(reloadGalleryImages,100);
+}
+
+// Update top bar label + progress indicator from current card
+function _refreshJtBar(){
+  const cc=cards[currentCardIdx];
+  const label=cc&&cc.label||currentStop.name;
+  document.getElementById('jt-label').textContent=label;
+  // Show stop N/total in the left slot; for sub-stops show a subtle breadcrumb
+  const isSubStop=cc&&cc._segId!=='main';
+  if(isSubStop&&cc.subStop){
+    const ssIdx=(currentStop.subStops||[]).findIndex(x=>x.id===cc.subStop.id);
+    document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} · ${ssIdx+1}/${(currentStop.subStops||[]).length}`;
+  } else {
+    document.getElementById('dp-prog').textContent=`Stop ${currentStop.id} of ${stops.length}`;
+  }
+
+  const isNavCard=cc&&(cc.type==='nav'||cc.type==='transition'||cc.type==='substop-intro');
+  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
+  document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
+  document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
+  const js=document.getElementById('journey-screen');
+  if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
+  _renderDots();
+}
+
+// Render dots only for cards in the current segment, skipping nav+transition
+function _renderDots(){
+  const cc=cards[currentCardIdx];
+  if(!cc)return;
+  const segStart=cc.segStart!=null?cc.segStart:2;
+  const segEnd=cc.segEnd!=null?cc.segEnd:cards.length-1;
+  const segCards=cards.slice(segStart,segEnd+1);
+  const dotIdx=currentCardIdx-segStart;
+  document.getElementById('progress-dots').innerHTML=segCards.map((_,i)=>
+    `<div class="dot ${i===dotIdx?'active':i<dotIdx?'done':''}" style="width:${i===dotIdx?'20px':'8px'}"></div>`
+  ).join('');
 }
 
 function updateCardPosition(animate=true){
@@ -1336,21 +1531,14 @@ function updateCardPosition(animate=true){
 }
 
 function updateProgressDots(){
-  var _cur=cards[currentCardIdx];
-  var isNavCard=_cur&&(_cur.type==='nav'||_cur.type==='transition');
-  var isCFFS=_cur&&_cur.type==='desc'&&_cur.stop&&_cur.stop.cfStyle==='fullscreen';
-  document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
-  document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
-  var js=document.getElementById('journey-screen');if(js)js.classList.toggle('cf-fullscreen',!!isCFFS);
-  const ci=currentCardIdx-2;
-  document.querySelectorAll('.dot').forEach((d,i)=>{d.className='dot'+(i===ci?' active':i<ci?' done':'');d.style.width=i===ci?'20px':'8px';});
+  _refreshJtBar();
 }
 
 function updateNavBtns(){
   if(!currentStop)return;
   const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn'),tb=document.getElementById('read-text-btn');
   const cc=cards[currentCardIdx];
-  const isTransition=cc&&cc.type==='transition',isNav=cc&&cc.type==='nav';
+  const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'),isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
   const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
 
@@ -1379,7 +1567,9 @@ function updateNavBtns(){
   tb.style.flex='';
 
   prev.style.display=currentCardIdx===0?'none':'block';
-  prev.textContent=currentCardIdx===2?'← Back to Map':'← Back';
+  // "Back to Map" label when we're at the first content card of a segment
+  const atSegStart=cc&&currentCardIdx===cc.segStart;
+  prev.textContent=atSegStart?'← Back to Map':'← Back';
   prev.onclick=prevCard;
 
   if(isLast){
@@ -1394,7 +1584,9 @@ function updateNavBtns(){
     document.getElementById('card-bottom').style.cssText='display:flex;background:transparent;border-top:none;padding:0.65rem 1.25rem calc(0.65rem + env(safe-area-inset-bottom));gap:0.5rem;';
   } else if(isCFFS){
     next.textContent='Continue →';next.className='card-next-btn';
-    next.onclick=function(){skipToCard(4);}; // 4 = rudy's notes, skip text card
+    // Skip to first content card of main segment (after nav+desc+text = index where rudy is)
+    const mainRudyIdx=cards.findIndex(c=>c._segId==='main'&&c.type==='rudy');
+    next.onclick=function(){skipToCard(mainRudyIdx>=0?mainRudyIdx:4);};
     tb.textContent='Text only';
     tb.onclick=function(){skipToTextFullscreen(currentStop.id);};
     // Style card-bottom for video: floating above video controls, side-padded, transparent
@@ -1422,8 +1614,9 @@ function updateNavBtns(){
   if(shotBtn){
     shotBtn.style.display=isPhoto?'flex':'none';
     if(isPhoto){
-      const hasP=photoCollection[currentStop.id];
-      shotBtn.onclick=()=>openPhotoPicker(currentStop.id);
+      const photoKey=cc.subStop?`${currentStop.id}-${cc.subStop.id}`:String(currentStop.id);
+      const hasP=photoCollection[photoKey];
+      shotBtn.onclick=()=>openPhotoPicker(photoKey);
       const lbl=document.getElementById('shot-btn-label');
       if(lbl)lbl.textContent=hasP?'Replace':'Take shot';
     }
@@ -1443,8 +1636,6 @@ function nextCard(){
     justCompletedStopId=completedId;
     const nextId=completedId<stops.length?completedId+1:null;
     const isLast=completedId===stops.length;
-
-    // Always go to overworld first
     document.getElementById('journey-screen').classList.remove('show');
     showScreen('overworld');
     setTimeout(()=>animateStopCompletion(completedId, nextId, isLast), 2000);
@@ -1453,23 +1644,33 @@ function nextCard(){
     setTimeout(()=>{
       const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
       const ac=cards[currentCardIdx];
-      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id),100);
-      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac.stop.id),300);
-      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac.stop.id),200);
+      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id, ac.subStop||null),100);
+      if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac),300);
+      if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),450);
     },400);
   }
 }
 
-function prevCard(){stopCFVideo();if(currentCardIdx>0){
-  // If we're on rudy (idx 4) or beyond, going back should always land on desc (idx 2)
-  if(currentCardIdx===4){currentCardIdx=2;}
-  else{currentCardIdx--;}
+function prevCard(){
+  stopCFVideo();
+  if(currentCardIdx===0)return;
+
+  const cc=cards[currentCardIdx];
+  const navIdx=getSegNavIdx(currentCardIdx);
+
+  // If we're at the first content card of a segment → jump back to that segment's nav card
+  if(currentCardIdx===cc.segStart&&currentCardIdx>navIdx){
+    currentCardIdx=navIdx;
+  } else {
+    currentCardIdx--;
+  }
+
   updateCardPosition();updateProgressDots();updateNavBtns();
-  // If landing on desc card, re-show popup (reset to pre-video state)
   const ac=cards[currentCardIdx];
   if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),150);
+  // Landing back on desc (CFFS) — reset to pre-video state
   if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cfStyle==='fullscreen'){
     const iframe=document.getElementById('cf-vid-'+ac.stop.id);
     if(iframe){iframe.src='';iframe.style.display='none';}
@@ -1477,7 +1678,7 @@ function prevCard(){stopCFVideo();if(currentCardIdx>0){
     if(popup){popup.style.display='flex';}
     document.getElementById('card-bottom').style.display='none';
   }
-}}
+}
 function closeJourney(showEnd){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
@@ -1495,7 +1696,10 @@ function closeEndScreen(){
 function showEndScreen(){
   const total=stops.length;
   const attempted=Object.keys(quizAnswered).length;
-  const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
+  const scored=Object.entries(quizAnswered).filter(([k,ans])=>{
+    if(k.includes('-')){const [stopId,ssId]=k.split('-');const st=stops.find(x=>x.id===parseInt(stopId));const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);return ssData&&ans===ssData.quiz.correct;}
+    const st=stops.find(x=>x.id===parseInt(k));return st&&ans===st.quiz.correct;
+  }).length;
   const skipped=total-attempted;
   const pct=attempted>0?Math.round((scored/attempted)*100):0;
   document.getElementById('end-score-num').textContent=`${scored}/${attempted||'—'}`;
@@ -1535,14 +1739,20 @@ function showOffer(name,offer,note,code){
 }
 function closeOffer(e){if(!e||e.target===document.getElementById('offer-overlay'))document.getElementById('offer-overlay').classList.remove('show');}
 
-function initPhotoMap(stopId){
-  const container=document.getElementById('photo-map-'+stopId);if(!container||container._mapInitialized||!window.mapboxgl)return;container._mapInitialized=true;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];const coord=coords[stopId-1];
-  const m=new mapboxgl.Map({container:'photo-map-'+stopId,style:'mapbox://styles/mapbox/satellite-streets-v12',center:coord,zoom:17,interactive:false,attributionControl:false});
+function initPhotoMap(card){
+  // Accept either a card object or a legacy stopId number
+  const ss = card && typeof card === 'object' ? card.subStop : null;
+  const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
+  const stopId = stop ? stop.id : card;
+  const coord = ss ? ss.coords : (stop ? stop.coords : null);
+  if(!coord)return;
+  const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
+  const container=document.getElementById(mapKey);
+  if(!container||container._mapInitialized||!window.mapboxgl)return;
+  container._mapInitialized=true;mapboxgl.accessToken=MAPBOX_TOKEN;
+  const m=new mapboxgl.Map({container:mapKey,style:'mapbox://styles/mapbox/satellite-streets-v12',center:coord,zoom:17,interactive:false,attributionControl:false});
   m.on('load',()=>{
-    // Stop pin
     const el=document.createElement('div');el.style.cssText='width:36px;height:36px;border-radius:50%;background:var(--orange);border:3px solid white;box-shadow:0 2px 10px rgba(255,107,53,0.6);display:flex;align-items:center;justify-content:center;font-size:1.1rem;';el.textContent='📷';new mapboxgl.Marker({element:el}).setLngLat(coord).addTo(m);
-    // User location
     if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{
       const ue=document.createElement('div');ue.style.cssText='width:14px;height:14px;border-radius:50%;background:#4a9eff;border:2.5px solid white;box-shadow:0 0 0 4px rgba(74,158,255,0.3);';
       new mapboxgl.Marker({element:ue}).setLngLat([pos.coords.longitude,pos.coords.latitude]).addTo(m);
@@ -1550,15 +1760,52 @@ function initPhotoMap(stopId){
   });
 }
 
+function initStopMap(stopId, subStop){
+  if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
+  const stop=stops.find(x=>x.id===stopId);
+  const destCoord = subStop ? subStop.coords : (stop ? stop.coords : null);
+  if(!destCoord)return;
+  const containerId = subStop ? `stop-map-${stopId}-ss-${subStop.id}` : 'stop-map-'+stopId;
+  const routeInfoId = subStop ? `route-info-${stopId}-ss-${subStop.id}` : 'route-info-'+stopId;
+  const container=document.getElementById(containerId);
+  if(!container||container._mapInitialized)return;
+  container._mapInitialized=true;
+  const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
+  const displayImg = subStop ? subStop.img : (stop ? stop.img : '');
+  const displayName = subStop ? subStop.name : (stop ? stop.name : '');
+  const navMapUrl = subStop ? subStop.mapUrl : (stop ? stop.mapUrl : '#');
+  const destEl=document.createElement('div');
+  destEl.style.cssText='width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;';
+  const destImg=document.createElement('img');destImg.src=displayImg;destImg.style.cssText='width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';destEl.appendChild(destImg);
+  destEl.addEventListener('click',function(){
+    let ov=document.getElementById('dest-img-overlay');
+    if(!ov){ov=document.createElement('div');ov.id='dest-img-overlay';ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px);';ov.onclick=()=>ov.style.display='none';const iw=document.createElement('div');iw.style.cssText='border-radius:20px;overflow:hidden;max-width:340px;width:100%;';const bi=document.createElement('img');bi.id='dest-img-big';bi.style.cssText='width:100%;display:block;';const cap=document.createElement('div');cap.id='dest-img-caption';cap.style.cssText='background:#111;color:white;padding:0.75rem 1rem;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;';iw.appendChild(bi);iw.appendChild(cap);ov.appendChild(iw);document.body.appendChild(ov);}
+    document.getElementById('dest-img-big').src=displayImg;document.getElementById('dest-img-caption').textContent=displayName;ov.style.display='flex';
+  });
+  new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
+  stopMap.on('load',()=>{
+    stopMap.addSource('walking-route',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+    stopMap.addLayer({id:'route-line',type:'line',source:'walking-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#ff6b35','line-width':5,'line-opacity':0.85}});
+    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{
+      const ul=pos.coords.longitude,ult=pos.coords.latitude;
+      const ue=document.createElement('div');ue.style.cssText='width:20px;height:20px;border-radius:50%;background:#2d6be4;border:3px solid #fff;box-shadow:0 2px 8px rgba(45,107,228,0.5);';
+      new mapboxgl.Marker(ue).setLngLat([ul,ult]).addTo(stopMap);
+      const bounds=new mapboxgl.LngLatBounds();bounds.extend([ul,ult]);bounds.extend(destCoord);
+      stopMap.fitBounds(bounds,{padding:{top:70,bottom:90,left:50,right:50},maxZoom:16,duration:800});
+      fetch(`https://api.mapbox.com/directions/v5/mapbox/walking/${ul},${ult};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`)
+        .then(r=>r.json()).then(data=>{if(data.routes&&data.routes.length>0){stopMap.getSource('walking-route').setData({type:'Feature',geometry:data.routes[0].geometry});const min=Math.round(data.routes[0].duration/60),dist=(data.routes[0].distance/1000).toFixed(1),infoEl=document.getElementById(routeInfoId);if(infoEl){infoEl.textContent=`🚶 ${min} min walk · ${dist} km`;infoEl.style.display='block';}}}).catch(()=>{});
+    },()=>stopMap.flyTo({center:destCoord,zoom:14}));}
+  });
+}
 function initEndMap(){
   if(!window.mapboxgl||document.getElementById('end-map')._mapInitialized)return;document.getElementById('end-map')._mapInitialized=true;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
+  const coords=stops.map(s=>s.coords);
   const endMap=new mapboxgl.Map({container:'end-map',style:'mapbox://styles/mapbox/streets-v12',center:[4.4890,51.9150],zoom:11,interactive:false,attributionControl:false});
   endMap.on('load',()=>{
     const bounds=coords.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(coords[0],coords[0]));endMap.fitBounds(bounds,{padding:45,animate:false,maxZoom:14});
     endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
     endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
-    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(coords[i]).addTo(endMap);});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(stop.coords).addTo(endMap);});
   });
 }
 
@@ -1579,15 +1826,26 @@ function answerQuiz(stopId,optIdx){
   setTimeout(()=>{const card=document.querySelectorAll('.card')[pos];const t=card?.querySelector('.quiz-opts');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});},200);
 }
 
-function openPhotoPicker(stopId){pendingPhotoStopId=stopId;document.getElementById('photo-file-input').click();}
+function openPhotoPicker(photoKey){pendingPhotoStopId=photoKey;document.getElementById('photo-file-input').click();}
 function handlePhotoSelection(event){
   const file=event.target.files?.[0];if(!file||!pendingPhotoStopId)return;
   const reader=new FileReader();reader.onload=e=>{
-    const dataUrl=e.target.result,stop=stops.find(s=>s.id===pendingPhotoStopId);if(!stop)return;
-    photoCollection[pendingPhotoStopId]={dataUrl,tip:stop.challenge.tip,stopName:stop.name};
+    const dataUrl=e.target.result;
+    const key=pendingPhotoStopId;
+    // Resolve stop name from key — could be "5" (main) or "1-1a" (sub-stop)
+    let stopName='';
+    if(String(key).includes('-')){
+      const [stopId,ssId]=String(key).split('-');
+      const st=stops.find(s=>s.id===parseInt(stopId));
+      const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);
+      stopName=ssData?ssData.name:(st?st.name:'');
+    } else {
+      const st=stops.find(s=>s.id===parseInt(key));
+      stopName=st?st.name:'';
+    }
+    photoCollection[key]={dataUrl,stopName};
     pendingPhotoStopId=null;
     const pos=currentCardIdx;document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');currentCardIdx=pos;updateCardPosition(false);updateNavBtns();
-    // Scroll to bottom so user sees the captured photo
     setTimeout(()=>{const card=document.querySelectorAll('.card')[pos];if(card)card.scrollTo({top:card.scrollHeight,behavior:'smooth'});},100);
     document.getElementById('lowres-overlay').style.display='flex';
   };
@@ -1596,32 +1854,6 @@ function handlePhotoSelection(event){
 function closeLowresOverlay(){document.getElementById('lowres-overlay').style.display='none';}
 
 const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
-
-function initStopMap(stopId){
-  if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const coords=[[4.4871,51.9090],[4.4917,51.9186],[4.4917,51.9193],[4.4877,51.9188],[4.4866,51.9200]];
-  const destCoord=coords[stopId-1],containerId='stop-map-'+stopId,container=document.getElementById(containerId);
-  if(!container||container._mapInitialized)return;container._mapInitialized=true;
-  const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
-  const stop=stops.find(x=>x.id===stopId);
-  const destEl=document.createElement('div');destEl.style.cssText='width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;';
-  const destImg=document.createElement('img');destImg.src=stop?stop.img:'';destImg.style.cssText='width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';destEl.appendChild(destImg);
-  destEl.addEventListener('click',function(){let ov=document.getElementById('dest-img-overlay');if(!ov){ov=document.createElement('div');ov.id='dest-img-overlay';ov.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px);';ov.onclick=()=>ov.style.display='none';const iw=document.createElement('div');iw.style.cssText='border-radius:20px;overflow:hidden;max-width:340px;width:100%;';const bi=document.createElement('img');bi.id='dest-img-big';bi.style.cssText='width:100%;display:block;';const cap=document.createElement('div');cap.id='dest-img-caption';cap.style.cssText='background:#111;color:white;padding:0.75rem 1rem;font-family:Nunito,sans-serif;font-weight:800;font-size:1rem;';iw.appendChild(bi);iw.appendChild(cap);ov.appendChild(iw);document.body.appendChild(ov);}document.getElementById('dest-img-big').src=stop?stop.img:'';document.getElementById('dest-img-caption').textContent=stop?stop.name:'';ov.style.display='flex';});
-  new mapboxgl.Marker(destEl).setLngLat(destCoord).addTo(stopMap);
-  stopMap.on('load',()=>{
-    stopMap.addSource('walking-route',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
-    stopMap.addLayer({id:'route-line',type:'line',source:'walking-route',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#ff6b35','line-width':5,'line-opacity':0.85}});
-    if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{
-      const ul=pos.coords.longitude,ult=pos.coords.latitude;
-      const ue=document.createElement('div');ue.style.cssText='width:20px;height:20px;border-radius:50%;background:#2d6be4;border:3px solid #fff;box-shadow:0 2px 8px rgba(45,107,228,0.5);';
-      new mapboxgl.Marker(ue).setLngLat([ul,ult]).addTo(stopMap);
-      const bounds=new mapboxgl.LngLatBounds();bounds.extend([ul,ult]);bounds.extend(destCoord);
-      stopMap.fitBounds(bounds,{padding:{top:70,bottom:90,left:50,right:50},maxZoom:16,duration:800});
-      fetch(`https://api.mapbox.com/directions/v5/mapbox/walking/${ul},${ult};${destCoord[0]},${destCoord[1]}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`)
-        .then(r=>r.json()).then(data=>{if(data.routes&&data.routes.length>0){stopMap.getSource('walking-route').setData({type:'Feature',geometry:data.routes[0].geometry});const min=Math.round(data.routes[0].duration/60),dist=(data.routes[0].distance/1000).toFixed(1),infoEl=document.getElementById('route-info-'+stopId);if(infoEl){infoEl.textContent=`🚶 ${min} min walk · ${dist} km`;infoEl.style.display='block';}}}).catch(()=>{});
-    },()=>stopMap.flyTo({center:destCoord,zoom:10}));}
-  });
-}
 
 function initMap(){
   mapboxgl.accessToken=MAPBOX_TOKEN;
