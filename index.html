@@ -55,7 +55,7 @@
 <style>
 :root {
   --bg:#f8f7f5; --white:#ffffff; --black:#111111; --text:#1c1c1e; --text2:#6e6e73;
-  --border:#e5e5ea; --orange:#ff6b35; --orange-light:#fff3ee; --blue:#2d6be4; --blue-light:#eef3fd;
+  --border:#e5e5ea; --orange:#ff6b35; --orange-grad:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%); --orange-light:#fff3ee; --blue:#2d6be4; --blue-light:#eef3fd;
   --green:#34c759; --green-light:#edfaf2; --red-light:#ffeef0; --red:#ff3b30;
   --yellow:#ffcc00; --yellow-light:#fffbe6; --radius:18px; --radius-sm:12px;
   --shadow:0 2px 16px rgba(0,0,0,0.08); --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
@@ -84,13 +84,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
 .ow-logo { display:flex; align-items:center; justify-content:space-between; gap:0.65rem; }
 .ow-logo-left { display:flex; align-items:center; gap:0.65rem; }
-.ow-logo-icon { width:40px; height:40px; border-radius:12px; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 4px 14px rgba(255,107,53,0.5); flex-shrink:0; }
+.ow-logo-icon { width:40px; height:40px; border-radius:12px; background:var(--orange-grad); display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 4px 14px rgba(255,107,53,0.5); flex-shrink:0; }
 .ow-logo-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.5); }
 .ow-logo-sub { font-size:0.65rem; color:rgba(255,255,255,0.7); letter-spacing:0.05em; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
 #ow-select-stop-header { display:none; text-align:right; pointer-events:none; }
 #ow-select-stop-header span { display:block; font-size:0.6rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.08em; line-height:1.4; }
 .ow-bottom { position:absolute; bottom:0; left:0; right:0; z-index:20; padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.2) 60%,transparent 100%); }
-.ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.6rem; transition:transform 0.15s; }
+.ow-start-btn { width:100%; background:var(--orange-grad); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.6rem; transition:transform 0.15s; }
 .ow-start-btn:active { transform:scale(0.98); }
 .ow-links-row { display:flex; align-items:center; justify-content:center; gap:1.25rem; }
 .ow-link-item { display:flex; align-items:center; gap:0.35rem; font-family:'Nunito',sans-serif; font-size:0.72rem; font-weight:800; color:rgba(255,255,255,0.5); cursor:pointer; text-decoration:none; padding:0.2rem 0; pointer-events:all; white-space:nowrap; }
@@ -279,9 +279,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
     </div>
-    <!-- Reset + Finish test buttons — bottom right, small -->
-    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));right:1rem;z-index:25;display:flex;gap:0.4rem;pointer-events:all;">
+    <!-- Reset button — bottom left -->
+    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;z-index:25;pointer-events:all;">
       <button onclick="resetProgress()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">RESET</button>
+    </div>
+    <!-- Finish shortcut — bottom right -->
+    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));right:1rem;z-index:25;pointer-events:all;">
       <button onclick="finishAllStops()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">FINISH</button>
     </div>
     <!-- Bonus video filmstrip — pinned bottom right above test buttons, built by JS -->
@@ -558,6 +561,17 @@ function resetProgress(){
   Object.keys(stopsCompleted).forEach(k=>delete stopsCompleted[k]);
   try{localStorage.removeItem('tonbi_completed');}catch(e){}
   justCompletedStopId=null;
+  // Hide all done-state elements
+  const filmstrip=document.getElementById('ow-bonus-filmstrip');
+  if(filmstrip){ filmstrip.style.display='none'; filmstrip._built=false; filmstrip.innerHTML=''; }
+  const bonusBtn=document.getElementById('ow-bonus-link');
+  if(bonusBtn) bonusBtn.style.display='none';
+  const selHeader=document.getElementById('ow-select-stop-header');
+  if(selHeader) selHeader.style.display='none';
+  const divider=document.getElementById('ow-links-divider');
+  if(divider) divider.style.display='none';
+  const partnersLink=document.getElementById('ow-partners-link');
+  if(partnersLink) partnersLink.style.display='none';
   renderOwNodes();
   renderOwPaths();
 }
@@ -579,8 +593,8 @@ function buildFilmstrip(){
   el.style.filter='drop-shadow(0 6px 20px rgba(0,0,0,0.55))';
   el.onclick=showBonusVideo;
   el.innerHTML=`
-    <div style="background:var(--orange);border-radius:9px;display:flex;flex-direction:row;align-items:stretch;width:128px;padding:5px;gap:3px;">
-      <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+    <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:9px;display:flex;flex-direction:row;align-items:stretch;width:128px;padding:5px;gap:3px;">
+      <div style="width:18px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
       <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:4px;background:#111;">
         <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.55);">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
@@ -589,7 +603,7 @@ function buildFilmstrip(){
           </div>
         </div>
       </div>
-      <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+      <div style="width:18px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
     </div>
     <div style="text-align:center;margin-top:5px;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;text-shadow:0 1px 5px rgba(0,0,0,0.7);">BTS BONUS<br>VIDEO</div>`;
 }
@@ -1011,24 +1025,22 @@ function renderCard(card,idx,total){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
+        <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
           <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
-            <div style="background:#0f0f14;border-radius:10px;overflow:hidden;border-top:5px solid var(--orange);border-bottom:5px solid var(--orange);box-shadow:0 8px 32px rgba(0,0,0,0.55);">
+            <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:12px;padding:7px 0 7px 0;box-shadow:0 8px 32px rgba(0,0,0,0.55);">
+              <div style="background:rgba(6,6,8,0.75);border-radius:6px;overflow:hidden;margin:0;">
               <div style="display:flex;align-items:stretch;">
-                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
-                <div style="flex:1;background:#0f0f14;padding:1.4rem 1rem 1.3rem;text-align:center;">
-                  <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);font-size:2.2rem;">
-                    🎬
+                <div style="width:34px;background:linear-gradient(180deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:14px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
+                <div style="flex:1;background:transparent;padding:1.4rem 1rem 1.3rem;text-align:center;">
+                  <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 4px 22px rgba(255,107,53,0.55);">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
                   </div>
-                  <div style="font-size:0.6rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Welcome to</div>
-                  <div style="font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;color:white;line-height:1.2;margin-bottom:0.55rem;">${s.name}</div>
-                  <div style="background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:0.75rem 0.85rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.08);"><div style="font-size:0.95rem;color:rgba(255,255,255,0.88);line-height:1.72;font-weight:400;">I made a short intro video. It starts muted, but you can tap the screen and the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> &ldquo;mute&rdquo; icon for sound!</div></div>
-                  <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.5rem;display:inline-flex;align-items:center;gap:0.6rem;box-shadow:0 4px 14px rgba(255,107,53,0.45);">
-                    <svg width="14" height="14" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
-                    <span style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:white;">Play video</span>
-                  </div>
+                  <div style="font-size:0.6rem;font-weight:800;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:0.25rem;">Welcome to</div>
+                  <div style="font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;color:white;line-height:1.2;margin-bottom:0.75rem;">${s.name}</div>
+                  <div style="font-size:0.92rem;color:rgba(255,255,255,0.82);line-height:1.65;font-weight:400;">I made a short intro video. It starts muted — tap the screen and use the <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin:0 1px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> icon for sound.</div>
                 </div>
-                <div style="width:28px;background:var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:12px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
+                <div style="width:34px;background:linear-gradient(180deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:14px 0;flex-shrink:0;gap:0;">${oholes(8)}</div>
+              </div>
               </div>
             </div>
           </div>
