@@ -88,7 +88,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-logo-name { font-family:'Nunito',sans-serif; font-size:1.3rem; font-weight:900; color:white; text-shadow:0 1px 6px rgba(0,0,0,0.5); }
 .ow-logo-sub { font-size:0.65rem; color:rgba(255,255,255,0.7); letter-spacing:0.05em; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
 #ow-select-stop-header { display:none; text-align:right; pointer-events:none; }
-#ow-select-stop-header span { display:block; font-size:0.6rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.08em; line-height:1.4; text-shadow:0 1px 4px rgba(0,0,0,0.4); }
+#ow-select-stop-header span { display:block; font-size:0.6rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.08em; line-height:1.4; }
 .ow-bottom { position:absolute; bottom:0; left:0; right:0; z-index:20; padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom)); background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.2) 60%,transparent 100%); }
 .ow-start-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:var(--radius-sm); padding:1rem; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 6px 20px rgba(255,107,53,0.5); margin-bottom:0.6rem; transition:transform 0.15s; }
 .ow-start-btn:active { transform:scale(0.98); }
@@ -106,7 +106,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
 .ow-node-label { display:block; margin-top:3px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; border:1px solid rgba(255,255,255,0.12); }
 .ow-node-wrap.next-stop .ow-node-label { background:var(--orange); border-color:transparent; box-shadow:0 2px 6px rgba(255,107,53,0.4); color:white; }
-.ow-node-stamp { position:absolute; top:8px; right:8px; width:32px; height:32px; background:var(--green); border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:1rem; box-shadow:0 2px 10px rgba(52,199,89,0.6); opacity:0; }
+.ow-node-stamp { position:absolute; top:6px; right:6px; width:34px; height:34px; background:transparent; border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
 @keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes stampPop {
   0%   {transform:scale(0) rotate(-30deg);opacity:0;}
@@ -279,13 +279,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
     </div>
-    <!-- Reset + Finish test buttons — bottom left, small -->
-    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;z-index:25;display:flex;gap:0.4rem;pointer-events:all;">
+    <!-- Reset + Finish test buttons — bottom right, small -->
+    <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));right:1rem;z-index:25;display:flex;gap:0.4rem;pointer-events:all;">
       <button onclick="resetProgress()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">RESET</button>
       <button onclick="finishAllStops()" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.35);font-size:0.55rem;font-weight:700;padding:0.25rem 0.55rem;cursor:pointer;letter-spacing:0.05em;">FINISH</button>
     </div>
-    <!-- Bonus video filmstrip — pinned bottom right, built by JS -->
-    <div id="ow-bonus-filmstrip" style="display:none;position:absolute;bottom:calc(5rem + env(safe-area-inset-bottom));right:1rem;z-index:25;"></div>
+    <!-- Bonus video filmstrip — pinned bottom right above test buttons, built by JS -->
+    <div id="ow-bonus-filmstrip" style="display:none;position:absolute;bottom:calc(6.5rem + env(safe-area-inset-bottom));right:0.75rem;z-index:25;"></div>
     <div class="ow-bottom">
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
         <span id="ow-start-label">Start Tour</span>
@@ -416,28 +416,52 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   </div>
 </div>
 
-<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#0a2a35 0%,#0d3d5c 40%,#1a1040 75%,#2d0a3a 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+<div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(170deg,#ff6b35 0%,#c0392b 18%,#0d3d5c 45%,#0a2040 65%,#1a0a3a 82%,#0f4a42 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div style="max-width:480px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
 
-    <!-- Hero title — orange pill -->
+    <!-- Hero title — gradient pill, emoji after -->
     <div style="text-align:center;margin-bottom:1rem;">
-      <div style="display:inline-block;background:var(--orange);border-radius:99px;padding:0.5rem 1.75rem;box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:0.75rem;">
-        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:white;line-height:1.1;">Tour Complete!</div>
+      <div style="display:inline-block;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.5rem 1.75rem;box-shadow:0 6px 24px rgba(255,107,53,0.55);margin-bottom:0.75rem;">
+        <div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;color:white;line-height:1.1;">Tour Complete! 🎉</div>
       </div>
       <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.7;max-width:300px;margin:0 auto;">Thanks for exploring Rotterdam with me. I hope the city showed you something real.</div>
       <div style="margin-top:0.35rem;font-size:0.82rem;color:rgba(255,255,255,0.45);font-style:italic;">— Rudy</div>
     </div>
 
-    <!-- Landscape image -->
-    <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:0.75rem;box-shadow:0 8px 28px rgba(0,0,0,0.5);">
-      <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="width:100%;aspect-ratio:16/7;object-fit:cover;display:block;">
+    <!-- Landscape image + BTS filmstrip overlapping bottom-right -->
+    <div style="position:relative;margin-bottom:1.25rem;">
+      <div style="border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.5);">
+        <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="width:100%;aspect-ratio:16/7;object-fit:cover;display:block;">
+      </div>
+      <!-- BTS filmstrip overlapping bottom-right corner of image -->
+      <div onclick="showBonusVideo()" style="position:absolute;bottom:-18px;right:12px;cursor:pointer;transform:rotate(4deg);filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));z-index:5;">
+        <div id="end-filmstrip-inner" style="background:var(--orange);border-radius:8px;display:flex;flex-direction:row;align-items:stretch;width:100px;padding:4px;gap:3px;">
+          <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+          </div>
+          <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:3px;background:#111;">
+            <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.55);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <div style="width:30px;height:30px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div style="width:13px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+            <div style="width:8px;height:8px;background:rgba(248,247,245,0.9);border-radius:2px;"></div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:4px;font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;text-shadow:0 1px 5px rgba(0,0,0,0.7);">BTS BONUS<br>VIDEO</div>
+      </div>
     </div>
-
-    <!-- Bonus video button — right below image -->
-    <button onclick="showBonusVideo()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);margin-bottom:1rem;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
-      Watch Bonus BTS Video
-    </button>
 
     <!-- Score card -->
     <div id="end-score-card" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;">
@@ -482,12 +506,17 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     </div>
 
     <!-- Partners link -->
-    <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;" onclick="showPartnersPage()">
-      <div>
-        <div style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:white;margin-bottom:0.2rem;">Restaurants &amp; Partners</div>
-        <div style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.5;">Rudy's picks along the route — with exclusive offers for tour visitors.</div>
+    <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;cursor:pointer;" onclick="showPartnersPage()">
+      <div style="display:flex;align-items:stretch;">
+        <img src="https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg" style="width:80px;object-fit:cover;flex-shrink:0;display:block;">
+        <div style="padding:0.85rem 1rem;flex:1;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
+          <div>
+            <div style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:white;margin-bottom:0.2rem;">Restaurants &amp; Partners</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);line-height:1.4;">Rudy's picks with exclusive offers for tour visitors.</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" flex-shrink="0"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
       </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
 
     <!-- Route map -->
@@ -550,19 +579,19 @@ function buildFilmstrip(){
   el.style.filter='drop-shadow(0 6px 20px rgba(0,0,0,0.55))';
   el.onclick=showBonusVideo;
   el.innerHTML=`
-    <div style="background:var(--orange);border-radius:8px;display:flex;flex-direction:row;align-items:stretch;width:108px;padding:4px;gap:3px;">
-      <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+    <div style="background:var(--orange);border-radius:9px;display:flex;flex-direction:row;align-items:stretch;width:128px;padding:5px;gap:3px;">
+      <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
       <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:4px;background:#111;">
         <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.55);">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-          <div style="width:32px;height:32px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.4);">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
+          <div style="width:36px;height:36px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg>
           </div>
         </div>
       </div>
-      <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
+      <div style="width:15px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${holes}</div>
     </div>
-    <div style="text-align:center;margin-top:4px;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:900;color:rgba(255,220,100,0.92);text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;text-shadow:0 1px 5px rgba(0,0,0,0.6);">BTS<br>Video</div>`;
+    <div style="text-align:center;margin-top:5px;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.06em;line-height:1.3;text-shadow:0 1px 5px rgba(0,0,0,0.7);">BTS BONUS<br>VIDEO</div>`;
 }
 let justCompletedStopId=null;
 let currentStop=null,currentCardIdx=0,cards=[];
@@ -669,7 +698,11 @@ function renderOwNodes(){
     const stamp=document.createElement('div');
     stamp.className='ow-node-stamp';
     stamp.id='ow-stamp-'+stop.id;
-    stamp.textContent='✓';
+    // Hand-drawn style SVG stamp
+    stamp.innerHTML=`<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="17" cy="17" r="14" fill="#2ecc71" stroke="white" stroke-width="2.5" stroke-dasharray="3 1.5" stroke-linecap="round"/>
+      <path d="M10 17.5 C11.5 16 13.5 19.5 15.5 21.5 C18 18.5 21 13.5 24 12" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>`;
     // Always start hidden — shown via animation (or instantly for previously done stops on re-render)
     stamp.style.opacity='0';
     if(isDone && stop.id !== justCompletedStopId){
@@ -740,7 +773,7 @@ function animateStopCompletion(completedId, nextId, isLast){
   // ── 1: Icon shake ──
   if(completedImg) completedImg.style.animation='stampShake 0.5s ease-in-out forwards';
 
-  // ── 2 (t=700ms): Stamp slams in + green flash ──
+  // ── 2 (t=200ms): Stamp slams in + green flash ──
   setTimeout(()=>{
     if(completedImg) completedImg.style.animation='';
     if(stamp){
@@ -748,12 +781,11 @@ function animateStopCompletion(completedId, nextId, isLast){
       stamp.style.opacity='1';
       stamp.style.animation='stampPop 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards';
     }
-    justCompletedStopId=null; // allow normal rendering from now on
+    justCompletedStopId=null;
     owFlash('rgba(52,199,89,0.22)', 220);
-  }, 700);
+  }, 200);
 
   if(!nextId){
-    // Last stop — after stamp animation, show Finish Tour button
     if(isLast){
       setTimeout(()=>{
         owFlash('rgba(255,204,0,0.3)', 400);
@@ -769,17 +801,17 @@ function animateStopCompletion(completedId, nextId, isLast){
         if(selHeader) selHeader.style.display='block';
         const filmstrip=document.getElementById('ow-bonus-filmstrip');
         if(filmstrip){ buildFilmstrip(); filmstrip.style.display='block'; }
-      }, 1200);
+      }, 800);
     }
     return;
   }
 
-  // ── 3 (t=1800ms): Draw the new path segment ──
+  // ── 3 (t=1300ms): Draw the new path segment ──
   setTimeout(()=>{
     drawNewPathSegment(completedId, nextId);
-  }, 1800);
+  }, 1300);
 
-  // ── 4 (t=3200ms): Unlock next stop ──
+  // ── 4 (t=2700ms): Unlock next stop ──
   setTimeout(()=>{
     const nextImg=document.getElementById('ow-img-'+nextId);
     const nextWrap=document.getElementById('ow-wrap-'+nextId);
@@ -796,7 +828,7 @@ function animateStopCompletion(completedId, nextId, isLast){
 
     const nextInner=nextWrap.querySelector('.ow-node-inner');
     if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
-  }, 3200);
+  }, 2700);
 }
 
 function owFlash(color, holdMs){
@@ -849,35 +881,45 @@ function drawNewPathSegment(completedId, nextId){
   if(insertBefore) svg.insertBefore(newPath, insertBefore);
   else svg.appendChild(newPath);
 
-  // Reveal dots one by one by animating dashoffset from totalLen → 0
-  // Each dot step = UNIT px of dashoffset change
-  const totalSteps=numDots+2;
-  const msPerDot=90; // ms between each dot appearing
+  // Reveal dots one by one — varying speed for hand-drawn feel
+  const DOT=11, GAP=8, UNIT=DOT+GAP;
+  const numDots=Math.max(1, Math.floor(totalLen/UNIT));
+  newPath.setAttribute('stroke-dasharray',`${DOT} ${GAP}`);
+  newPath.setAttribute('stroke-dashoffset', String(totalLen + DOT));
+
   let step=0;
+  const totalSteps=numDots+3;
   function revealNextDot(){
-    if(step>totalSteps) return;
-    const offset=Math.max(0, totalLen - step*UNIT);
+    if(step>totalSteps){ 
+      // Glow pulse after fully drawn
+      setTimeout(()=>{
+        newPath.style.animation='pathGlow 0.8s ease-in-out 2';
+        setTimeout(()=>{ newPath.style.animation=''; }, 1600);
+      }, 150);
+      return;
+    }
+    const offset=Math.max(0, totalLen + DOT - step*UNIT);
     newPath.setAttribute('stroke-dashoffset', String(offset));
     step++;
-    if(step<=totalSteps) setTimeout(revealNextDot, msPerDot);
-    else {
-      // Path fully drawn — glow pulse
-      setTimeout(()=>{
-        newPath.style.animation='pathGlow 0.7s ease-in-out 2';
-        setTimeout(()=>{ newPath.style.animation=''; }, 1400);
-      }, 200);
-    }
+    // Vary timing slightly for organic feel: faster in middle, slower at ends
+    const progress=step/totalSteps;
+    const speed=progress<0.15||progress>0.85 ? 130 : 75;
+    setTimeout(revealNextDot, speed);
   }
-  revealNextDot();
+  setTimeout(revealNextDot, 80);
 }
 
-// Generate a curved SVG path between two points with a gentle arc
+// Generate a sketchy curved SVG path — slight hand-drawn wobble
 function makeCurvedPath(from, to){
   const dx=to.x-from.x, dy=to.y-from.y;
-  // Control point perpendicular offset — creates a gentle S-like wave
-  const cx=from.x+dx*0.5 + dy*0.18;
-  const cy=from.y+dy*0.5 - dx*0.18;
-  return `M ${from.x} ${from.y} Q ${cx} ${cy} ${to.x} ${to.y}`;
+  const len=Math.sqrt(dx*dx+dy*dy);
+  // Two control points for a subtle S-curve wobble
+  const wobble=len*0.12;
+  const cx1=from.x+dx*0.3 + dy*0.15 + (Math.random()-0.5)*wobble;
+  const cy1=from.y+dy*0.3 - dx*0.15 + (Math.random()-0.5)*wobble;
+  const cx2=from.x+dx*0.7 - dy*0.12 + (Math.random()-0.5)*wobble;
+  const cy2=from.y+dy*0.7 + dx*0.12 + (Math.random()-0.5)*wobble;
+  return `M ${from.x} ${from.y} C ${cx1} ${cy1} ${cx2} ${cy2} ${to.x} ${to.y}`;
 }
 
 function renderOwPaths(){
