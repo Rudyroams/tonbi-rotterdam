@@ -786,7 +786,7 @@ function renderOwNodes(){
   const skipBtn=document.getElementById('ow-skip-btn');
   if(skipBtn){
     const nextStop=stops.find(s=>!stopsCompleted[s.id]);
-    const showSkip=!allDone&&anyDone&&nextStop&&nextStop.id<stops.length;
+    const showSkip=!allDone&&nextStop&&nextStop.id<stops.length;
     skipBtn.style.display=showSkip?'block':'none';
     if(showSkip&&nextStop){
       skipBtn.innerHTML=`Skip<br><span style="font-size:0.65rem;color:rgba(255,255,255,0.4);">Stop ${nextStop.id}</span>`;
@@ -1594,7 +1594,8 @@ function updateNavBtns(){
     p2.onclick=prevCard;
     document.getElementById('read-text-btn').style.cssText='display:none;';
     const n2=document.getElementById('next-btn');
-    n2.textContent='Play Video ▶';
+    n2.textContent='';
+    n2.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="white" style="flex-shrink:0;"><polygon points="2,1 11,6 2,11"/></svg> Play Video';
     n2.style.cssText='flex:1;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.55rem 1rem;font-family:Nunito,sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,53,0.4);';
     n2.onclick=function(){startVideoAfterPopup(currentStop.id);};
     return;
