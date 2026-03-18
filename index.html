@@ -658,9 +658,15 @@ function skipCurrentStop(){
   if(!confirm(`Skip Stop ${nextStop.id} — ${nextStop.name}?\n\nYou can always come back to it from the map.`))return;
   stopsCompleted[nextStop.id]=true;
   saveProgress();
-  justCompletedStopId=null; // no animation for skipped stop
+  justCompletedStopId=null;
+  // Re-render so skipped stop shows done stamp immediately
   renderOwNodes();
   renderOwPaths();
+  // Run the unlock animation for the newly available next stop
+  const nowNext=stops.find(s=>!stopsCompleted[s.id]);
+  if(nowNext&&nowNext.id<=stops.length){
+    setTimeout(()=>unlockNextStop(nowNext.id), 400);
+  }
 }
 
 // ── Illustrated overworld map ──
@@ -855,29 +861,27 @@ function animateStopCompletion(completedId, nextId, isLast){
     return;
   }
 
-  // ── 3 (t=1300ms): Draw the new path segment ──
-  setTimeout(()=>{
-    drawNewPathSegment(completedId, nextId);
-  }, 1300);
+  // ── 3 (t=900ms): Unlock next stop — no path drawing, straight to icon animation ──
+  setTimeout(()=>{ unlockNextStop(nextId); }, 900);
+}
 
-  // ── 4 (t=2700ms): Unlock next stop ──
-  setTimeout(()=>{
-    const nextImg=document.getElementById('ow-img-'+nextId);
-    const nextWrap=document.getElementById('ow-wrap-'+nextId);
-    if(!nextImg||!nextWrap) return;
+// Unlock a stop node — reveal in colour, make tappable, flash
+function unlockNextStop(nextId){
+  const nextImg=document.getElementById('ow-img-'+nextId);
+  const nextWrap=document.getElementById('ow-wrap-'+nextId);
+  if(!nextImg||!nextWrap) return;
 
-    owFlash('rgba(255,204,0,0.25)', 350);
+  owFlash('rgba(255,204,0,0.25)', 350);
 
-    nextWrap.classList.remove('locked');
-    nextWrap.classList.add('next-stop');
-    nextImg.style.animation='nodeUnlock 1.1s cubic-bezier(0.34,1.56,0.64,1) forwards';
+  nextWrap.classList.remove('locked');
+  nextWrap.classList.add('next-stop');
+  nextImg.style.animation='nodeUnlock 1.1s cubic-bezier(0.34,1.56,0.64,1) forwards';
 
-    const lbl=nextWrap.querySelector('.ow-node-label');
-    if(lbl){ lbl.style.display='block'; lbl.style.opacity='1'; }
+  const lbl=nextWrap.querySelector('.ow-node-label');
+  if(lbl){ lbl.style.display='block'; lbl.style.opacity='1'; }
 
-    const nextInner=nextWrap.querySelector('.ow-node-inner');
-    if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
-  }, 2700);
+  const nextInner=nextWrap.querySelector('.ow-node-inner');
+  if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
 }
 
 function owFlash(color, holdMs){
@@ -885,71 +889,6 @@ function owFlash(color, holdMs){
   flash.style.cssText=`position:fixed;inset:0;z-index:999;background:${color};pointer-events:none;transition:opacity 0.45s;`;
   document.body.appendChild(flash);
   setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),460);}, holdMs);
-}
-
-// Draw only the new segment — dots appear one by one from start to end
-function drawNewPathSegment(completedId, nextId){
-  const svg=document.getElementById('ow-svg-layer');
-  if(!svg) return;
-
-  // Remove the grey placeholder for this segment
-  const existing=[...svg.querySelectorAll('.ow-path')];
-  const placeholder=existing[completedId-1];
-  if(placeholder) placeholder.remove();
-
-  const from=OW_STOP_POS[completedId-1], to=OW_STOP_POS[nextId-1];
-  const pathD=makeCurvedPath(from, to);
-
-  // Measure path length
-  const tempPath=document.createElementNS('http://www.w3.org/2000/svg','path');
-  tempPath.setAttribute('d', pathD);
-  svg.appendChild(tempPath);
-  const totalLen=tempPath.getTotalLength()||200;
-  tempPath.remove();
-
-  // Build the orange dotted path — but start fully hidden (dashoffset hides all dots)
-  const newPath=document.createElementNS('http://www.w3.org/2000/svg','path');
-  newPath.setAttribute('d', pathD);
-  newPath.setAttribute('fill','none');
-  newPath.setAttribute('stroke','#ff6b35');
-  newPath.setAttribute('stroke-width','4');
-  newPath.setAttribute('stroke-linecap','round');
-  newPath.setAttribute('stroke-linejoin','round');
-  newPath.setAttribute('class','ow-path ow-path-done');
-  newPath.style.opacity='0.92';
-
-  // Insert at correct position
-  const allPaths=[...svg.querySelectorAll('.ow-path')];
-  const insertBefore=allPaths[completedId-1];
-  if(insertBefore) svg.insertBefore(newPath, insertBefore);
-  else svg.appendChild(newPath);
-
-  // Reveal dots one by one — varying speed for hand-drawn feel
-  const DOT=11, GAP=8, UNIT=DOT+GAP;
-  const numDots=Math.max(1, Math.floor(totalLen/UNIT));
-  newPath.setAttribute('stroke-dasharray',`${DOT} ${GAP}`);
-  newPath.setAttribute('stroke-dashoffset', String(totalLen + DOT));
-
-  let step=0;
-  const totalSteps=numDots+3;
-  function revealNextDot(){
-    if(step>totalSteps){ 
-      // Glow pulse after fully drawn
-      setTimeout(()=>{
-        newPath.style.animation='pathGlow 0.8s ease-in-out 2';
-        setTimeout(()=>{ newPath.style.animation=''; }, 1600);
-      }, 150);
-      return;
-    }
-    const offset=Math.max(0, totalLen + DOT - step*UNIT);
-    newPath.setAttribute('stroke-dashoffset', String(offset));
-    step++;
-    // Vary timing slightly for organic feel: faster in middle, slower at ends
-    const progress=step/totalSteps;
-    const speed=progress<0.15||progress>0.85 ? 200 : 150;
-    setTimeout(revealNextDot, speed);
-  }
-  setTimeout(revealNextDot, 80);
 }
 
 // Generate a sketchy curved SVG path — slight hand-drawn wobble
@@ -966,39 +905,10 @@ function makeCurvedPath(from, to){
 }
 
 function renderOwPaths(){
+  // Paths removed — dotted lines handled by After Effects transition video instead
   const svg=document.getElementById('ow-svg-layer');
   if(!svg)return;
   svg.querySelectorAll('.ow-path').forEach(el=>el.remove());
-
-  stops.forEach((stop,i)=>{
-    if(i===0)return;
-    const from=OW_STOP_POS[i-1], to=OW_STOP_POS[i];
-    const prevDone=stopsCompleted[stops[i-1].id]===true;
-    const pathD=makeCurvedPath(from, to);
-
-    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', pathD);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke-width', prevDone ? '4' : '3');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('stroke-linejoin','round');
-    path.setAttribute('class','ow-path'+(prevDone?' ow-path-done':''));
-
-    if(prevDone){
-      // Dotted orange — already completed
-      path.setAttribute('stroke','#ff6b35');
-      path.setAttribute('stroke-dasharray','10 7');
-      path.style.opacity='0.92';
-    } else {
-      // Dotted grey — not yet reached
-      path.setAttribute('stroke','rgba(255,255,255,0.28)');
-      path.setAttribute('stroke-dasharray','8 6');
-      path.style.opacity='1';
-    }
-
-    // Insert BEFORE the nodes layer so icons sit on top
-    svg.appendChild(path);
-  });
 }
 
 function renderLists(){
