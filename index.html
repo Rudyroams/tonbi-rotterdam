@@ -866,12 +866,6 @@ function drawNewPathSegment(completedId, nextId){
   newPath.setAttribute('stroke-width','4');
   newPath.setAttribute('stroke-linecap','round');
   newPath.setAttribute('stroke-linejoin','round');
-  const DOT=10, GAP=7, UNIT=DOT+GAP; // dot size + gap
-  const numDots=Math.floor(totalLen/UNIT);
-  // Set dasharray so each dot is exactly DOT px, with GAP between
-  newPath.setAttribute('stroke-dasharray',`${DOT} ${GAP}`);
-  // Offset by totalLen so nothing is visible initially
-  newPath.setAttribute('stroke-dashoffset', String(totalLen));
   newPath.setAttribute('class','ow-path ow-path-done');
   newPath.style.opacity='0.92';
 
