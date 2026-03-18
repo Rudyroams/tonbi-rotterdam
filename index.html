@@ -102,7 +102,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-node-wrap { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; overflow:visible; }
 .ow-node-inner { position:relative; display:inline-block; }
 .ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
-.ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
+.ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0); }
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
 .ow-node-label { display:block; margin-top:3px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; border:1px solid rgba(255,255,255,0.12); }
 .ow-node-wrap.next-stop .ow-node-label { background:var(--orange); border-color:transparent; box-shadow:0 2px 6px rgba(255,107,53,0.4); color:white; }
@@ -118,10 +118,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   100% {transform:scale(1) rotate(0deg);opacity:1;}
 }
 @keyframes nodeUnlock {
-  0%   {filter:brightness(0) opacity(0.3);transform:scale(0.85);}
-  30%  {filter:brightness(2.5) opacity(1) saturate(1.8);transform:scale(1.18);}
-  55%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
-  75%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
+  0%   {filter:brightness(0) opacity(0);transform:scale(0.85);}
+  15%  {filter:brightness(2.2) opacity(1) saturate(1.8);transform:scale(1.18);}
+  45%  {filter:brightness(1.1) opacity(1);transform:scale(0.94);}
+  70%  {filter:brightness(1.3) opacity(1);transform:scale(1.06);}
   100% {filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));transform:scale(1);}
 }
 @keyframes pathDraw {
@@ -294,7 +294,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div class="ow-bottom">
       <div id="ow-action-row" style="display:flex;gap:0.5rem;margin-bottom:0.6rem;">
         <button id="ow-skip-btn" onclick="owSkipStop()" style="display:none;flex:0 0 auto;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.65);border:1.5px solid rgba(255,255,255,0.2);border-radius:var(--radius-sm);padding:0.9rem 1rem;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;white-space:nowrap;backdrop-filter:blur(8px);">Skip stop →</button>
-        <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()" style="flex:1;margin-bottom:0;">
+        <button class="ow-start-btn" id="ow-start-btn" style="flex:1;margin-bottom:0;">
           <span id="ow-start-label">Start Tour</span>
         </button>
       </div>
@@ -1848,11 +1848,12 @@ window.addEventListener('focus',function(){
 
 // ── Partners page ──
 function showPartnersPage(){
+  // Always rebuild so images load correctly
   let ov=document.getElementById('partners-overlay');
-  if(ov){ ov.style.display='block'; ov.scrollTop=0; return; }
+  if(ov) ov.remove();
   ov=document.createElement('div');
   ov.id='partners-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
+  ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;';
 
   const allPartners=[];
   stops.forEach(s=>{
