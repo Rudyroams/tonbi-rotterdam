@@ -104,7 +104,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-node-img { width:96px; height:96px; object-fit:contain; display:block; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4)); transition:filter 0.6s ease, opacity 0.6s ease; }
 .ow-node-wrap.locked .ow-node-img { filter:brightness(0) opacity(0.3); }
 .ow-node-wrap.next-stop .ow-node-inner { animation:owFloat 2.2s ease-in-out infinite; }
-.ow-node-label { display:block; margin-top:2px; background:var(--orange); color:white; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; box-shadow:0 2px 6px rgba(255,107,53,0.35); }
+.ow-node-label { display:block; margin-top:3px; background:rgba(0,0,0,0.65); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:20px; white-space:nowrap; pointer-events:none; border:1px solid rgba(255,255,255,0.12); }
+.ow-node-wrap.next-stop .ow-node-label { background:var(--orange); border-color:transparent; box-shadow:0 2px 6px rgba(255,107,53,0.4); color:white; }
 .ow-node-stamp { position:absolute; top:8px; right:8px; width:32px; height:32px; background:var(--green); border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; font-size:1rem; box-shadow:0 2px 10px rgba(52,199,89,0.6); opacity:0; }
 @keyframes owFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 @keyframes stampPop {
@@ -278,21 +279,34 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         </div>
       </div>
     </div>
+    <!-- Reset button — small, top-left corner, for testing only -->
+    <button onclick="resetProgress()" style="position:absolute;top:calc(0.5rem + env(safe-area-inset-top));right:1rem;z-index:25;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.3);font-size:0.55rem;font-weight:700;padding:0.2rem 0.5rem;cursor:pointer;pointer-events:all;letter-spacing:0.05em;">RESET</button>
+    <!-- Bonus video filmstrip — pinned bottom right, overlaps button -->
+    <div id="ow-bonus-filmstrip" onclick="showBonusVideo()" style="display:none;position:absolute;bottom:calc(4.5rem + env(safe-area-inset-bottom));right:1rem;z-index:25;cursor:pointer;transform:rotate(3deg);transform-origin:center bottom;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.5));">
+      <div style="background:var(--orange);border-radius:7px;display:flex;flex-direction:row;align-items:stretch;width:90px;padding:4px;gap:2px;">
+        <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
+          ${[0,1,2,3,4,5].map(()=>`<div style="width:7px;height:7px;background:rgba(248,247,245,0.9);border-radius:2px;flex-shrink:0;"></div>`).join('')}
+        </div>
+        <div style="position:relative;flex:1;min-width:0;aspect-ratio:2/3;overflow:hidden;border-radius:3px;background:#111;">
+          <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.6);">
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="10" height="10" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div>
+          </div>
+        </div>
+        <div style="width:12px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">
+          ${[0,1,2,3,4,5].map(()=>`<div style="width:7px;height:7px;background:rgba(248,247,245,0.9);border-radius:2px;flex-shrink:0;"></div>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:3px;font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:900;color:rgba(255,220,100,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,0.5);">BTS<br>Video</div>
+    </div>
     <div class="ow-bottom">
       <button class="ow-start-btn" id="ow-start-btn" onclick="owStartTour()">
         <span id="ow-start-label">Start Tour</span>
       </button>
-      <div class="ow-links-row">
-        <a class="ow-link-item" id="ow-bonus-link" onclick="showBonusVideo()" style="display:none;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,220,100,0.9)"><path d="M5 3l14 9-14 9V3z"/></svg>
-          <span style="color:rgba(255,220,100,0.85);">Bonus BTS Video</span>
-        </a>
-        <div class="ow-link-divider" id="ow-links-divider" style="display:none;"></div>
-        <a class="ow-link-item" id="ow-partners-link" onclick="showPartnersPage()" style="display:none;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
-          Restaurants &amp; Partners
-        </a>
-      </div>
+      <a class="ow-link-item" onclick="showPartnersPage()" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;color:rgba(255,255,255,0.5);cursor:pointer;text-decoration:none;padding:0.15rem 0;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+        Restaurants &amp; Partners
+      </a>
     </div>
   </div>
 
@@ -416,61 +430,89 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </div>
 
 <div id="end-screen" style="display:none;position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
-  <div style="max-width:480px;margin:0 auto;padding:calc(2rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
-    <!-- Hero -->
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:1rem;font-size:2rem;">
-        🎉
-      </div>
-      <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.1;margin-bottom:0.6rem;">Tour Complete!</div>
-      <div style="font-size:0.95rem;color:rgba(255,255,255,0.8);line-height:1.7;max-width:320px;margin:0 auto;">Thanks for exploring Rotterdam with me. You've walked the same streets my family has walked for generations — I hope the city showed you something real.</div>
-      <div style="margin-top:0.6rem;font-size:0.88rem;color:rgba(255,255,255,0.6);font-style:italic;">— Rudy</div>
+  <div style="max-width:480px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));">
+
+    <!-- Hero title -->
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 50%,#ffcc00 100%);box-shadow:0 6px 24px rgba(255,107,53,0.5);margin-bottom:0.75rem;font-size:1.75rem;">🎉</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.1;margin-bottom:0.5rem;">Tour Complete!</div>
+      <div style="font-size:0.9rem;color:rgba(255,255,255,0.75);line-height:1.7;max-width:300px;margin:0 auto;">Thanks for exploring Rotterdam with me. I hope the city showed you something real.</div>
+      <div style="margin-top:0.4rem;font-size:0.82rem;color:rgba(255,255,255,0.5);font-style:italic;">— Rudy</div>
     </div>
-    <!-- Score -->
-    <div id="end-score-card" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1.25rem;">
-      <div style="text-align:center;flex-shrink:0;">
-        <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:3rem;font-weight:900;color:white;line-height:1;"></div>
-        <div style="font-size:0.62rem;color:rgba(255,255,255,0.55);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.1rem;">correct</div>
-      </div>
-      <div style="flex:1;">
-        <div style="height:6px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;margin-bottom:0.5rem;">
-          <div id="end-score-bar" style="height:100%;background:linear-gradient(90deg,#ff3b30,#ffcc00);border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+
+    <!-- Landscape image -->
+    <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;box-shadow:0 8px 28px rgba(0,0,0,0.4);">
+      <img src="https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg" style="width:100%;aspect-ratio:16/7;object-fit:cover;display:block;">
+    </div>
+
+    <!-- Score card -->
+    <div id="end-score-card" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;">
+      <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">Quiz Results</div>
+      <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:0.75rem;">
+        <div style="text-align:center;flex-shrink:0;">
+          <div id="end-score-num" style="font-family:'Nunito',sans-serif;font-size:2.8rem;font-weight:900;color:white;line-height:1;"></div>
+          <div style="font-size:0.58rem;color:rgba(255,255,255,0.5);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.1rem;">correct</div>
         </div>
-        <div id="end-score-msg" style="font-size:0.88rem;color:white;font-weight:600;line-height:1.4;"></div>
+        <div style="flex:1;">
+          <div style="height:6px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;margin-bottom:0.45rem;">
+            <div id="end-score-bar" style="height:100%;background:linear-gradient(90deg,#ff3b30,#ffcc00);border-radius:99px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;"></div>
+          </div>
+          <div id="end-score-msg" style="font-size:0.85rem;color:white;font-weight:600;line-height:1.4;"></div>
+        </div>
+      </div>
+      <!-- Skipped quizzes -->
+      <div id="end-skipped-row" style="display:none;background:rgba(255,255,255,0.06);border-radius:10px;padding:0.55rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);">Quizzes skipped</div>
+        <div id="end-skipped-num" style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:rgba(255,165,80,0.9);"></div>
       </div>
     </div>
-    <!-- Route map -->
-    <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;">
-      <div style="padding:0.85rem 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.1);">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
-        <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;">5 Stops · Rotterdam</div>
-      </div>
-      <div id="end-map" style="width:100%;height:220px;"></div>
-    </div>
+
     <!-- Photos -->
     <div id="end-photos-section" style="display:none;margin-bottom:1rem;">
       <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;">
-        <div style="padding:0.85rem 1rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="padding:0.75rem 1rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.1);">
           <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Your Photos</div>
           <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;" id="end-photos-count"></div>
         </div>
         <div id="end-photos-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:3px;padding:3px;"></div>
-        <div style="padding:0.85rem 1rem;">
-          <button onclick="downloadCollage()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 14px rgba(255,107,53,0.4);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <div style="padding:0.75rem 1rem;">
+          <button onclick="downloadCollage()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.75rem;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download Photo Collage
           </button>
         </div>
       </div>
     </div>
-    <div id="end-no-photos" style="display:none;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:1.25rem;text-align:center;margin-bottom:1rem;color:rgba(255,255,255,0.65);font-size:0.88rem;line-height:1.6;">
+    <div id="end-no-photos" style="display:none;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:1rem;text-align:center;margin-bottom:1rem;color:rgba(255,255,255,0.5);font-size:0.85rem;line-height:1.6;">
       No photos captured this time — next time try the photo challenges!
     </div>
-    <button onclick="showBonusVideo()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);margin-bottom:0.65rem;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
-      🎬 Watch: Behind the Tour
+
+    <!-- Partners link -->
+    <div style="background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;" onclick="showPartnersPage()">
+      <div>
+        <div style="font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;color:white;margin-bottom:0.2rem;">Restaurants &amp; Partners</div>
+        <div style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.5;">Rudy's picks along the route — with exclusive offers for tour visitors.</div>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <!-- Bonus video button -->
+    <button onclick="showBonusVideo()" style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.6rem;box-shadow:0 6px 20px rgba(255,107,53,0.4);margin-bottom:1rem;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
+      Watch Bonus BTS Video
     </button>
-    <button onclick="closeEndScreen()" style="width:100%;background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius-sm);padding:0.85rem;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+
+    <!-- Route map -->
+    <div style="background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;">
+      <div style="padding:0.75rem 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Your Route</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;">5 Stops · Rotterdam</div>
+      </div>
+      <div id="end-map" style="width:100%;height:200px;"></div>
+    </div>
+
+    <!-- Back to map -->
+    <button onclick="closeEndScreen()" style="width:100%;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.18);border-radius:var(--radius-sm);padding:0.85rem;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
       ← Back to Map
     </button>
     <div style="height:1rem;"></div>
@@ -494,6 +536,14 @@ const quizAnswered={};
 const _saved=JSON.parse(localStorage.getItem('tonbi_completed')||'{}');
 const stopsCompleted=_saved;
 function saveProgress(){ try{localStorage.setItem('tonbi_completed',JSON.stringify(stopsCompleted));}catch(e){} }
+function resetProgress(){
+  if(!confirm('Reset all progress?')) return;
+  Object.keys(stopsCompleted).forEach(k=>delete stopsCompleted[k]);
+  try{localStorage.removeItem('tonbi_completed');}catch(e){}
+  justCompletedStopId=null;
+  renderOwNodes();
+  renderOwPaths();
+}
 let justCompletedStopId=null;
 let currentStop=null,currentCardIdx=0,cards=[];
 let pendingPhotoStopId=null;
@@ -553,16 +603,10 @@ function renderOwNodes(){
     if(allDone){
       lbl.textContent='🎉 Finish Tour';
       btn.onclick=showEndScreen;
-      // Show select-stop text in header
       const selHeader=document.getElementById('ow-select-stop-header');
       if(selHeader) selHeader.style.display='block';
-      // Show bonus link and divider
-      const bonusBtn=document.getElementById('ow-bonus-link');
-      if(bonusBtn) bonusBtn.style.display='flex';
-      const divider=document.getElementById('ow-links-divider');
-      if(divider) divider.style.display='block';
-      const partnersLink=document.getElementById('ow-partners-link');
-      if(partnersLink) partnersLink.style.display='flex';
+      const filmstrip=document.getElementById('ow-bonus-filmstrip');
+      if(filmstrip) filmstrip.style.display='block';
     } else if(anyDone){
       lbl.textContent='Continue Tour →';
       btn.onclick=owStartTour;
@@ -703,12 +747,8 @@ function animateStopCompletion(completedId, nextId, isLast){
         }
         const selHeader=document.getElementById('ow-select-stop-header');
         if(selHeader) selHeader.style.display='block';
-        const bonusBtn=document.getElementById('ow-bonus-link');
-        if(bonusBtn) bonusBtn.style.display='flex';
-        const divider=document.getElementById('ow-links-divider');
-        if(divider) divider.style.display='block';
-        const partnersLink=document.getElementById('ow-partners-link');
-        if(partnersLink) partnersLink.style.display='flex';
+        const filmstrip=document.getElementById('ow-bonus-filmstrip');
+        if(filmstrip) filmstrip.style.display='block';
       }, 1200);
     }
     return;
@@ -1385,13 +1425,24 @@ function closeEndScreen(){
 }
 
 function showEndScreen(){
+  const total=stops.length;
   const attempted=Object.keys(quizAnswered).length;
   const scored=Object.entries(quizAnswered).filter(([sid,ans])=>{const st=stops.find(x=>x.id===parseInt(sid));return st&&ans===st.quiz.correct;}).length;
+  const skipped=total-attempted;
   const pct=attempted>0?Math.round((scored/attempted)*100):0;
   document.getElementById('end-score-num').textContent=`${scored}/${attempted||'—'}`;
   const msgs=[[1.0,"Perfect score! You're a Rotterdam expert! 🏆"],[0.6,"Great knowledge of Rotterdam! 🌟"],[0.0,"Keep exploring — Rotterdam has more secrets! 🗺️"]];
   document.getElementById('end-score-msg').textContent=attempted>0?msgs.find(([t])=>pct/100>=t)[1]:'Complete more quizzes next time!';
   setTimeout(()=>{document.getElementById('end-score-bar').style.width=pct+'%';},200);
+  // Skipped quizzes
+  const skippedRow=document.getElementById('end-skipped-row');
+  const skippedNum=document.getElementById('end-skipped-num');
+  if(skipped>0&&skippedRow&&skippedNum){
+    skippedRow.style.display='flex';
+    skippedNum.textContent=`${skipped} of ${total}`;
+  } else if(skippedRow){
+    skippedRow.style.display='none';
+  }
   const pe=Object.entries(photoCollection);
   if(pe.length>0){document.getElementById('end-photos-section').style.display='block';document.getElementById('end-no-photos').style.display='none';document.getElementById('end-photos-count').textContent=`${pe.length} photo${pe.length>1?'s':''} captured`;document.getElementById('end-photos-grid').innerHTML=pe.map(([sid,ph])=>`<div style="position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;"><img src="${ph.dataUrl}" style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;bottom:0;left:0;right:0;padding:0.3rem 0.4rem;background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);color:white;font-size:0.58rem;font-weight:700;">${ph.stopName}</div></div>`).join('');}
   else{document.getElementById('end-photos-section').style.display='none';document.getElementById('end-no-photos').style.display='block';}
