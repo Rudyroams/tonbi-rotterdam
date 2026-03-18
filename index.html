@@ -587,6 +587,34 @@ const quizAnswered={};
 const _saved=JSON.parse(localStorage.getItem('tonbi_completed')||'{}');
 const stopsCompleted=_saved;
 function saveProgress(){ try{localStorage.setItem('tonbi_completed',JSON.stringify(stopsCompleted));}catch(e){} }
+
+// ── Map state & overworld constants (must be declared before any function references them) ──
+const MAP_STATE_URLS = [
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-0.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-1.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-2.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-3.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-4.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-5.png',
+];
+const MAP_TRANSITION_VIDEOS = {
+  1: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-1.mp4',
+  2: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-2.mp4',
+  3: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-3.mp4',
+  4: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-4.mp4',
+  5: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-5.mp4',
+};
+const OW_SUBSTOP_PINS = [
+  { parentStopId:1, id:'1a',   label:'De Boeg', x:114, y:195,
+    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-1a.png' },
+  { parentStopId:2, id:'2pre', label:'Blaak',   x:260, y:155,
+    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-2pre.png' },
+];
+let _particleRAF=null;
+const _particles=[];
+const PARTICLE_COUNT=14;
+const RING_R=52, RING_STROKE=4;
+const RING_CIRC=2*Math.PI*RING_R;
 function resetProgress(){
   if(!confirm('Reset all progress?')) return;
   Object.keys(stopsCompleted).forEach(k=>delete stopsCompleted[k]);
@@ -2054,37 +2082,11 @@ function closeBonusVideo(){
 // MAP STATE SYSTEM
 // ═══════════════════════════════════════════════════════════════════════
 
-// Map state images — one per completed-stop count (0 = fresh, 5 = all done)
-// Drop your PNGs at these URLs; fall back to main-background.png until they exist
-const MAP_STATE_URLS = [
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-0.png',
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-1.png',
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-2.png',
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-3.png',
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-4.png',
-  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-5.png',
-];
+// Map state images — see top of script for MAP_STATE_URLS declaration
 
-// Transition videos — one per completed stop (plays AFTER stop N, transitions to state N)
-// Key = completedStopId (1–5)
-const MAP_TRANSITION_VIDEOS = {
-  1: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-1.mp4',
-  2: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-2.mp4',
-  3: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-3.mp4',
-  4: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-4.mp4',
-  5: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-5.mp4',
-};
+// Transition videos — see top of script for MAP_TRANSITION_VIDEOS declaration
 
-// Sub-stop discovery pins — appear on map after their parent stop completes
-// Each entry: { stopId, id, label, x, y (as % of 390×844 canvas), img }
-const OW_SUBSTOP_PINS = [
-  // Stop 1 sub-stops
-  { parentStopId:1, id:'1a', label:'De Boeg', x:114, y:195,
-    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-1a.png' },
-  // Stop 2 sub-stops (Blaak Station pre-stop)
-  { parentStopId:2, id:'2pre', label:'Blaak', x:260, y:155,
-    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-2pre.png' },
-];
+// Sub-stop discovery pins — see top of script for OW_SUBSTOP_PINS declaration
 
 function getMapState(){
   return Math.min(Object.keys(stopsCompleted).length, MAP_STATE_URLS.length-1);
@@ -2229,10 +2231,7 @@ function animatePinReveal(parentStopId){
 // ═══════════════════════════════════════════════════════════════════════
 // AMBIENT PARTICLES
 // ═══════════════════════════════════════════════════════════════════════
-
-let _particleRAF=null;
-const _particles=[];
-const PARTICLE_COUNT=14;
+// _particleRAF, _particles, PARTICLE_COUNT declared at top of script
 
 function initParticles(){
   const canvas=document.getElementById('ow-particles');
@@ -2284,10 +2283,7 @@ function stopParticles(){
 // ═══════════════════════════════════════════════════════════════════════
 // PROGRESS RING
 // ═══════════════════════════════════════════════════════════════════════
-
-// Ring dimensions match ow-node-img size (96px)
-const RING_R=52, RING_STROKE=4;
-const RING_CIRC=2*Math.PI*RING_R;
+// RING_R, RING_STROKE, RING_CIRC declared at top of script
 
 function buildProgressRingSVG(stopId){
   const svg=`<svg class="ow-progress-ring" width="116" height="116" viewBox="0 0 116 116">
