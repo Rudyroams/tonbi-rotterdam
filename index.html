@@ -78,7 +78,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 #home-screen { min-height:100svh; padding-bottom:1rem; background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%); }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:transparent; }
 #overworld-screen { position:absolute; inset:0; overflow:hidden; }
-#ow-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; transition:opacity 0.5s ease; }
+#ow-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; }
 #ow-bg-next { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; opacity:0; pointer-events:none; }
 #ow-svg-layer { position:absolute; inset:0; width:100%; height:100%; z-index:5; pointer-events:none; overflow:visible; }
 #ow-nodes { position:absolute; inset:0; z-index:10; }
@@ -93,10 +93,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 /* Progress ring on node */
 .ow-progress-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:11; }
 .ow-progress-ring circle { transition:stroke-dashoffset 0.35s ease; }
-/* Transition video overlay */
-#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:#000; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; }
+/* Transition video overlay — transparent bg, video crossfades over map */
+#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:transparent; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity 0.45s ease; }
 #ow-transition-overlay.active { pointer-events:all; }
-#ow-transition-video { width:100%; height:100%; object-fit:cover; display:block; }
+#ow-transition-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
 .ow-logo { display:flex; align-items:center; justify-content:space-between; gap:0.65rem; }
 .ow-logo-left { display:flex; align-items:center; gap:0.65rem; }
@@ -936,23 +936,26 @@ function animateStopCompletion(completedId, nextId, isLast){
   setTimeout(()=>{ unlockNextStop(nextId); }, 900);
 }
 
-// Unlock a stop node — reveal in colour instantly (animation already played in transition video)
+// Unlock a stop node — appears instantly with no pop or animation
 function unlockNextStop(nextId){
   const nextImg=document.getElementById('ow-img-'+nextId);
   const nextWrap=document.getElementById('ow-wrap-'+nextId);
   if(!nextImg||!nextWrap) return;
 
-  // Straight to unlocked — no pop-in, video handled the reveal
+  // Reveal immediately — no pop, no scale, no flash
   nextWrap.classList.remove('locked');
-  nextWrap.classList.add('next-stop');
-  nextImg.style.animation='';
-  nextImg.style.filter=''; // clear locked filter immediately
+  nextImg.style.animation='none';
+  nextImg.style.filter='';
 
   const lbl=nextWrap.querySelector('.ow-node-label');
   if(lbl){ lbl.style.display='block'; lbl.style.opacity='1'; }
 
   const nextInner=nextWrap.querySelector('.ow-node-inner');
   if(nextInner) wireNodeTap(nextWrap, nextInner, nextId);
+
+  // Add the float animation after a short delay so the icon is already visible
+  // when it starts — avoids any pop-in feel
+  setTimeout(()=>nextWrap.classList.add('next-stop'), 600);
 }
 
 function owFlash(color, holdMs){
@@ -2130,41 +2133,46 @@ function playMapTransition(completedId, onComplete){
   const overlay=document.getElementById('ow-transition-overlay');
   const video=document.getElementById('ow-transition-video');
   if(!overlay||!video){ onComplete&&onComplete(); return; }
-
-  // If no video URL configured yet, skip gracefully
   if(!videoUrl){ onComplete&&onComplete(); return; }
 
-  // Preload new map state while video plays
   const newStateIdx=getMapState();
-  const newStateBg=new Image();
-  newStateBg.src=MAP_STATE_URLS[newStateIdx]||MAP_STATE_URLS[0];
+  // Preload new map state image in background
+  const preload=new Image();
+  preload.src=MAP_STATE_URLS[newStateIdx]||MAP_STATE_URLS[0];
 
-  // Cut straight to black, no fade
-  overlay.style.transition='none';
-  overlay.style.opacity='1';
-  overlay.classList.add('active');
-
-  // Play video immediately
+  // Load video first so it's ready before we fade in
   video.src=videoUrl;
   video.load();
-  video.play().catch(()=>{
-    _finishTransition(overlay, video, onComplete, newStateIdx);
-  });
 
-  // Safety timeout in case video stalls
+  // Crossfade video IN over the map
+  overlay.classList.add('active');
+  // Force reflow then fade in
+  overlay.getBoundingClientRect();
+  overlay.style.opacity='1';
+
+  // Play as soon as browser allows
+  const playPromise=video.play();
+  if(playPromise&&typeof playPromise.then==='function'){
+    playPromise.catch(()=>_finishTransition(overlay, video, onComplete, newStateIdx));
+  }
+
+  // When video ends: swap map underneath, then crossfade video OUT
   const bail=setTimeout(()=>_finishTransition(overlay, video, onComplete, newStateIdx), 30000);
   video.onended=()=>{ clearTimeout(bail); _finishTransition(overlay, video, onComplete, newStateIdx); };
 }
 
 function _finishTransition(overlay, video, onComplete, newStateIdx){
-  // Swap map image while still covered
+  // Swap map image while video is still visible — seamless
   applyMapState(newStateIdx, true);
-  // Cut straight back — no fade out
-  overlay.style.transition='none';
+  // Crossfade video OUT
   overlay.style.opacity='0';
-  overlay.classList.remove('active');
-  video.src='';
-  onComplete&&onComplete();
+  // After fade completes, clean up and fire callback
+  const FADE_MS=450;
+  setTimeout(()=>{
+    overlay.classList.remove('active');
+    video.src='';
+    onComplete&&onComplete();
+  }, FADE_MS);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
