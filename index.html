@@ -78,9 +78,25 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 #home-screen { min-height:100svh; padding-bottom:1rem; background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%); }
 .home-header { padding:calc(1.5rem + env(safe-area-inset-top)) 1.25rem 1.25rem; background:transparent; }
 #overworld-screen { position:absolute; inset:0; overflow:hidden; }
-#ow-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; }
+#ow-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; transition:opacity 0.5s ease; }
+#ow-bg-next { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; opacity:0; pointer-events:none; }
 #ow-svg-layer { position:absolute; inset:0; width:100%; height:100%; z-index:5; pointer-events:none; overflow:visible; }
 #ow-nodes { position:absolute; inset:0; z-index:10; }
+/* Particle canvas */
+#ow-particles { position:absolute; inset:0; width:100%; height:100%; z-index:6; pointer-events:none; }
+/* Sub-stop discovery pins */
+.ow-pin { position:absolute; z-index:8; transform:translate(-50%,-100%); pointer-events:none; opacity:0; transition:opacity 0.3s; }
+.ow-pin.visible { opacity:1; animation:pinPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.ow-pin img { width:36px; height:36px; object-fit:contain; filter:drop-shadow(0 3px 8px rgba(0,0,0,0.55)); }
+.ow-pin-label { text-align:center; margin-top:2px; font-family:'Nunito',sans-serif; font-size:0.5rem; font-weight:800; color:white; text-shadow:0 1px 4px rgba(0,0,0,0.8); white-space:nowrap; }
+@keyframes pinPop { 0%{transform:translate(-50%,-120%) scale(0);} 60%{transform:translate(-50%,-95%) scale(1.18);} 80%{transform:translate(-50%,-103%) scale(0.93);} 100%{transform:translate(-50%,-100%) scale(1);} }
+/* Progress ring on node */
+.ow-progress-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:11; }
+.ow-progress-ring circle { transition:stroke-dashoffset 0.35s ease; }
+/* Transition video overlay */
+#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:#000; opacity:0; pointer-events:none; transition:opacity 0.4s ease; display:flex; align-items:center; justify-content:center; }
+#ow-transition-overlay.active { pointer-events:all; }
+#ow-transition-video { width:100%; height:100%; object-fit:cover; display:block; }
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
 .ow-logo { display:flex; align-items:center; justify-content:space-between; gap:0.65rem; }
 .ow-logo-left { display:flex; align-items:center; gap:0.65rem; }
@@ -264,8 +280,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 <div id="app">
   <div id="overworld-screen">
-    <img id="ow-bg" src="https://rudyroams.github.io/tonbi-rotterdam/images/main-background.png" alt="Rotterdam map">
+    <img id="ow-bg" src="https://rudyroams.github.io/tonbi-rotterdam/images/map-state-0.png" alt="Rotterdam map">
+    <img id="ow-bg-next" src="" alt="">
+    <canvas id="ow-particles"></canvas>
     <svg id="ow-svg-layer" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="ow-pins"></div>
     <div id="ow-nodes"></div>
     <div class="ow-header">
       <div class="ow-logo">
@@ -573,7 +592,6 @@ function resetProgress(){
   Object.keys(stopsCompleted).forEach(k=>delete stopsCompleted[k]);
   try{localStorage.removeItem('tonbi_completed');}catch(e){}
   justCompletedStopId=null;
-  // Hide all done-state elements
   const filmstrip=document.getElementById('ow-bonus-filmstrip');
   if(filmstrip){ filmstrip.style.display='none'; filmstrip._built=false; filmstrip.innerHTML=''; }
   const bonusBtn=document.getElementById('ow-bonus-link');
@@ -584,15 +602,21 @@ function resetProgress(){
   if(divider) divider.style.display='none';
   const partnersLink=document.getElementById('ow-partners-link');
   if(partnersLink) partnersLink.style.display='none';
+  applyMapState(0, true);
   renderOwNodes();
   renderOwPaths();
+  renderOwPins();
+  setTimeout(injectProgressRings,100);
 }
 function finishAllStops(){
   stops.forEach(s=>{ stopsCompleted[s.id]=true; });
   saveProgress();
   justCompletedStopId=null;
+  applyMapState(getMapState(), true);
   renderOwNodes();
   renderOwPaths();
+  renderOwPins();
+  setTimeout(injectProgressRings,100);
 }
 function buildFilmstrip(){
   const el=document.getElementById('ow-bonus-filmstrip');
@@ -646,7 +670,14 @@ function showScreen(name){
   document.getElementById('overworld-screen').style.display=name==='overworld'?'block':'none';
   document.getElementById('home-screen').style.display=name==='home'?'block':'none';
   const mapEl=document.getElementById('map-screen');name==='map'?mapEl.classList.add('show'):mapEl.classList.remove('show');
-  if(name==='overworld')renderOwNodes();
+  if(name==='overworld'){
+    renderOwNodes();
+    renderOwPins();
+    setTimeout(injectProgressRings,100);
+    if(!_particleRAF) setTimeout(initParticles,200);
+  } else {
+    stopParticles();
+  }
 }
 function owStartTour(){const n=stops.find(s=>!stopsCompleted[s.id])||stops[0];startJourney(n.id);}
 
@@ -681,8 +712,17 @@ const OW_STOP_POS = [
 ];
 
 function initOverworldMap(){
+  // Set correct map state immediately (no animation on first load)
+  applyMapState(getMapState(), true);
   renderOwNodes();
   renderOwPaths();
+  renderOwPins();
+  // Start particles after a short delay so map load is prioritised
+  setTimeout(initParticles, 600);
+  // Inject progress rings into node DOM
+  setTimeout(injectProgressRings, 200);
+  // Preload next state in background
+  preloadNextMapState(getMapState());
 }
 
 function renderOwNodes(){
@@ -1434,6 +1474,8 @@ function renderCard(card,idx,total){
 
 function startJourney(stopId){
   currentStop=stops.find(s=>s.id===stopId);currentCardIdx=0;cards=buildCards(currentStop);
+  // Reset this stop's ring to 0 when entering
+  updateProgressRing(stopId, 0);
   renderJourney();document.getElementById('journey-screen').classList.add('show');
 }
 
@@ -1490,6 +1532,11 @@ function updateCardPosition(animate=true){
 
 function updateProgressDots(){
   _refreshJtBar();
+  // Update progress ring on overworld for current stop (background state)
+  if(currentStop){
+    const progress=getCurrentStopProgress();
+    updateProgressRing(currentStop.id, progress);
+  }
 }
 
 function updateNavBtns(){
@@ -1596,7 +1643,17 @@ function nextCard(){
     const isLast=completedId===stops.length;
     document.getElementById('journey-screen').classList.remove('show');
     showScreen('overworld');
-    setTimeout(()=>animateStopCompletion(completedId, nextId, isLast), 2000);
+    // Play transition video first; run stamp animation after it finishes
+    setTimeout(()=>{
+      playMapTransition(completedId, ()=>{
+        // After video + map swap, run stamp + unlock sequence
+        animateStopCompletion(completedId, nextId, isLast);
+        // Reveal sub-stop pins for this stop
+        setTimeout(()=>animatePinReveal(completedId), 1200);
+        // Preload next state
+        preloadNextMapState(getMapState());
+      });
+    }, 600);
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
     setTimeout(()=>{
@@ -1989,10 +2046,293 @@ function closeBonusVideo(){
     ov.style.display='none';
   }
 }
+<!-- ── Overworld transition video overlay ── -->
+<div id="ow-transition-overlay">
+  <video id="ow-transition-video" playsinline webkit-playsinline muted preload="none"></video>
+</div>
+// ═══════════════════════════════════════════════════════════════════════
+// MAP STATE SYSTEM
+// ═══════════════════════════════════════════════════════════════════════
 
+// Map state images — one per completed-stop count (0 = fresh, 5 = all done)
+// Drop your PNGs at these URLs; fall back to main-background.png until they exist
+const MAP_STATE_URLS = [
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-0.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-1.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-2.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-3.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-4.png',
+  'https://rudyroams.github.io/tonbi-rotterdam/images/map-state-5.png',
+];
 
+// Transition videos — one per completed stop (plays AFTER stop N, transitions to state N)
+// Key = completedStopId (1–5)
+const MAP_TRANSITION_VIDEOS = {
+  1: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-1.mp4',
+  2: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-2.mp4',
+  3: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-3.mp4',
+  4: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-4.mp4',
+  5: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-5.mp4',
+};
 
-</script>
+// Sub-stop discovery pins — appear on map after their parent stop completes
+// Each entry: { stopId, id, label, x, y (as % of 390×844 canvas), img }
+const OW_SUBSTOP_PINS = [
+  // Stop 1 sub-stops
+  { parentStopId:1, id:'1a', label:'De Boeg', x:114, y:195,
+    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-1a.png' },
+  // Stop 2 sub-stops (Blaak Station pre-stop)
+  { parentStopId:2, id:'2pre', label:'Blaak', x:260, y:155,
+    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-2pre.png' },
+];
+
+function getMapState(){
+  return Math.min(Object.keys(stopsCompleted).length, MAP_STATE_URLS.length-1);
+}
+
+function applyMapState(stateIdx, instant=false){
+  const bg=document.getElementById('ow-bg');
+  if(!bg)return;
+  const url=MAP_STATE_URLS[stateIdx]||MAP_STATE_URLS[0];
+  if(bg.src===url||bg.getAttribute('data-state')===String(stateIdx))return;
+  if(instant){
+    bg.src=url;
+    bg.setAttribute('data-state', stateIdx);
+  } else {
+    // Crossfade: preload into #ow-bg-next, then swap
+    const next=document.getElementById('ow-bg-next');
+    if(!next)return;
+    next.src=url;
+    next.onload=()=>{
+      bg.src=url;
+      bg.setAttribute('data-state', stateIdx);
+      next.src='';
+    };
+  }
+}
+
+// Preload the next map state image in the background so the swap is instant
+function preloadNextMapState(currentStateIdx){
+  const nextIdx=currentStateIdx+1;
+  if(nextIdx>=MAP_STATE_URLS.length)return;
+  const img=new Image();
+  img.src=MAP_STATE_URLS[nextIdx];
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// TRANSITION VIDEO PLAYER
+// ═══════════════════════════════════════════════════════════════════════
+
+function playMapTransition(completedId, onComplete){
+  const videoUrl=MAP_TRANSITION_VIDEOS[completedId];
+  const overlay=document.getElementById('ow-transition-overlay');
+  const video=document.getElementById('ow-transition-video');
+  if(!overlay||!video){ onComplete&&onComplete(); return; }
+
+  // If no video URL configured yet, skip gracefully
+  if(!videoUrl){ onComplete&&onComplete(); return; }
+
+  // Preload new map state while video plays
+  const newStateIdx=getMapState();
+  const newStateBg=new Image();
+  newStateBg.src=MAP_STATE_URLS[newStateIdx]||MAP_STATE_URLS[0];
+
+  // Phase 1: fade overlay to black (400ms)
+  overlay.style.opacity='0';
+  overlay.classList.add('active');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    overlay.style.opacity='1';
+  }));
+
+  setTimeout(()=>{
+    // Phase 2: play video
+    video.src=videoUrl;
+    video.load();
+    video.play().catch(()=>{
+      // Autoplay blocked — skip straight to completion
+      _finishTransition(overlay, video, onComplete, newStateIdx);
+    });
+
+    // Safety timeout in case video stalls
+    const bail=setTimeout(()=>_finishTransition(overlay, video, onComplete, newStateIdx), 30000);
+    video.onended=()=>{ clearTimeout(bail); _finishTransition(overlay, video, onComplete, newStateIdx); };
+  }, 450);
+}
+
+function _finishTransition(overlay, video, onComplete, newStateIdx){
+  // Swap map image while still behind black overlay
+  applyMapState(newStateIdx, true);
+  // Small hold so the new map is definitely painted
+  setTimeout(()=>{
+    overlay.style.opacity='0';
+    setTimeout(()=>{
+      overlay.classList.remove('active');
+      video.src='';
+      onComplete&&onComplete();
+    }, 450);
+  }, 120);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SUB-STOP DISCOVERY PINS
+// ═══════════════════════════════════════════════════════════════════════
+
+function renderOwPins(){
+  const container=document.getElementById('ow-pins');
+  if(!container)return;
+  container.innerHTML='';
+  const screen=document.getElementById('overworld-screen');
+  const W=screen.offsetWidth||390, H=screen.offsetHeight||844;
+  const scaleX=W/390, scaleY=H/844;
+
+  OW_SUBSTOP_PINS.forEach(pin=>{
+    if(!stopsCompleted[pin.parentStopId])return; // only show if parent stop done
+    const el=document.createElement('div');
+    el.className='ow-pin visible';
+    el.id='ow-pin-'+pin.id;
+    el.style.left=(pin.x*scaleX)+'px';
+    el.style.top=(pin.y*scaleY)+'px';
+    const img=document.createElement('img');
+    // Fall back gracefully if custom pin image missing
+    img.src=pin.img;
+    img.onerror=()=>{ img.style.display='none'; };
+    img.alt=pin.label;
+    const lbl=document.createElement('div');
+    lbl.className='ow-pin-label';
+    lbl.textContent=pin.label;
+    el.appendChild(img);
+    el.appendChild(lbl);
+    container.appendChild(el);
+  });
+}
+
+function animatePinReveal(parentStopId){
+  const pins=OW_SUBSTOP_PINS.filter(p=>p.parentStopId===parentStopId);
+  if(!pins.length)return;
+  // Re-render all pins (including newly visible ones) then trigger pop-in
+  renderOwPins();
+  pins.forEach((pin, i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById('ow-pin-'+pin.id);
+      if(el){
+        el.style.opacity='0';
+        el.style.animation='none';
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          el.style.opacity='1';
+          el.style.animation='pinPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards';
+        }));
+      }
+    }, 300 + i*200);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// AMBIENT PARTICLES
+// ═══════════════════════════════════════════════════════════════════════
+
+let _particleRAF=null;
+const _particles=[];
+const PARTICLE_COUNT=14;
+
+function initParticles(){
+  const canvas=document.getElementById('ow-particles');
+  if(!canvas)return;
+  const screen=document.getElementById('overworld-screen');
+  canvas.width=screen.offsetWidth||390;
+  canvas.height=screen.offsetHeight||844;
+  _particles.length=0;
+  for(let i=0;i<PARTICLE_COUNT;i++){
+    _particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*1.8+0.6,        // radius 0.6–2.4px
+      vx:(Math.random()-0.5)*0.22,    // slow horizontal drift
+      vy:-(Math.random()*0.18+0.06),  // slow upward drift
+      alpha:Math.random()*0.35+0.1,   // opacity 0.1–0.45
+      pulse:Math.random()*Math.PI*2,  // phase offset for breathing
+    });
+  }
+  if(_particleRAF) cancelAnimationFrame(_particleRAF);
+  _tickParticles(canvas);
+}
+
+function _tickParticles(canvas){
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const now=Date.now()/1000;
+  _particles.forEach(p=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.pulse+=0.018;
+    // Wrap around edges
+    if(p.x<-5) p.x=canvas.width+5;
+    if(p.x>canvas.width+5) p.x=-5;
+    if(p.y<-5){ p.y=canvas.height+5; p.x=Math.random()*canvas.width; }
+    const breath=Math.sin(p.pulse)*0.12;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${(p.alpha+breath).toFixed(3)})`;
+    ctx.fill();
+  });
+  _particleRAF=requestAnimationFrame(()=>_tickParticles(canvas));
+}
+
+function stopParticles(){
+  if(_particleRAF){ cancelAnimationFrame(_particleRAF); _particleRAF=null; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PROGRESS RING
+// ═══════════════════════════════════════════════════════════════════════
+
+// Ring dimensions match ow-node-img size (96px)
+const RING_R=52, RING_STROKE=4;
+const RING_CIRC=2*Math.PI*RING_R;
+
+function buildProgressRingSVG(stopId){
+  const svg=`<svg class="ow-progress-ring" width="116" height="116" viewBox="0 0 116 116">
+    <circle cx="58" cy="58" r="${RING_R}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="${RING_STROKE}"/>
+    <circle id="ow-ring-fill-${stopId}" cx="58" cy="58" r="${RING_R}" fill="none"
+      stroke="var(--orange)" stroke-width="${RING_STROKE}"
+      stroke-linecap="round"
+      stroke-dasharray="${RING_CIRC}"
+      stroke-dashoffset="${RING_CIRC}"
+      transform="rotate(-90 58 58)"
+    />
+  </svg>`;
+  return svg;
+}
+
+function injectProgressRings(){
+  // Called after renderOwNodes — add ring SVG inside each node inner
+  stops.forEach(stop=>{
+    const inner=document.querySelector(`#ow-wrap-${stop.id} .ow-node-inner`);
+    if(!inner) return;
+    if(inner.querySelector('.ow-progress-ring')) return; // already added
+    const tmp=document.createElement('div');
+    tmp.innerHTML=buildProgressRingSVG(stop.id);
+    inner.appendChild(tmp.firstElementChild);
+  });
+}
+
+function updateProgressRing(stopId, progressFraction){
+  const fill=document.getElementById('ow-ring-fill-'+stopId);
+  if(!fill)return;
+  const offset=RING_CIRC*(1-Math.max(0,Math.min(1,progressFraction)));
+  fill.setAttribute('stroke-dashoffset', offset.toFixed(2));
+}
+
+// Compute progress fraction for current stop based on card position
+function getCurrentStopProgress(){
+  if(!currentStop||!cards.length)return 0;
+  // Count only content cards (skip transition, nav, substop-intro)
+  const contentCards=cards.filter(c=>!['transition','nav','substop-intro'].includes(c.type));
+  if(!contentCards.length)return 0;
+  const passedContent=cards.slice(0,currentCardIdx+1)
+    .filter(c=>!['transition','nav','substop-intro'].includes(c.type)).length;
+  return passedContent/contentCards.length;
+}
+
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="if(window._owPending&&!window._owDone){window._owDone=true;initOverworldMap();}"></script>
 </body>
 </html>
