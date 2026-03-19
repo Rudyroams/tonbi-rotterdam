@@ -191,6 +191,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .card-viewport { flex:1; overflow:hidden; position:relative; }
 .card-track { display:flex; height:100%; transition:transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change:transform; }
 .card { min-width:100%; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; touch-action:pan-y; padding:1.25rem; scroll-behavior:smooth; }
+/* Disable backdrop-filter inside scrollable cards — it intercepts touch events on iOS Safari */
+.card * { -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
 .card.nav-card { padding:0; overflow:hidden; position:relative; }
 .arrival-stop-num { font-size:0.7rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; }
 .arrival-title { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.5rem; }
@@ -1424,16 +1426,15 @@ function renderCard(card,idx,total){
     const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
     const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#ffffff;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
 
-    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};touch-action:pan-y;">
-      <!-- 2×2 gallery with floating badge — grid-auto-rows locks all cells to same height -->
+    return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
+      <!-- 2×2 gallery with floating badge -->
       <div style="position:relative;width:100%;margin-bottom:0;">
         <div style="display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:145px;gap:3px;">
-          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
-          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
-          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
-          <div style="height:145px;overflow:hidden;background:#ddd;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#1a2a3a;"><img data-gallery="1" data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#1a2a3a;"><img data-gallery="1" data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#1a2a3a;"><img data-gallery="1" data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
+          <div style="height:145px;overflow:hidden;background:#1a2a3a;"><img data-gallery="1" data-src="${imgs[3]}" src="${imgs[3]}" style="width:100%;height:145px;object-fit:cover;display:block;"></div>
         </div>
-        <!-- Badge pinned to exact centre of the grid (293px = 145×2 + 3gap) -->
         <div style="position:absolute;top:0;left:0;right:0;height:293px;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:${RY};border-radius:99px;padding:0.35rem 1.2rem;box-shadow:0 4px 18px rgba(255,107,53,0.5);">
             <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;white-space:nowrap;">Local Food Tip!</div>
@@ -1441,9 +1442,9 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Panel 1: name + maps + filmstrip + first text block, all in one frosted window -->
+      <!-- Panel 1: name + info — solid dark, no backdrop-filter -->
       <div style="margin:1.8rem 1.1rem 0;">
-        <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);touch-action:pan-y;">
+        <div style="background:rgba(0,0,0,0.7);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <div style="flex:1;min-width:0;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;margin-bottom:0.2rem;">${p.name}</div>
@@ -1451,7 +1452,7 @@ function renderCard(card,idx,total){
               <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
             </div>
             ${p.cloudflareId?`<div style="flex-shrink:0;width:128px;padding-top:0.25rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
-              <div style="position:relative;background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:5px;gap:3px;">
+              <div style="background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:5px;gap:3px;">
                 <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
                 <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
                 <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
@@ -1462,31 +1463,31 @@ function renderCard(card,idx,total){
         </div>
       </div>
 
-      <!-- Coupon between panel 1 and image -->
+      <!-- Coupon -->
       <div style="display:flex;justify-content:center;padding:1.25rem 1.1rem 0;transform:rotate(-3deg);">
         ${coupon}
       </div>
 
-      <!-- Image after coupon -->
-      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
+      <!-- Image -->
+      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;">
         <img data-src="${imgs[1]}" src="${imgs[1]}" style="width:100%;min-height:138px;height:auto;object-fit:cover;display:block;">
       </div>
 
-      <!-- Text panel 2 -->
+      <!-- Panel 2 -->
       <div style="margin:0.75rem 1.1rem 0;">
-        <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);touch-action:pan-y;">
+        <div style="background:rgba(0,0,0,0.7);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);">
           <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
         </div>
       </div>
 
-      <!-- Image between panel 2 and 3 -->
-      <div style="margin:0.75rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.35);">
-        <img data-src="${imgs[0]}" src="${imgs[0]}" style="width:100%;min-height:138px;height:auto;object-fit:cover;display:block;">
+      <!-- Image -->
+      <div style="margin:0.75rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;">
+        <img data-src="${imgs[2]}" src="${imgs[2]}" style="width:100%;min-height:138px;height:auto;object-fit:cover;display:block;">
       </div>
 
-      <!-- Text panel 3 -->
+      <!-- Panel 3 -->
       <div style="margin:0.75rem 1.1rem 0;">
-        <div style="background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);touch-action:pan-y;">
+        <div style="background:rgba(0,0,0,0.7);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);">
           <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
         </div>
       </div>
@@ -1930,22 +1931,27 @@ function initMap(){
 try{renderLists();}catch(e){console.error(e);}
 
 function reloadGalleryImages(){
+  // Only reload images that failed to load or have no natural size — don't re-fetch everything
   document.querySelectorAll('img[data-src]').forEach(img=>{
     const url=img.getAttribute('data-src');
     if(!url)return;
-    // Directly bust the cache and reassign — avoids iOS memory-eviction blank bug
-    img.src=url+'?_r='+Date.now();
+    if(!img.complete||img.naturalWidth===0){
+      // Image failed or not yet loaded — assign src directly (no cache bust needed)
+      img.src=url;
+    }
   });
 }
+// Force-load all images on visibility restore — use a single debounced handler
+let _reloadTimer=null;
+function _scheduleReload(){
+  if(_reloadTimer)clearTimeout(_reloadTimer);
+  _reloadTimer=setTimeout(reloadGalleryImages,150);
+}
 document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='visible') reloadGalleryImages();
+  if(document.visibilityState==='visible') _scheduleReload();
 });
-window.addEventListener('pageshow',function(){
-  reloadGalleryImages();
-});
-window.addEventListener('focus',function(){
-  reloadGalleryImages();
-});
+window.addEventListener('pageshow',_scheduleReload);
+window.addEventListener('focus',_scheduleReload);
 
 // ── Partners page ──
 function showPartnersPage(){
@@ -2004,14 +2010,11 @@ function showPartnersPage(){
   ov._partners=allPartners;
   ov.style.display='block';
   ov.scrollTop=0;
-  // Force all images in the overlay to load — dynamic DOM elements on iOS need this
-  setTimeout(()=>{
-    ov.querySelectorAll('img').forEach(img=>{
-      if(img.src&&(!img.complete||img.naturalWidth===0)){
-        img.src=img.src.split('?')[0]+'?_r='+Date.now();
-      }
-    });
-  }, 80);
+  // Ensure all images load — set src explicitly in JS after DOM insertion
+  ov.querySelectorAll('img[src]').forEach(img=>{
+    const s=img.getAttribute('src');
+    if(s){img.src='';img.src=s;}
+  });
 }
 
 function showPartnerDetail(idx){
@@ -2056,14 +2059,11 @@ function showPartnerDetail(idx){
 
   detailView.style.display='block';
   ov.scrollTop=0;
-  // Force-load all images in detail view
-  setTimeout(()=>{
-    detailView.querySelectorAll('img').forEach(img=>{
-      if(img.src&&(!img.complete||img.naturalWidth===0)){
-        img.src=img.src.split('?')[0]+'?_r='+Date.now();
-      }
-    });
-  }, 80);
+  // Ensure all images load after DOM insertion
+  detailView.querySelectorAll('img[src]').forEach(img=>{
+    const s=img.getAttribute('src');
+    if(s){img.src='';img.src=s;}
+  });
 }
 
 // ── Bonus video ──
