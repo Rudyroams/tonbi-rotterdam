@@ -1049,6 +1049,7 @@ function buildCards(stop){
     {type:'rudy',       stop},
     {type:'photo',      stop},
     {type:'quiz',       stop},
+    {type:'game',       stop},
   ];
   if(stop.partners&&stop.partners.length>0)
     stop.partners.forEach((partner,pi)=>mainCards.push({type:'partner',stop,partner,partnerIdx:pi}));
@@ -1274,10 +1275,7 @@ function renderCard(card,idx,total){
     const rudyFilm = ss ? (ss.rudyFilm||'') : (s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think.");
     const rudyLocal= ss ? (ss.rudyLocal||'') : (s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere.");
     // Unique scroll hint ID per card
-    const hintId=ss?`rudy-scroll-hint-${s.id}-ss-${ss.id}`:`rudy-scroll-hint-${s.id}`;
-    // Sub-stop badge
-    const subBadge=ss?`<div style="font-size:0.7rem;font-weight:700;color:rgba(255,165,80,0.9);text-transform:uppercase;letter-spacing:0.12em;margin-top:0.2rem;">Sub-stop · ${s.name}</div>`:'';
-    const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
+    const hintId=ss?`rudy-scroll-hint-${s.id}-ss-${ss.id}`:`rudy-scroll-hint-${s.id}`;    const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
     return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="rudy" style="padding:0 0 2rem 0;background:${RAINBOW};">
       <div id="${hintId}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
@@ -1290,7 +1288,6 @@ function renderCard(card,idx,total){
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.8rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
             <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">Rudy's Note</div>
             <div style="font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.82);margin-top:0.12rem;">Local filmmaker &amp; your host today</div>
-            ${subBadge}
           </div>
         </div>
       </div>
@@ -1541,6 +1538,539 @@ function renderCard(card,idx,total){
     </div>`;
   }
 
+  // ── MINI-GAMES ──────────────────────────────────────────────────────────
+  if(card.type==='game'){
+    const gameId='game-'+s.id;
+    const games={
+      1:{title:'Cable Swing',emoji:'🌉',desc:'Tap to swing across the river!',color:'#2d6be4'},
+      2:{title:'Window Washer',emoji:'🪟',desc:'Clean all 10 windows of the Witte Huis!',color:'#f5f0e0'},
+      3:{title:'Herring Catch',emoji:'🐟',desc:'Catch the herring before the seagulls do!',color:'#0a3d5c'},
+      4:{title:'Cube Stack',emoji:'🟧',desc:'Stack the falling cubes as high as you can!',color:'#ff6b35'},
+      5:{title:'Market Rush',emoji:'🏪',desc:'Tap the right foods — Rotterdam approved only!',color:'#2ecc71'},
+    };
+    const g=games[s.id]||games[1];
+    return `<div class="card" data-stop="${s.id}" data-type="game" style="padding:0;background:linear-gradient(160deg,#0d1a2e 0%,#0a2540 60%,#0d1f35 100%);display:flex;flex-direction:column;">
+      <div style="padding:1.25rem 1.25rem 0.75rem;text-align:center;flex-shrink:0;">
+        <div style="font-size:0.65rem;font-weight:700;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.3rem;">Stop ${s.id} Mini-Boss</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:white;line-height:1.1;">${g.emoji} ${g.title}</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);margin-top:0.25rem;">${g.desc}</div>
+      </div>
+      <div id="${gameId}-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 1.25rem 1.25rem;min-height:0;">
+        <canvas id="${gameId}" style="border-radius:var(--radius);background:#000;max-width:100%;touch-action:none;display:block;"></canvas>
+        <div id="${gameId}-msg" style="margin-top:0.75rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;text-align:center;min-height:1.5rem;"></div>
+        <button id="${gameId}-start" onclick="startMiniGame(${s.id})" style="margin-top:0.5rem;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.7rem 2rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.4);">▶ Start</button>
+      </div>
+    </div>`;
+  }
+
+  return '<div class="card"></div>';
+}
+
+// ── MINI-GAME ENGINE ─────────────────────────────────────────────────────────
+const _games={};
+
+function startMiniGame(stopId){
+  const gameId='game-'+stopId;
+  const canvas=document.getElementById(gameId);
+  const btn=document.getElementById(gameId+'-start');
+  const msg=document.getElementById(gameId+'-msg');
+  if(!canvas) return;
+  const w=canvas.parentElement.offsetWidth-0;
+  canvas.width=Math.min(w, 380);
+  canvas.height=260;
+  if(btn) btn.style.display='none';
+  msg.textContent='';
+  if(stopId===1) _gameSwing(canvas, msg, gameId);
+  else if(stopId===2) _gameBombs(canvas, msg, gameId);
+  else if(stopId===3) _gameHerring(canvas, msg, gameId);
+  else if(stopId===4) _gameCubes(canvas, msg, gameId);
+  else if(stopId===5) _gameMarket(canvas, msg, gameId);
+}
+
+function _gameEnd(gameId, won, scoreText){
+  const btn=document.getElementById(gameId+'-start');
+  const msg=document.getElementById(gameId+'-msg');
+  if(msg) msg.textContent=won ? '🎉 '+scoreText : '💀 '+scoreText;
+  if(btn){ btn.textContent='▶ Try Again'; btn.style.display='block'; }
+  // unlock next btn
+  const nb=document.getElementById('next-btn');
+  if(nb&&nb.style.opacity==='0.35') nb.style.opacity='1';
+}
+
+// ── GAME 1: CABLE SWING (Erasmus Bridge) ────────────────────────────────────
+function _gameSwing(canvas, msg, gameId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const pivot={x:W*0.15, y:0};
+  const ropeLen=H*0.72;
+  let angle=-Math.PI/2.2, vel=0.022, swinging=true, launched=false, done=false;
+  let fig={x:0,y:0,vx:0,vy:0};
+  let ticks=0;
+  const platform={x:W*0.75, y:H*0.6, w:W*0.2, h:12};
+  msg.textContent='Tap to release!';
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Sky gradient
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#0a1628'); sky.addColorStop(1,'#1a3a5c');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    // River
+    ctx.fillStyle='#0d3a5c';
+    ctx.fillRect(0,H*0.72,W,H*0.28);
+    // Platform
+    ctx.fillStyle='#ff6b35';
+    ctx.fillRect(platform.x,platform.y,platform.w,platform.h);
+    ctx.fillStyle='rgba(255,255,255,0.6)';
+    ctx.font='bold 10px Nunito'; ctx.textAlign='center';
+    ctx.fillText('LAND HERE',platform.x+platform.w/2,platform.y-5);
+
+    if(!launched){
+      const bx=pivot.x+Math.cos(angle)*ropeLen;
+      const by=pivot.y+Math.sin(angle)*ropeLen;
+      // Rope
+      ctx.strokeStyle='rgba(255,255,255,0.7)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(pivot.x,pivot.y); ctx.lineTo(bx,by); ctx.stroke();
+      // Pylon
+      ctx.fillStyle='white'; ctx.fillRect(pivot.x-4,0,8,H*0.35);
+      // Figure
+      ctx.fillStyle='#ffcc00';
+      ctx.beginPath(); ctx.arc(bx,by-14,9,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(bx,by-5); ctx.lineTo(bx,by+12);
+      ctx.moveTo(bx-10,by+4); ctx.lineTo(bx+10,by+4);
+      ctx.moveTo(bx,by+12); ctx.lineTo(bx-8,by+24);
+      ctx.moveTo(bx,by+12); ctx.lineTo(bx+8,by+24); ctx.stroke();
+    } else {
+      // Pylon still
+      ctx.fillStyle='white'; ctx.fillRect(pivot.x-4,0,8,H*0.35);
+      // Flying figure
+      ctx.fillStyle='#ffcc00';
+      ctx.beginPath(); ctx.arc(fig.x,fig.y-14,9,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(fig.x,fig.y-5); ctx.lineTo(fig.x,fig.y+12);
+      ctx.moveTo(fig.x-10,fig.y+4); ctx.lineTo(fig.x+10,fig.y+4);
+      ctx.moveTo(fig.x,fig.y+12); ctx.lineTo(fig.x-8,fig.y+26);
+      ctx.moveTo(fig.x,fig.y+12); ctx.lineTo(fig.x+8,fig.y+26); ctx.stroke();
+    }
+    // Score timer
+    if(swinging&&!done){
+      ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='11px Nunito'; ctx.textAlign='right';
+      ctx.fillText('tap to release!',W-10,20);
+    }
+  }
+
+  function release(){
+    if(done||launched) return;
+    launched=true; swinging=false;
+    const bx=pivot.x+Math.cos(angle)*ropeLen;
+    const by=pivot.y+Math.sin(angle)*ropeLen;
+    fig={x:bx, y:by, vx:Math.cos(angle+Math.PI/2)*vel*ropeLen*1.1, vy:Math.sin(angle+Math.PI/2)*vel*ropeLen*1.1};
+  }
+
+  canvas.addEventListener('click', release, {once:false});
+  canvas.addEventListener('touchstart', e=>{e.preventDefault();release();}, {passive:false, once:false});
+
+  let raf;
+  function tick(){
+    if(!launched){
+      angle+=vel; if(angle>-0.3||angle<-Math.PI+0.3) vel*=-1;
+    } else {
+      fig.x+=fig.vx; fig.y+=fig.vy; fig.vy+=0.45;
+      if(!done){
+        // Landed on platform?
+        if(fig.x>=platform.x&&fig.x<=platform.x+platform.w&&fig.y>=platform.y-10&&fig.y<=platform.y+20){
+          done=true;
+          ctx.clearRect(0,0,W,H); draw();
+          cancelAnimationFrame(raf);
+          _gameEnd(gameId,true,"You made it across! 🌉");
+          return;
+        }
+        // Hit water or edge
+        if(fig.y>H||fig.x>W||fig.x<0){
+          done=true;
+          cancelAnimationFrame(raf);
+          _gameEnd(gameId,false,"Into the Maas! Try again.");
+          return;
+        }
+      }
+    }
+    draw(); ticks++;
+    raf=requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// ── GAME 2: WINDOW WASHER (Witte Huis) ──────────────────────────────────────
+function _gameBombs(canvas, msg, gameId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  // Building layout — 10 windows across 2 columns, 5 rows
+  const BX=W*0.28, BW=W*0.44, BH=H*0.82, BY=H*0.1;
+  const COLS=2, ROWS=5;
+  const WW=32, WH=24, WGAPX=(BW-COLS*WW)/(COLS+1), WGAPY=(BH-ROWS*WH)/(ROWS+1);
+  // Build window grid
+  const windows=[];
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    windows.push({
+      x:BX+WGAPX+(c*(WW+WGAPX)),
+      y:BY+WGAPY+(r*(WH+WGAPY)),
+      clean:false, flash:0
+    });
+  }
+  // Washer on rope — swings left/right across building face
+  let washer={angle:0, vel:0.032, ropeLen:H*0.25};
+  // Pivot is above the building centre
+  const pivot={x:BX+BW/2, y:BY-20};
+  let done=false, raf, cleaned=0;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Sky
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#87ceeb'); sky.addColorStop(1,'#c9e8f5');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    // Building facade
+    ctx.fillStyle='#f0ece0';
+    ctx.fillRect(BX,BY,BW,BH);
+    // Art Nouveau details — ornamental border
+    ctx.strokeStyle='#c8b89a'; ctx.lineWidth=3;
+    ctx.strokeRect(BX+3,BY+3,BW-6,BH-6);
+    ctx.strokeStyle='#d4c4a8'; ctx.lineWidth=1.5;
+    ctx.strokeRect(BX+8,BY+8,BW-16,BH-16);
+    // Ground
+    ctx.fillStyle='#8B7355'; ctx.fillRect(0,BY+BH,W,H-(BY+BH));
+    // Windows
+    windows.forEach(w=>{
+      if(w.flash>0){ w.flash--; }
+      ctx.fillStyle=w.clean
+        ? (w.flash>0?'rgba(46,204,113,0.9)':'#87ceeb')
+        : '#d4a843';
+      ctx.fillRect(w.x,w.y,WW,WH);
+      ctx.strokeStyle='#a08060'; ctx.lineWidth=1.5;
+      ctx.strokeRect(w.x,w.y,WW,WH);
+      // Window cross
+      ctx.strokeStyle=w.clean?'rgba(255,255,255,0.6)':'rgba(100,80,40,0.5)';
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      ctx.moveTo(w.x+WW/2,w.y); ctx.lineTo(w.x+WW/2,w.y+WH);
+      ctx.moveTo(w.x,w.y+WH/2); ctx.lineTo(w.x+WW,w.y+WH/2);
+      ctx.stroke();
+      if(!w.clean){
+        ctx.fillStyle='rgba(180,160,100,0.3)';
+        ctx.fillRect(w.x+2,w.y+2,WW-4,WH-4);
+      }
+    });
+    // Rope
+    const wx=pivot.x+Math.sin(washer.angle)*washer.ropeLen;
+    const wy=pivot.y+Math.cos(washer.angle)*washer.ropeLen;
+    ctx.strokeStyle='rgba(80,60,40,0.8)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(pivot.x,pivot.y); ctx.lineTo(wx,wy); ctx.stroke();
+    // Scaffold bar at top
+    ctx.fillStyle='#5a4030'; ctx.fillRect(BX+BW/2-30,BY-24,60,8);
+    // Washer figure
+    ctx.fillStyle='#ff6b35'; // bucket
+    ctx.fillRect(wx-10,wy+12,20,14);
+    ctx.fillStyle='#ffcc00'; // head
+    ctx.beginPath(); ctx.arc(wx,wy-2,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#2d6be4'; // body
+    ctx.fillRect(wx-7,wy+6,14,12);
+    // Squeegee
+    ctx.strokeStyle='#333'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(wx+7,wy+2); ctx.lineTo(wx+18,wy-5); ctx.stroke();
+    ctx.fillStyle='#555'; ctx.fillRect(wx+16,wy-9,8,4);
+    // Score
+    ctx.fillStyle='#1a1a1a'; ctx.font='bold 13px Nunito'; ctx.textAlign='left';
+    ctx.fillText(`🪟 ${cleaned}/10`,8,22);
+    // Hint
+    if(!done){
+      ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.font='10px Nunito'; ctx.textAlign='center';
+      ctx.fillText('Tap when the washer is over a dirty window!',W/2,H-8);
+    }
+  }
+
+  function tryClean(){
+    if(done) return;
+    const wx=pivot.x+Math.sin(washer.angle)*washer.ropeLen;
+    const wy=pivot.y+Math.cos(washer.angle)*washer.ropeLen;
+    let hit=false;
+    windows.forEach(w=>{
+      if(w.clean) return;
+      if(wx>w.x-10&&wx<w.x+WW+10&&wy>w.y-12&&wy<w.y+WH+12){
+        w.clean=true; w.flash=18; cleaned++; hit=true;
+      }
+    });
+    if(!hit){
+      // Missed — small speed boost as penalty
+      washer.vel*=1.15;
+    }
+    if(cleaned>=10){
+      done=true; cancelAnimationFrame(raf); draw();
+      _gameEnd(gameId,true,"Spotless! The Witte Huis shines. 🪟✨");
+    }
+  }
+
+  canvas.addEventListener('click', tryClean);
+  canvas.addEventListener('touchstart', e=>{e.preventDefault(); tryClean();},{passive:false});
+
+  let ticks=0;
+  function tick(){
+    ticks++;
+    // Pendulum physics
+    washer.angle+=washer.vel;
+    if(washer.angle>Math.PI*0.55||washer.angle<-Math.PI*0.55) washer.vel*=-1;
+    // Gradually speed up to increase difficulty
+    if(ticks%180===0) washer.vel*=1.06;
+    draw();
+    if(!done) raf=requestAnimationFrame(tick);
+  }
+  msg.textContent='Tap when the washer reaches a dirty window!';
+  tick();
+}
+
+// ── GAME 3: HERRING CATCH (Oude Haven) ──────────────────────────────────────
+function _gameHerring(canvas, msg, gameId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const bucket={x:W/2-25,y:H-40,w:50,h:30};
+  let items=[], score=0, ticks=0, done=false, raf;
+  const DURATION=900;
+
+  function spawnItem(){
+    const isHerring=Math.random()<0.65;
+    items.push({x:Math.random()*(W-20)+10, y:-20, vy:2+Math.random()*2.5,
+      type:isHerring?'herring':'seagull', caught:false, missed:false});
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#0a2540'); sky.addColorStop(1,'#0d3d5c');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#0a1f35'; ctx.fillRect(0,H-15,W,15);
+    // Bucket
+    ctx.fillStyle='#ff6b35';
+    ctx.beginPath();
+    ctx.moveTo(bucket.x,bucket.y);
+    ctx.lineTo(bucket.x+bucket.w,bucket.y);
+    ctx.lineTo(bucket.x+bucket.w-6,bucket.y+bucket.h);
+    ctx.lineTo(bucket.x+6,bucket.y+bucket.h);
+    ctx.closePath(); ctx.fill();
+    ctx.font='12px serif'; ctx.textAlign='center';
+    ctx.fillText('🪣',bucket.x+bucket.w/2,bucket.y+bucket.h-4);
+    // Items
+    items.forEach(it=>{
+      if(it.caught||it.missed) return;
+      ctx.font=`${it.type==='herring'?22:24}px serif`;
+      ctx.fillText(it.type==='herring'?'🐟':'🕊️',it.x,it.y);
+    });
+    // Score
+    ctx.fillStyle='white'; ctx.font='bold 14px Nunito'; ctx.textAlign='left';
+    ctx.fillText(`🐟 ${score}`,8,22);
+    // Timer
+    const pct=1-ticks/DURATION;
+    ctx.fillStyle='rgba(255,255,255,0.15)'; ctx.fillRect(0,H-6,W,6);
+    ctx.fillStyle='#2ecc71'; ctx.fillRect(0,H-6,W*pct,6);
+  }
+
+  function move(e){
+    if(done) return;
+    const r=canvas.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    bucket.x=Math.max(0,Math.min(W-bucket.w,cx-bucket.w/2));
+  }
+  canvas.addEventListener('mousemove',move);
+  canvas.addEventListener('touchmove',e=>{e.preventDefault();move(e);},{passive:false});
+
+  function tick(){
+    ticks++;
+    if(ticks%35===0) spawnItem();
+    items.forEach(it=>{
+      if(it.caught||it.missed){ return; }
+      it.y+=it.vy;
+      if(it.y>bucket.y&&it.y<bucket.y+bucket.h&&it.x>bucket.x&&it.x<bucket.x+bucket.w){
+        if(it.type==='herring'){ score++; it.caught=true; }
+        else { it.caught=true; } // seagull — no penalty, just caught
+      }
+      if(it.y>H) it.missed=true;
+    });
+    items=items.filter(it=>!it.missed&&!it.caught||it.y<H);
+    if(!done&&ticks>=DURATION){
+      done=true; cancelAnimationFrame(raf); draw();
+      const txt=score>=8?`${score} herring! A true Rotterdammer 🐟`:score>=4?`${score} herring — not bad!`:`${score} herring... the seagulls won.`;
+      _gameEnd(gameId,score>=3,txt); return;
+    }
+    if(!done){ draw(); raf=requestAnimationFrame(tick); }
+  }
+  msg.textContent='Slide to catch the herring!';
+  tick();
+}
+
+// ── GAME 4: CUBE STACK (Cube Houses) ─────────────────────────────────────────
+function _gameCubes(canvas, msg, gameId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const CW=52, CH=52;
+  let stack=[], moving={x:W/2-CW/2, y:0, vx:2.2}, done=false, raf;
+  let placedCount=0;
+  const COLORS=['#ff6b35','#ffcc00','#2d6be4','#2ecc71','#e74c3c','#9b59b6'];
+  const platform={x:W/2-40,w:80};
+
+  function stackTop(){ return stack.length>0?stack[stack.length-1]:null; }
+  function baseY(){ const t=stackTop(); return t?t.y:H-20; }
+
+  function dropCube(){
+    if(done) return;
+    const by=baseY()-CH;
+    const tx=stackTop()?stackTop().x:platform.x+(platform.w-CW)/2;
+    // How close to centre?
+    const diff=Math.abs(moving.x-tx);
+    if(diff>CW*0.8&&stack.length>0){
+      done=true; cancelAnimationFrame(raf); draw();
+      _gameEnd(gameId, placedCount>=3, `${placedCount} cube${placedCount!==1?'s':''} stacked! ${placedCount>=5?'Architect! 🟧':placedCount>=3?'Nice stack!':'Keep practising...'}`);
+      return;
+    }
+    const snapped=stack.length===0?platform.x+(platform.w-CW)/2:Math.max(tx-CW*0.6,Math.min(tx+CW*0.6,moving.x));
+    stack.push({x:snapped, y:by, c:COLORS[stack.length%COLORS.length]});
+    placedCount++;
+    moving={x:W/2-CW/2+(Math.random()-0.5)*40, y:-CH, vx:moving.vx*(1+0.08)};
+  }
+
+  canvas.addEventListener('click', dropCube);
+  canvas.addEventListener('touchstart', e=>{e.preventDefault();dropCube();},{passive:false});
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#0d1f35'; ctx.fillRect(0,0,W,H);
+    // Ground
+    ctx.fillStyle='#1a3a5c'; ctx.fillRect(0,H-20,W,20);
+    ctx.fillStyle='#ff6b35'; ctx.fillRect(platform.x,H-22,platform.w,4);
+    // Stacked cubes
+    stack.forEach(c=>{
+      ctx.save();
+      ctx.translate(c.x+CW/2, c.y+CH/2);
+      ctx.rotate(Math.PI/6); // tilted 30° like cube houses
+      ctx.fillStyle=c.c;
+      ctx.fillRect(-CW/2,-CH/2,CW,CH);
+      ctx.strokeStyle='rgba(0,0,0,0.3)'; ctx.lineWidth=2;
+      ctx.strokeRect(-CW/2,-CH/2,CW,CH);
+      ctx.restore();
+    });
+    // Moving cube
+    if(!done){
+      ctx.save();
+      ctx.translate(moving.x+CW/2, moving.y+CH/2);
+      ctx.rotate(Math.PI/6);
+      ctx.fillStyle=COLORS[(stack.length)%COLORS.length];
+      ctx.globalAlpha=0.85;
+      ctx.fillRect(-CW/2,-CH/2,CW,CH);
+      ctx.globalAlpha=1;
+      ctx.restore();
+    }
+    ctx.fillStyle='white'; ctx.font='bold 13px Nunito'; ctx.textAlign='left';
+    ctx.fillText(`🟧 ${placedCount}`,8,22);
+  }
+
+  function tick(){
+    moving.x+=moving.vx;
+    if(moving.x<0||moving.x+CW>W) moving.vx*=-1;
+    moving.y=Math.min(baseY()-CH-10, moving.y+0.5);
+    draw();
+    if(!done) raf=requestAnimationFrame(tick);
+  }
+  msg.textContent='Tap to drop — tilt and all!';
+  tick();
+}
+
+// ── GAME 5: MARKET RUSH (Markthal) ──────────────────────────────────────────
+function _gameMarket(canvas, msg, gameId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const GOOD=['🐟 Herring','🧀 Gouda','🥐 Stroopwafel','🍺 Beer','🥨 Pretzel'];
+  const BAD=['🍕 Tourist Pizza','🌭 Hot dog','🍔 Burger','☕ Starbucks','🥤 Cola'];
+  let items=[], score=0, wrong=0, ticks=0, done=false, raf;
+  const DURATION=700;
+
+  function spawnItem(){
+    const isGood=Math.random()<0.55;
+    const pool=isGood?GOOD:BAD;
+    const label=pool[Math.floor(Math.random()*pool.length)];
+    const col=Math.floor(Math.random()*3);
+    items.push({x:80+col*100, y:-40, vy:1.4+Math.random()*1.5, label, good:isGood, tapped:false});
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Markthal arch bg
+    const bg=ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#1a0a2e'); bg.addColorStop(1,'#2d1555');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    // Stall counter
+    ctx.fillStyle='#3d1f00';
+    ctx.fillRect(0,H-30,W,30);
+    ctx.fillStyle='#5a2d00';
+    ctx.fillRect(0,H-35,W,8);
+    // Items
+    items.forEach(it=>{
+      if(it.tapped) return;
+      const isGoodItem=it.good;
+      ctx.fillStyle=isGoodItem?'rgba(46,204,113,0.2)':'rgba(231,76,60,0.2)';
+      ctx.beginPath(); ctx.roundRect(it.x-55,it.y-28,110,44,10); ctx.fill();
+      ctx.strokeStyle=isGoodItem?'rgba(46,204,113,0.6)':'rgba(231,76,60,0.4)';
+      ctx.lineWidth=1.5; ctx.stroke();
+      ctx.font='22px serif'; ctx.textAlign='center'; ctx.fillStyle='white';
+      ctx.fillText(it.label.split(' ')[0],it.x,it.y);
+      ctx.font='bold 10px Nunito'; ctx.fillStyle='rgba(255,255,255,0.75)';
+      ctx.fillText(it.label.split(' ').slice(1).join(' '),it.x,it.y+14);
+    });
+    // Score
+    ctx.fillStyle='white'; ctx.font='bold 14px Nunito'; ctx.textAlign='left';
+    ctx.fillText(`✅ ${score}  ❌ ${wrong}`,8,22);
+    // Timer
+    const pct=1-ticks/DURATION;
+    ctx.fillStyle='rgba(255,255,255,0.15)'; ctx.fillRect(0,H-6,W,6);
+    ctx.fillStyle='#2ecc71'; ctx.fillRect(0,H-6,W*Math.max(0,pct),6);
+    // Instructions
+    ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font='10px Nunito'; ctx.textAlign='center';
+    ctx.fillText('Tap the GOOD Rotterdam food!',W/2,H-38);
+  }
+
+  function tap(e){
+    if(done) return;
+    const r=canvas.getBoundingClientRect();
+    const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+    items.forEach(it=>{
+      if(it.tapped) return;
+      if(Math.abs(cx-it.x)<55&&Math.abs(cy-it.y)<28){
+        it.tapped=true;
+        if(it.good) score++;
+        else wrong++;
+      }
+    });
+  }
+  canvas.addEventListener('click',tap);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();tap(e);},{passive:false});
+
+  function tick(){
+    ticks++;
+    if(ticks%40===0) spawnItem();
+    items.forEach(it=>{ if(!it.tapped) it.y+=it.vy; });
+    items=items.filter(it=>it.y<H+20);
+    if(!done&&ticks>=DURATION){
+      done=true; cancelAnimationFrame(raf); draw();
+      const net=score-wrong;
+      const txt=net>=6?`${score} right! Real local taste 🧀`:net>=3?`${score} right — decent palate!`:`${score} right, ${wrong} wrong. Eat more herring.`;
+      _gameEnd(gameId,net>=2,txt); return;
+    }
+    if(!done){ draw(); raf=requestAnimationFrame(tick); }
+  }
+  msg.textContent='Tap Rotterdam food only!';
+  tick();
+}
+
+// ── End of mini-game engine ──────────────────────────────────────────────────
+
   return '<div class="card"></div>';
 }
 
@@ -1670,7 +2200,11 @@ function updateNavBtns(){
   prev.onclick=prevCard;
 
   if(isLast){
-    next.textContent='Back to Map →';
+    // For the last card of the main stop segment, show a completion label
+    const isMainSegLast = cc && cc._segId === 'main';
+    next.textContent = isMainSegLast
+      ? `${currentStop.name} — Done! 🎉`
+      : 'Back to Map →';
     next.className='card-next-btn';
     next.onclick=nextCard;
   } else if(isNav){
