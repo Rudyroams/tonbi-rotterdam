@@ -2185,8 +2185,8 @@ function playMapTransition(completedId, onComplete){
     playPromise.catch(()=>_finishTransition(overlay, video, onComplete, newStateIdx));
   }
 
-  // Start soundtrack during transition if user has unlocked audio
-  owAudioResume();
+  // Start soundtrack immediately during transition — no delay, quick fade
+  if(_audioUnlocked) _startAudioFaded(0, 1500);
 
   const bail=setTimeout(()=>_finishTransition(overlay, video, onComplete, newStateIdx), 30000);
   video.onended=()=>{ clearTimeout(bail); _finishTransition(overlay, video, onComplete, newStateIdx); };
@@ -2475,14 +2475,14 @@ function _fadeInAudio(durationMs){
   _fadeRAF=requestAnimationFrame(step);
 }
 
-function _startAudioFaded(){
+function _startAudioFaded(delayMs=1000, fadeMs=3500){
   const audio=_getAudio();
   if(!audio) return;
   _cancelFade();
   audio.volume=0;
   audio.currentTime=0;
   const p=audio.play();
-  const go=()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500), 1000); };
+  const go=()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(fadeMs), delayMs); };
   if(p&&typeof p.then==='function') p.then(go).catch(()=>{});
   else go();
 }
