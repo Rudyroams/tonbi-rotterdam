@@ -2292,7 +2292,7 @@ const OW_AMBIENT_LAYERS = [
   { type:'dot', count:5,  rMin:2.5, rMax:4.5, vxRange:[-0.04,0.04], vyRange:[-0.05,-0.02], alphaMin:0.04, alphaMax:0.12 },
   // Seagulls — Rotterdam has loads of them
   { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/Seagull.png',
-    count:9, wMin:28, wMax:62,
+    count:6, wMin:18, wMax:42,
     vxRange:[0.06,0.38], vyRange:[-0.06,0.06],
     alphaMin:0.40, alphaMax:0.72,
     rotSpeedMin:-0.007, rotSpeedMax:0.007 },
@@ -2365,8 +2365,8 @@ function _tickParticles(canvas){
       const aspect=p.img.naturalHeight/p.img.naturalWidth;
       const hw=p.w/2, hh=p.w*aspect/2;
       p.angle=(p.angle||0)+p.rotSpeed;
-      // Clamp to ±π/3 (±60°) — seagulls bank gently but never tip too far
-      const MAX_ANGLE=Math.PI/3;
+      // Clamp to ±π/4 (±45°) — seagulls bank gently but never tip too far
+      const MAX_ANGLE=Math.PI/4;
       if(p.angle>MAX_ANGLE){ p.angle=MAX_ANGLE; p.rotSpeed=-Math.abs(p.rotSpeed); }
       if(p.angle<-MAX_ANGLE){ p.angle=-MAX_ANGLE; p.rotSpeed=Math.abs(p.rotSpeed); }
       ctx.save();
@@ -2417,10 +2417,10 @@ function toggleOwAudio(){
   if(!_audioUnlocked){
     _audioUnlocked=true;
     audio.volume=0;
-    audio.play().then(()=>{ _fadeInAudio(2000); _setAudioIcon(true); }).catch(()=>{});
+    audio.play().then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500),1000); }).catch(()=>{});
   } else if(audio.paused){
     audio.volume=0;
-    audio.play().then(()=>{ _fadeInAudio(2000); _setAudioIcon(true); }).catch(()=>{});
+    audio.play().then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500),1000); }).catch(()=>{});
   } else {
     audio.pause();
     _setAudioIcon(false);
@@ -2439,10 +2439,13 @@ function owAudioPause(){
 function owAudioResume(){
   const audio=_getAudio();
   if(!audio||!_audioUnlocked) return;
-  // Always start from beginning at volume 0 and fade in
+  // Always start from beginning at silence, wait 1s then fade in over 3.5s
   audio.currentTime=0;
   audio.volume=0;
-  audio.play().then(()=>{ _fadeInAudio(2500); _setAudioIcon(true); }).catch(()=>{});
+  audio.play().then(()=>{
+    _setAudioIcon(true);
+    setTimeout(()=>_fadeInAudio(3500), 1000);
+  }).catch(()=>{});
 }
 
 // Fade audio volume from current level up to target over durationMs
@@ -2456,14 +2459,26 @@ function _fadeInAudio(durationMs){
   const startTime=performance.now();
   function step(now){
     const t=Math.min((now-startTime)/durationMs, 1);
-    // Ease out — fast rise then gentle settle
     const eased=1-Math.pow(1-t, 3);
     audio.volume=start+(target-start)*eased;
     if(t<1) _fadeRAF=requestAnimationFrame(step);
-    else _fadeRAF=null;
+    else{ _fadeRAF=null; audio.volume=target; }
   }
   _fadeRAF=requestAnimationFrame(step);
 }
+
+// On loop: cancel any fade and snap to full volume — no fade between loops
+(function(){
+  const audio=document.getElementById('ow-audio');
+  if(!audio) return;
+  audio.addEventListener('timeupdate',function(){
+    // Detect loop: currentTime jumps back near 0 while playing
+    if(!audio.paused&&audio.currentTime<0.15&&audio.volume>0&&audio.volume<0.44){
+      if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
+      audio.volume=0.45;
+    }
+  });
+})();
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROGRESS RING
