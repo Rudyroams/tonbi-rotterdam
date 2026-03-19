@@ -2071,9 +2071,6 @@ function _gameMarket(canvas, msg, gameId){
 
 // ── End of mini-game engine ──────────────────────────────────────────────────
 
-  return '<div class="card"></div>';
-}
-
 function startJourney(stopId){
   owAudioPause();
   currentStop=stops.find(s=>s.id===stopId);currentCardIdx=0;cards=buildCards(currentStop);
