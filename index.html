@@ -2290,12 +2290,12 @@ const OW_AMBIENT_LAYERS = [
   { type:'dot', count:14, rMin:0.6, rMax:2.4, vxRange:[-0.11,0.11], vyRange:[-0.18,-0.06], alphaMin:0.10, alphaMax:0.45 },
   // Larger soft dots — slow background layer for depth
   { type:'dot', count:5,  rMin:2.5, rMax:4.5, vxRange:[-0.04,0.04], vyRange:[-0.05,-0.02], alphaMin:0.04, alphaMax:0.12 },
-  // Seagulls — slow, subtle, slight size + rotation variation
+  // Seagulls — Rotterdam has loads of them
   { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/Seagull.png',
-    count:5, wMin:18, wMax:30,
-    vxRange:[0.10,0.26], vyRange:[-0.03,0.03],
-    alphaMin:0.45, alphaMax:0.75,
-    rotSpeedMin:-0.006, rotSpeedMax:0.006 },
+    count:9, wMin:28, wMax:62,
+    vxRange:[0.06,0.38], vyRange:[-0.06,0.06],
+    alphaMin:0.40, alphaMax:0.72,
+    rotSpeedMin:-0.007, rotSpeedMax:0.007 },
 ];
 
 const _spriteCache={};
@@ -2415,12 +2415,12 @@ function toggleOwAudio(){
   const audio=_getAudio();
   if(!audio) return;
   if(!_audioUnlocked){
-    // First tap — unlock and start
     _audioUnlocked=true;
-    audio.volume=0.45;
-    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+    audio.volume=0;
+    audio.play().then(()=>{ _fadeInAudio(2000); _setAudioIcon(true); }).catch(()=>{});
   } else if(audio.paused){
-    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+    audio.volume=0;
+    audio.play().then(()=>{ _fadeInAudio(2000); _setAudioIcon(true); }).catch(()=>{});
   } else {
     audio.pause();
     _setAudioIcon(false);
@@ -2435,8 +2435,29 @@ function owAudioPause(){
 function owAudioResume(){
   const audio=_getAudio();
   if(audio&&_audioUnlocked&&audio.paused){
-    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+    audio.volume=0;
+    audio.play().then(()=>{ _fadeInAudio(2500); _setAudioIcon(true); }).catch(()=>{});
   }
+}
+
+// Fade audio volume from current level up to target over durationMs
+let _fadeRAF=null;
+function _fadeInAudio(durationMs){
+  const audio=_getAudio();
+  if(!audio) return;
+  if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
+  const target=0.45;
+  const start=audio.volume;
+  const startTime=performance.now();
+  function step(now){
+    const t=Math.min((now-startTime)/durationMs, 1);
+    // Ease out — fast rise then gentle settle
+    const eased=1-Math.pow(1-t, 3);
+    audio.volume=start+(target-start)*eased;
+    if(t<1) _fadeRAF=requestAnimationFrame(step);
+    else _fadeRAF=null;
+  }
+  _fadeRAF=requestAnimationFrame(step);
 }
 
 // ═══════════════════════════════════════════════════════════════════════
