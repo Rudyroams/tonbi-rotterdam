@@ -1147,33 +1147,40 @@ function renderCard(card,idx,total){
     const isPre=card.isPre||false;
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    const eyebrow=isPre
-      ? `On the way to Stop ${s.id}`
-      : `Keep Exploring · Stop ${s.id}`;
-    const btnLabel=isPre ? `Let's go! 👟` : `Let's go! 👟`;
+    // Pre-stop: no eyebrow — big name speaks for itself
+    // Post-stop: keep "Keep Exploring" label
+    const eyebrow=isPre ? `` : `Keep Exploring · Stop ${s.id}`;
+    // Hero shows main stop for pre; sub-stop for post
+    const heroName=isPre ? s.name : ss.name;
+    const heroImg=isPre ? s.img : (ss.img||s.img);
+    const btnLabel=`Let's go! 👟`;
 
-    // Route context block — only for pre-stops
     const routeContext=isPre?`
-      <div style="width:82%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:0.9rem 1rem;text-align:left;">
-        <div style="font-size:0.6rem;font-weight:700;color:rgba(255,107,53,0.85);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">📍 Your route</div>
-        <div style="display:flex;flex-direction:column;gap:0.55rem;">
+      <div style="width:82%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1rem 1.1rem;text-align:left;">
+        <div style="font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
+          We're heading to <strong style="color:white;">${s.name}</strong>, but there are a few sights along the way. You'll be guided to them one by one — <strong style="color:white;">allow Location Access</strong> when the map appears and you're good to go.
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
+          Stories and adventures await. Let the exploration begin!
+        </div>
+        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
           <div style="display:flex;align-items:center;gap:0.65rem;">
             <div style="width:26px;height:26px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
             <div>
-              <div style="font-size:0.7rem;font-weight:800;color:white;line-height:1.2;">${ss.name}</div>
-              <div style="font-size:0.62rem;color:rgba(255,255,255,0.5);">First — we stop here on the way</div>
+              <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${ss.name}</div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.5);">First — on the way</div>
             </div>
           </div>
-          <div style="width:1px;height:14px;background:rgba(255,255,255,0.15);margin-left:13px;"></div>
-          <div style="display:flex;align-items:center;gap:0.65rem;opacity:0.55;">
+          <div style="width:1px;height:12px;background:rgba(255,255,255,0.15);margin-left:13px;"></div>
+          <div style="display:flex;align-items:center;gap:0.65rem;opacity:0.5;">
             <div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <div style="font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:900;color:white;">${s.id}</div>
             </div>
             <div>
-              <div style="font-size:0.7rem;font-weight:800;color:white;line-height:1.2;">${s.name}</div>
-              <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);">Your main destination — the goal</div>
+              <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${s.name}</div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);">Main destination — the goal</div>
             </div>
           </div>
         </div>
@@ -1188,12 +1195,11 @@ function renderCard(card,idx,total){
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
         <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
-          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">${eyebrow}</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${ss.name}</div>
-          <div style="font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.5;max-width:260px;margin-top:0.15rem;">${ss.tagline||'A sight worth stopping for on the way.'}</div>
+          ${eyebrow?`<div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">${eyebrow}</div>`:''}
+          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${heroName}</div>
         </div>
         <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
-          <img src="${ss.img||s.img}" alt="${ss.name}" style="width:100%;height:120px;object-fit:cover;display:block;">
+          <img src="${heroImg}" alt="${heroName}" style="width:100%;height:120px;object-fit:cover;display:block;">
         </div>
         ${routeContext}
         <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">${btnLabel}</button>
