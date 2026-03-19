@@ -579,7 +579,12 @@ const quizAnswered={};
 // Persist completed stops across sessions
 const _saved=JSON.parse(localStorage.getItem('tonbi_completed')||'{}');
 const stopsCompleted=_saved;
-function saveProgress(){ try{localStorage.setItem('tonbi_completed',JSON.stringify(stopsCompleted));}catch(e){} }
+const _savedSkipped=JSON.parse(localStorage.getItem('tonbi_skipped')||'{}');
+const stopsSkipped=_savedSkipped;
+function saveProgress(){
+  try{localStorage.setItem('tonbi_completed',JSON.stringify(stopsCompleted));}catch(e){}
+  try{localStorage.setItem('tonbi_skipped',JSON.stringify(stopsSkipped));}catch(e){}
+}
 
 // ── Map state & overworld constants (must be declared before any function references them) ──
 const MAP_STATE_URLS = [
@@ -598,10 +603,9 @@ const MAP_TRANSITION_VIDEOS = {
   5: 'https://rudyroams.github.io/tonbi-rotterdam/videos/transition-5.mp4',
 };
 const OW_SUBSTOP_PINS = [
-  { parentStopId:1, id:'1a',   label:'De Boeg', x:114, y:195,
-    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-1a.png' },
-  { parentStopId:2, id:'2pre', label:'Blaak',   x:260, y:155,
-    img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-2pre.png' },
+  // Add sub-stop discovery pins here once assets are ready
+  // { parentStopId:1, id:'1a', label:'De Boeg', x:114, y:195,
+  //   img:'https://rudyroams.github.io/tonbi-rotterdam/images/stop-1a.png' },
 ];
 let _particleRAF=null;
 const _particles=[];
@@ -611,7 +615,9 @@ const RING_CIRC=2*Math.PI*RING_R;
 function resetProgress(){
   if(!confirm('Reset all progress?')) return;
   Object.keys(stopsCompleted).forEach(k=>delete stopsCompleted[k]);
+  Object.keys(stopsSkipped).forEach(k=>delete stopsSkipped[k]);
   try{localStorage.removeItem('tonbi_completed');}catch(e){}
+  try{localStorage.removeItem('tonbi_skipped');}catch(e){}
   justCompletedStopId=null;
   const filmstrip=document.getElementById('ow-bonus-filmstrip');
   if(filmstrip){ filmstrip.style.display='none'; filmstrip._built=false; filmstrip.innerHTML=''; }
@@ -708,6 +714,7 @@ function skipCurrentStop(){
   if(!confirm(`Skip Stop ${nextStop.id} — ${nextStop.name}?\n\nYou can always come back to it from the map.`))return;
   const skippedId=nextStop.id;
   stopsCompleted[skippedId]=true;
+  stopsSkipped[skippedId]=true;
   saveProgress();
   justCompletedStopId=skippedId;
   // Update map background to new state immediately (no video for skip)
@@ -814,11 +821,26 @@ function renderOwNodes(){
     const stamp=document.createElement('div');
     stamp.className='ow-node-stamp';
     stamp.id='ow-stamp-'+stop.id;
-    // Hand-drawn style SVG stamp
-    stamp.innerHTML=`<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="17" cy="17" r="14" fill="#2ecc71" stroke="white" stroke-width="2.5" stroke-dasharray="3 1.5" stroke-linecap="round"/>
-      <path d="M10 17.5 C11.5 16 13.5 19.5 15.5 21.5 C18 18.5 21 13.5 24 12" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    </svg>`;
+    const wasSkipped=stopsSkipped[stop.id]===true;
+    if(wasSkipped){
+      // Grey "SKIP" badge
+      stamp.innerHTML=`<svg width="38" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="37" height="19" rx="9.5" fill="rgba(0,0,0,0.55)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+        <text x="19" y="14" text-anchor="middle" font-family="'Nunito',sans-serif" font-size="9" font-weight="800" letter-spacing="0.08em" fill="rgba(255,255,255,0.7)">SKIP</text>
+      </svg>`;
+      stamp.style.top='auto';
+      stamp.style.bottom='-10px';
+      stamp.style.right='50%';
+      stamp.style.transform='translateX(50%)';
+      stamp.style.width='38px';
+      stamp.style.height='20px';
+    } else {
+      // Green checkmark stamp
+      stamp.innerHTML=`<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="17" cy="17" r="14" fill="#2ecc71" stroke="white" stroke-width="2.5" stroke-dasharray="3 1.5" stroke-linecap="round"/>
+        <path d="M10 17.5 C11.5 16 13.5 19.5 15.5 21.5 C18 18.5 21 13.5 24 12" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>`;
+    }
     // Always start hidden — shown via animation (or instantly for previously done stops on re-render)
     stamp.style.opacity='0';
     if(isDone && stop.id !== justCompletedStopId){
@@ -1556,6 +1578,14 @@ function updateProgressDots(){
     const progress=getCurrentStopProgress();
     updateProgressRing(currentStop.id, progress);
   }
+  // Preload the transition video when on the last card so first frame is ready
+  if(currentStop && currentCardIdx===cards.length-1){
+    const videoUrl=MAP_TRANSITION_VIDEOS[currentStop.id];
+    if(videoUrl){
+      const vid=document.getElementById('ow-transition-video');
+      if(vid&&!vid.src){vid.src=videoUrl;vid.load();}
+    }
+  }
 }
 
 function updateNavBtns(){
@@ -2130,9 +2160,8 @@ function playMapTransition(completedId, onComplete){
   overlay.style.opacity='1';
   overlay.classList.add('active');
 
-  // Load and play video
-  video.src=videoUrl;
-  video.load();
+  // Load video (may already be preloaded from last-card detection)
+  if(video.src!==videoUrl){ video.src=videoUrl; video.load(); }
   const playPromise=video.play();
   if(playPromise&&typeof playPromise.then==='function'){
     playPromise.catch(()=>_finishTransition(overlay, video, onComplete, newStateIdx));
@@ -2224,6 +2253,33 @@ function animatePinReveal(parentStopId){
 // ═══════════════════════════════════════════════════════════════════════
 // _particleRAF, _particles, PARTICLE_COUNT declared at top of script
 
+// ── Overworld ambient layer config ─────────────────────────────────────
+// Add your own PNG sprites here. Each entry defines a layer of drifting elements.
+// Fields:
+//   type: 'dot' (built-in) | 'img' (PNG sprite)
+//   src:  URL to PNG (only for type:'img')
+//   count: how many of this element
+//   wMin/wMax: sprite width range in px (img only)
+//   vxRange: [min,max] horizontal speed (negative = left, positive = right)
+//   vyRange: [min,max] vertical speed   (negative = up)
+//   alphaMin/alphaMax: opacity range
+//   rMin/rMax: radius range (dot only)
+const OW_AMBIENT_LAYERS = [
+  // Built-in tiny glowing dots
+  { type:'dot', count:14, rMin:0.6, rMax:2.4, vxRange:[-0.11,0.11], vyRange:[-0.18,-0.06], alphaMin:0.10, alphaMax:0.45 },
+  // Example cloud layer — uncomment and swap in your PNG URL:
+  // { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/cloud.png',
+  //   count:3, wMin:60, wMax:110, vxRange:[0.06,0.18], vyRange:[-0.01,0.01], alphaMin:0.12, alphaMax:0.22 },
+];
+
+const _spriteCache={};
+function _loadSprite(url){
+  if(_spriteCache[url]) return _spriteCache[url];
+  const img=new window.Image();img.src=url;
+  _spriteCache[url]=img;
+  return img;
+}
+
 function initParticles(){
   const canvas=document.getElementById('ow-particles');
   if(!canvas)return;
@@ -2231,17 +2287,28 @@ function initParticles(){
   canvas.width=screen.offsetWidth||390;
   canvas.height=screen.offsetHeight||844;
   _particles.length=0;
-  for(let i=0;i<PARTICLE_COUNT;i++){
-    _particles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      r:Math.random()*1.8+0.6,        // radius 0.6–2.4px
-      vx:(Math.random()-0.5)*0.22,    // slow horizontal drift
-      vy:-(Math.random()*0.18+0.06),  // slow upward drift
-      alpha:Math.random()*0.35+0.1,   // opacity 0.1–0.45
-      pulse:Math.random()*Math.PI*2,  // phase offset for breathing
-    });
-  }
+  OW_AMBIENT_LAYERS.forEach(layer=>{
+    for(let i=0;i<layer.count;i++){
+      const p={
+        type:layer.type,
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        vx:layer.vxRange[0]+(Math.random()*(layer.vxRange[1]-layer.vxRange[0])),
+        vy:layer.vyRange[0]+(Math.random()*(layer.vyRange[1]-layer.vyRange[0])),
+        alpha:layer.alphaMin+(Math.random()*(layer.alphaMax-layer.alphaMin)),
+        pulse:Math.random()*Math.PI*2,
+      };
+      if(layer.type==='dot'){
+        p.r=layer.rMin+(Math.random()*(layer.rMax-layer.rMin));
+      } else if(layer.type==='img'){
+        p.w=layer.wMin+(Math.random()*(layer.wMax-layer.wMin));
+        p.h=p.w; // aspect ratio preserved when drawing
+        p.img=_loadSprite(layer.src);
+        p.src=layer.src;
+      }
+      _particles.push(p);
+    }
+  });
   if(_particleRAF) cancelAnimationFrame(_particleRAF);
   _tickParticles(canvas);
 }
@@ -2249,20 +2316,27 @@ function initParticles(){
 function _tickParticles(canvas){
   const ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const now=Date.now()/1000;
   _particles.forEach(p=>{
     p.x+=p.vx;
     p.y+=p.vy;
     p.pulse+=0.018;
-    // Wrap around edges
-    if(p.x<-5) p.x=canvas.width+5;
-    if(p.x>canvas.width+5) p.x=-5;
-    if(p.y<-5){ p.y=canvas.height+5; p.x=Math.random()*canvas.width; }
-    const breath=Math.sin(p.pulse)*0.12;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${(p.alpha+breath).toFixed(3)})`;
-    ctx.fill();
+    if(p.x<-(p.w||10)) p.x=canvas.width+(p.w||10);
+    if(p.x>canvas.width+(p.w||10)) p.x=-(p.w||10);
+    if(p.y<-(p.w||10)){ p.y=canvas.height+(p.w||10); p.x=Math.random()*canvas.width; }
+    if(p.y>canvas.height+(p.w||10)){ p.y=-(p.w||10); p.x=Math.random()*canvas.width; }
+    const breath=Math.sin(p.pulse)*0.06;
+    const a=Math.max(0,Math.min(1,p.alpha+breath));
+    ctx.globalAlpha=a;
+    if(p.type==='dot'){
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle='white';
+      ctx.fill();
+    } else if(p.type==='img'&&p.img&&p.img.complete&&p.img.naturalWidth>0){
+      const aspect=p.img.naturalHeight/p.img.naturalWidth;
+      ctx.drawImage(p.img, p.x-p.w/2, p.y-p.w*aspect/2, p.w, p.w*aspect);
+    }
+    ctx.globalAlpha=1;
   });
   _particleRAF=requestAnimationFrame(()=>_tickParticles(canvas));
 }
