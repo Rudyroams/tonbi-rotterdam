@@ -2290,6 +2290,16 @@ const OW_AMBIENT_LAYERS = [
   { type:'dot', count:14, rMin:0.6, rMax:2.4, vxRange:[-0.11,0.11], vyRange:[-0.18,-0.06], alphaMin:0.10, alphaMax:0.45 },
   // Larger soft dots — slow background layer for depth
   { type:'dot', count:5,  rMin:2.5, rMax:4.5, vxRange:[-0.04,0.04], vyRange:[-0.05,-0.02], alphaMin:0.04, alphaMax:0.12 },
+  // River waves — slow horizontal sine curves drifting across the lower map
+  { type:'wave', count:18,
+    wMin:55, wMax:130,          // wave arc width
+    ampMin:2, ampMax:6,         // vertical amplitude in px
+    freqMin:0.04, freqMax:0.09, // spatial frequency of the sine
+    vxRange:[-0.18,0.18],       // horizontal drift speed
+    vyRange:[-0.04,0.04],       // very slow vertical drift
+    phaseSpeedMin:0.018, phaseSpeedMax:0.045, // wobble speed
+    alphaMin:0.05, alphaMax:0.18,
+    lineWidthMin:0.8, lineWidthMax:1.8 },
   // Seagulls — Rotterdam has loads of them
   { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/Seagull.png',
     count:6, wMin:18, wMax:42,
@@ -2326,6 +2336,16 @@ function initParticles(){
       };
       if(layer.type==='dot'){
         p.r=layer.rMin+(Math.random()*(layer.rMax-layer.rMin));
+      } else if(layer.type==='wave'){
+        p.w    = layer.wMin+(Math.random()*(layer.wMax-layer.wMin));
+        p.amp  = layer.ampMin+(Math.random()*(layer.ampMax-layer.ampMin));
+        p.freq = layer.freqMin+(Math.random()*(layer.freqMax-layer.freqMin));
+        p.phase= Math.random()*Math.PI*2;
+        p.phaseSpeed = layer.phaseSpeedMin+(Math.random()*(layer.phaseSpeedMax-layer.phaseSpeedMin));
+        p.lw   = layer.lineWidthMin+(Math.random()*(layer.lineWidthMax-layer.lineWidthMin));
+        // Spread waves across the full canvas, not just random cluster
+        p.x = Math.random()*canvas.width;
+        p.y = Math.random()*canvas.height;
       } else if(layer.type==='img'){
         p.w=layer.wMin+(Math.random()*(layer.wMax-layer.wMin));
         p.img=_loadSprite(layer.src);
@@ -2361,6 +2381,23 @@ function _tickParticles(canvas){
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
       ctx.fillStyle='white';
       ctx.fill();
+    } else if(p.type==='wave'){
+      // Advance wobble phase
+      p.phase+=p.phaseSpeed;
+      // Draw sine arc: sample N points across the wave width
+      const steps=24;
+      const dx=p.w/steps;
+      ctx.beginPath();
+      for(let i=0;i<=steps;i++){
+        const ox=i*dx - p.w/2;
+        const oy=Math.sin(p.phase + ox*p.freq)*p.amp;
+        if(i===0) ctx.moveTo(p.x+ox, p.y+oy);
+        else       ctx.lineTo(p.x+ox, p.y+oy);
+      }
+      ctx.strokeStyle='rgba(255,255,255,1)';
+      ctx.lineWidth=p.lw;
+      ctx.lineCap='round';
+      ctx.stroke();
     } else if(p.type==='img'&&p.img&&p.img.complete&&p.img.naturalWidth>0){
       const aspect=p.img.naturalHeight/p.img.naturalWidth;
       const hw=p.w/2, hh=p.w*aspect/2;
