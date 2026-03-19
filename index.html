@@ -2272,12 +2272,12 @@ function animatePinReveal(parentStopId){
 //   rMin/rMax: radius range (dot only)
 const OW_AMBIENT_LAYERS = [
   // Small bright dots — primary layer
-  { type:'dot', count:18, rMin:1.0, rMax:3.2, vxRange:[-0.12,0.12], vyRange:[-0.20,-0.07], alphaMin:0.28, alphaMax:0.68 },
+  { type:'dot', count:14, rMin:0.6, rMax:2.4, vxRange:[-0.11,0.11], vyRange:[-0.18,-0.06], alphaMin:0.10, alphaMax:0.45 },
   // Larger soft dots — slow background layer for depth
-  { type:'dot', count:7,  rMin:3.0, rMax:5.5, vxRange:[-0.05,0.05], vyRange:[-0.06,-0.02], alphaMin:0.06, alphaMax:0.16 },
-  // Seagulls — tiny, slow, each with slight size + rotation variation
+  { type:'dot', count:5,  rMin:2.5, rMax:4.5, vxRange:[-0.04,0.04], vyRange:[-0.05,-0.02], alphaMin:0.04, alphaMax:0.12 },
+  // Seagulls — slow, subtle, slight size + rotation variation
   { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/Seagull.png',
-    count:5, wMin:9, wMax:17,
+    count:5, wMin:14, wMax:24,
     vxRange:[0.10,0.26], vyRange:[-0.03,0.03],
     alphaMin:0.30, alphaMax:0.60,
     rotSpeedMin:-0.006, rotSpeedMax:0.006 },
@@ -2350,6 +2350,10 @@ function _tickParticles(canvas){
       const aspect=p.img.naturalHeight/p.img.naturalWidth;
       const hw=p.w/2, hh=p.w*aspect/2;
       p.angle=(p.angle||0)+p.rotSpeed;
+      // Clamp to ±π/2 (±90°) — seagulls bank but never fly upside down
+      const MAX_ANGLE=Math.PI/2;
+      if(p.angle>MAX_ANGLE){ p.angle=MAX_ANGLE; p.rotSpeed=-Math.abs(p.rotSpeed); }
+      if(p.angle<-MAX_ANGLE){ p.angle=-MAX_ANGLE; p.rotSpeed=Math.abs(p.rotSpeed); }
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.angle);
