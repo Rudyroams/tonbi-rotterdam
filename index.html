@@ -1664,12 +1664,12 @@ function nextCard(){
     justCompletedStopId=completedId;
     const nextId=completedId<stops.length?completedId+1:null;
     const isLast=completedId===stops.length;
-    // Start video immediately — while journey screen is still showing
-    // The video overlay sits above everything (z-index 998)
+    // Hide journey screen and show overworld immediately — this is what shows under the video
+    document.getElementById('journey-screen').classList.remove('show');
+    showScreen('overworld');
+    // Now start the video fade — it plays over the overworld map
     playMapTransition(completedId, ()=>{
-      // Video done — now reveal overworld (map already swapped inside _finishTransition)
-      document.getElementById('journey-screen').classList.remove('show');
-      showScreen('overworld');
+      // Video done — run stamp + unlock sequence
       animateStopCompletion(completedId, nextId, isLast);
       setTimeout(()=>animatePinReveal(completedId), 1200);
       preloadNextMapState(getMapState());
