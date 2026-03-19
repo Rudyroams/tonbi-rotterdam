@@ -280,7 +280,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div id="ow-pins"></div>
     <div id="ow-nodes"></div>
     <!-- Ambient soundtrack -->
-    <audio id="ow-audio" preload="none"
+    <audio id="ow-audio" loop preload="auto"
       src="https://rudyroams.github.io/tonbi-rotterdam/videos/Soundtrack_Rotterdam.mp3">
     </audio>
     <!-- Sound toggle — top right of header -->
@@ -2424,7 +2424,7 @@ function stopParticles(){
 // ═══════════════════════════════════════════════════════════════════════
 // OVERWORLD AUDIO
 // ═══════════════════════════════════════════════════════════════════════
-let _audioUnlocked=false; // true once user has tapped the sound button
+let _audioUnlocked=false;
 
 function _getAudio(){ return document.getElementById('ow-audio'); }
 
@@ -2432,20 +2432,59 @@ function _setAudioIcon(playing){
   const icon=document.getElementById('ow-sound-icon');
   if(!icon) return;
   if(playing){
-    // Speaker with waves — sound on
     icon.innerHTML=`
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
       <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>`;
     icon.setAttribute('stroke','rgba(255,255,255,0.85)');
   } else {
-    // Speaker with X — sound off
     icon.innerHTML=`
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
       <line x1="23" y1="9" x2="17" y2="15"/>
       <line x1="17" y1="9" x2="23" y2="15"/>`;
     icon.setAttribute('stroke','rgba(255,255,255,0.45)');
   }
+}
+
+// Skip trailing silence on loop — jump back 0.4s before track ends
+(function(){
+  const audio=document.getElementById('ow-audio');
+  if(!audio) return;
+  audio.addEventListener('timeupdate',function(){
+    if(!audio.duration||audio.paused) return;
+    if(audio.currentTime > audio.duration - 0.4){
+      audio.currentTime=0;
+    }
+  });
+})();
+
+let _fadeRAF=null;
+function _cancelFade(){ if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; } }
+
+function _fadeInAudio(durationMs){
+  const audio=_getAudio();
+  if(!audio) return;
+  _cancelFade();
+  const target=0.45, start=audio.volume, t0=performance.now();
+  function step(now){
+    const t=Math.min((now-t0)/durationMs, 1);
+    audio.volume=start+(target-start)*(1-Math.pow(1-t,3));
+    if(t<1) _fadeRAF=requestAnimationFrame(step);
+    else{ _fadeRAF=null; audio.volume=target; }
+  }
+  _fadeRAF=requestAnimationFrame(step);
+}
+
+function _startAudioFaded(){
+  const audio=_getAudio();
+  if(!audio) return;
+  _cancelFade();
+  audio.volume=0;
+  audio.currentTime=0;
+  const p=audio.play();
+  const go=()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500), 1000); };
+  if(p&&typeof p.then==='function') p.then(go).catch(()=>{});
+  else go();
 }
 
 function toggleOwAudio(){
@@ -2477,52 +2516,6 @@ function owAudioResume(){
   if(!audio||!_audioUnlocked) return;
   _startAudioFaded();
 }
-
-// Start audio from the top at silence, wait 1s, then fade in over 3.5s
-function _startAudioFaded(){
-  const audio=_getAudio();
-  if(!audio) return;
-  _cancelFade();
-  audio.currentTime=0;
-  audio.volume=0;
-  const p=audio.play();
-  if(p&&typeof p.then==='function'){
-    p.then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500), 1000); }).catch(()=>{});
-  } else {
-    _setAudioIcon(true);
-    setTimeout(()=>_fadeInAudio(3500), 1000);
-  }
-}
-
-// Fade volume from current up to 0.45 over durationMs using cubic ease-out
-let _fadeRAF=null;
-function _cancelFade(){ if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; } }
-function _fadeInAudio(durationMs){
-  const audio=_getAudio();
-  if(!audio) return;
-  _cancelFade();
-  const target=0.45, start=audio.volume, t0=performance.now();
-  function step(now){
-    const t=Math.min((now-t0)/durationMs, 1);
-    audio.volume=start+(target-start)*(1-Math.pow(1-t,3));
-    if(t<1) _fadeRAF=requestAnimationFrame(step);
-    else{ _fadeRAF=null; audio.volume=target; }
-  }
-  _fadeRAF=requestAnimationFrame(step);
-}
-
-// Gapless loop — restart immediately at full volume when track ends
-(function(){
-  const audio=document.getElementById('ow-audio');
-  if(!audio) return;
-  audio.addEventListener('ended',function(){
-    if(!_audioUnlocked) return;
-    _cancelFade();
-    audio.currentTime=0;
-    audio.volume=0.45;
-    audio.play().catch(()=>{});
-  });
-})();
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROGRESS RING
