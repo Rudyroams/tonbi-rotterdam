@@ -824,12 +824,12 @@ function renderOwNodes(){
     const wasSkipped=stopsSkipped[stop.id]===true;
     if(wasSkipped){
       // Faint blue "skipped" pill at the same position as the green checkmark
-      stamp.innerHTML=`<svg width="42" height="18" viewBox="0 0 42 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="41" height="17" rx="8.5" fill="rgba(40,90,180,0.72)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
-        <text x="21" y="12.5" text-anchor="middle" font-family="'Nunito',sans-serif" font-size="7.5" font-weight="800" letter-spacing="0.06em" fill="rgba(255,255,255,0.85)">skipped</text>
+      stamp.innerHTML=`<svg width="48" height="18" viewBox="0 0 48 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="47" height="17" rx="8.5" fill="rgba(40,90,180,0.72)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        <text x="24" y="13" text-anchor="middle" font-family="'Nunito',sans-serif" font-size="9" font-weight="800" letter-spacing="0.06em" fill="rgba(255,255,255,0.85)">skipped</text>
       </svg>`;
       // Keep same position as green checkmark (top-right of icon)
-      stamp.style.width='42px';
+      stamp.style.width='48px';
       stamp.style.height='18px';
     } else {
       // Green checkmark stamp
@@ -2252,7 +2252,7 @@ function animatePinReveal(parentStopId){
 //   rMin/rMax: radius range (dot only)
 const OW_AMBIENT_LAYERS = [
   // Small bright dots — primary layer
-  { type:'dot', count:18, rMin:0.8, rMax:2.8, vxRange:[-0.12,0.12], vyRange:[-0.20,-0.07], alphaMin:0.22, alphaMax:0.60 },
+  { type:'dot', count:18, rMin:1.0, rMax:3.2, vxRange:[-0.12,0.12], vyRange:[-0.20,-0.07], alphaMin:0.28, alphaMax:0.68 },
   // Larger soft dots — slow background layer for depth
   { type:'dot', count:7,  rMin:3.0, rMax:5.5, vxRange:[-0.05,0.05], vyRange:[-0.06,-0.02], alphaMin:0.06, alphaMax:0.16 },
   // Example cloud layer — uncomment and swap in your PNG URL:
