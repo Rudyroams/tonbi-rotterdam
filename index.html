@@ -2429,15 +2429,20 @@ function toggleOwAudio(){
 
 function owAudioPause(){
   const audio=_getAudio();
-  if(audio&&!audio.paused) audio.pause();
+  if(!audio||audio.paused) return;
+  if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
+  audio.pause();
+  audio.currentTime=0;  // reset so next resume always fades in from the top
+  audio.volume=0;
 }
 
 function owAudioResume(){
   const audio=_getAudio();
-  if(audio&&_audioUnlocked&&audio.paused){
-    audio.volume=0;
-    audio.play().then(()=>{ _fadeInAudio(2500); _setAudioIcon(true); }).catch(()=>{});
-  }
+  if(!audio||!_audioUnlocked) return;
+  // Always start from beginning at volume 0 and fade in
+  audio.currentTime=0;
+  audio.volume=0;
+  audio.play().then(()=>{ _fadeInAudio(2500); _setAudioIcon(true); }).catch(()=>{});
 }
 
 // Fade audio volume from current level up to target over durationMs
