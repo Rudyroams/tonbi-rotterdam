@@ -280,7 +280,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <div id="ow-pins"></div>
     <div id="ow-nodes"></div>
     <!-- Ambient soundtrack -->
-    <audio id="ow-audio" loop preload="none"
+    <audio id="ow-audio" preload="none"
       src="https://rudyroams.github.io/tonbi-rotterdam/videos/Soundtrack_Rotterdam.mp3">
     </audio>
     <!-- Sound toggle — top right of header -->
@@ -2453,12 +2453,11 @@ function toggleOwAudio(){
   if(!audio) return;
   if(!_audioUnlocked){
     _audioUnlocked=true;
-    audio.volume=0;
-    audio.play().then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500),1000); }).catch(()=>{});
+    _startAudioFaded();
   } else if(audio.paused){
-    audio.volume=0;
-    audio.play().then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500),1000); }).catch(()=>{});
+    _startAudioFaded();
   } else {
+    _cancelFade();
     audio.pause();
     _setAudioIcon(false);
   }
@@ -2467,53 +2466,61 @@ function toggleOwAudio(){
 function owAudioPause(){
   const audio=_getAudio();
   if(!audio||audio.paused) return;
-  if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
+  _cancelFade();
   audio.pause();
-  audio.currentTime=0;  // reset so next resume always fades in from the top
+  audio.currentTime=0;
   audio.volume=0;
 }
 
 function owAudioResume(){
   const audio=_getAudio();
   if(!audio||!_audioUnlocked) return;
-  // Always start from beginning at silence, wait 1s then fade in over 3.5s
-  audio.currentTime=0;
-  audio.volume=0;
-  audio.play().then(()=>{
-    _setAudioIcon(true);
-    setTimeout(()=>_fadeInAudio(3500), 1000);
-  }).catch(()=>{});
+  _startAudioFaded();
 }
 
-// Fade audio volume from current level up to target over durationMs
+// Start audio from the top at silence, wait 1s, then fade in over 3.5s
+function _startAudioFaded(){
+  const audio=_getAudio();
+  if(!audio) return;
+  _cancelFade();
+  audio.currentTime=0;
+  audio.volume=0;
+  const p=audio.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>{ _setAudioIcon(true); setTimeout(()=>_fadeInAudio(3500), 1000); }).catch(()=>{});
+  } else {
+    _setAudioIcon(true);
+    setTimeout(()=>_fadeInAudio(3500), 1000);
+  }
+}
+
+// Fade volume from current up to 0.45 over durationMs using cubic ease-out
 let _fadeRAF=null;
+function _cancelFade(){ if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; } }
 function _fadeInAudio(durationMs){
   const audio=_getAudio();
   if(!audio) return;
-  if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
-  const target=0.45;
-  const start=audio.volume;
-  const startTime=performance.now();
+  _cancelFade();
+  const target=0.45, start=audio.volume, t0=performance.now();
   function step(now){
-    const t=Math.min((now-startTime)/durationMs, 1);
-    const eased=1-Math.pow(1-t, 3);
-    audio.volume=start+(target-start)*eased;
+    const t=Math.min((now-t0)/durationMs, 1);
+    audio.volume=start+(target-start)*(1-Math.pow(1-t,3));
     if(t<1) _fadeRAF=requestAnimationFrame(step);
     else{ _fadeRAF=null; audio.volume=target; }
   }
   _fadeRAF=requestAnimationFrame(step);
 }
 
-// On loop: cancel any fade and snap to full volume — no fade between loops
+// Gapless loop — restart immediately at full volume when track ends
 (function(){
   const audio=document.getElementById('ow-audio');
   if(!audio) return;
-  audio.addEventListener('timeupdate',function(){
-    // Detect loop: currentTime jumps back near 0 while playing
-    if(!audio.paused&&audio.currentTime<0.15&&audio.volume>0&&audio.volume<0.44){
-      if(_fadeRAF){ cancelAnimationFrame(_fadeRAF); _fadeRAF=null; }
-      audio.volume=0.45;
-    }
+  audio.addEventListener('ended',function(){
+    if(!_audioUnlocked) return;
+    _cancelFade();
+    audio.currentTime=0;
+    audio.volume=0.45;
+    audio.play().catch(()=>{});
   });
 })();
 
