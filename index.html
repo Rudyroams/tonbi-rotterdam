@@ -823,17 +823,14 @@ function renderOwNodes(){
     stamp.id='ow-stamp-'+stop.id;
     const wasSkipped=stopsSkipped[stop.id]===true;
     if(wasSkipped){
-      // Grey "SKIP" badge
-      stamp.innerHTML=`<svg width="38" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="37" height="19" rx="9.5" fill="rgba(0,0,0,0.55)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
-        <text x="19" y="14" text-anchor="middle" font-family="'Nunito',sans-serif" font-size="9" font-weight="800" letter-spacing="0.08em" fill="rgba(255,255,255,0.7)">SKIP</text>
+      // Faint blue "skipped" pill at the same position as the green checkmark
+      stamp.innerHTML=`<svg width="42" height="18" viewBox="0 0 42 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0.5" y="0.5" width="41" height="17" rx="8.5" fill="rgba(40,90,180,0.72)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        <text x="21" y="12.5" text-anchor="middle" font-family="'Nunito',sans-serif" font-size="7.5" font-weight="800" letter-spacing="0.06em" fill="rgba(255,255,255,0.85)">skipped</text>
       </svg>`;
-      stamp.style.top='auto';
-      stamp.style.bottom='-10px';
-      stamp.style.right='50%';
-      stamp.style.transform='translateX(50%)';
-      stamp.style.width='38px';
-      stamp.style.height='20px';
+      // Keep same position as green checkmark (top-right of icon)
+      stamp.style.width='42px';
+      stamp.style.height='18px';
     } else {
       // Green checkmark stamp
       stamp.innerHTML=`<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -884,16 +881,10 @@ function wireNodeTap(wrap, inner, stopId){
   // Step 8-11: tap on next stop → activation effect → grow → pause → start journey
   wrap.addEventListener('click',()=>{
     const img=inner.querySelector('.ow-node-img');
-    // Activation: grow + golden flash
     if(img){
       img.style.transition='transform 0.25s cubic-bezier(0.34,1.56,0.64,1)';
       img.style.transform='scale(1.4)';
     }
-    const flash=document.createElement('div');
-    flash.style.cssText='position:fixed;inset:0;z-index:999;background:rgba(255,204,0,0.25);pointer-events:none;transition:opacity 0.4s;';
-    document.body.appendChild(flash);
-    setTimeout(()=>{flash.style.opacity='0';setTimeout(()=>flash.remove(),400);},250);
-    // After grow pause, navigate
     setTimeout(()=>{
       if(img){img.style.transform='scale(1)';img.style.transition='transform 0.2s';}
       setTimeout(()=>startJourney(stopId), 300);
@@ -906,10 +897,8 @@ function animateStopCompletion(completedId, nextId, isLast){
   const stamp=document.getElementById('ow-stamp-'+completedId);
   const completedImg=document.getElementById('ow-img-'+completedId);
 
-  // ── 1: Icon shake ──
+  // Icon shake then stamp pop — no full-screen flash
   if(completedImg) completedImg.style.animation='stampShake 0.5s ease-in-out forwards';
-
-  // ── 2 (t=200ms): Stamp slams in + green flash ──
   setTimeout(()=>{
     if(completedImg) completedImg.style.animation='';
     if(stamp){
@@ -918,13 +907,11 @@ function animateStopCompletion(completedId, nextId, isLast){
       stamp.style.animation='stampPop 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards';
     }
     justCompletedStopId=null;
-    owFlash('rgba(52,199,89,0.22)', 220);
   }, 200);
 
   if(!nextId){
     if(isLast){
       setTimeout(()=>{
-        owFlash('rgba(255,204,0,0.3)', 400);
         const lbl=document.getElementById('ow-start-label');
         const btn=document.getElementById('ow-start-btn');
         if(lbl) lbl.textContent='🎉 Finish Tour';
@@ -942,7 +929,6 @@ function animateStopCompletion(completedId, nextId, isLast){
     return;
   }
 
-  // ── 3 (t=900ms): Unlock next stop — no path drawing, straight to icon animation ──
   setTimeout(()=>{ unlockNextStop(nextId); }, 900);
 }
 
@@ -2265,8 +2251,10 @@ function animatePinReveal(parentStopId){
 //   alphaMin/alphaMax: opacity range
 //   rMin/rMax: radius range (dot only)
 const OW_AMBIENT_LAYERS = [
-  // Built-in tiny glowing dots
-  { type:'dot', count:14, rMin:0.6, rMax:2.4, vxRange:[-0.11,0.11], vyRange:[-0.18,-0.06], alphaMin:0.10, alphaMax:0.45 },
+  // Small bright dots — primary layer
+  { type:'dot', count:18, rMin:0.8, rMax:2.8, vxRange:[-0.12,0.12], vyRange:[-0.20,-0.07], alphaMin:0.22, alphaMax:0.60 },
+  // Larger soft dots — slow background layer for depth
+  { type:'dot', count:7,  rMin:3.0, rMax:5.5, vxRange:[-0.05,0.05], vyRange:[-0.06,-0.02], alphaMin:0.06, alphaMax:0.16 },
   // Example cloud layer — uncomment and swap in your PNG URL:
   // { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/cloud.png',
   //   count:3, wMin:60, wMax:110, vxRange:[0.06,0.18], vyRange:[-0.01,0.01], alphaMin:0.12, alphaMax:0.22 },
