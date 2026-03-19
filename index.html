@@ -94,7 +94,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .ow-progress-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:11; }
 .ow-progress-ring circle { transition:stroke-dashoffset 0.35s ease; }
 /* Transition video overlay — transparent bg, video crossfades over map */
-#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:transparent; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; transition:opacity 2s ease; }
+#ow-transition-overlay { position:fixed; inset:0; z-index:998; background:#000; opacity:0; pointer-events:none; display:flex; align-items:center; justify-content:center; }
 #ow-transition-overlay.active { pointer-events:all; }
 #ow-transition-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .ow-header { position:absolute; top:0; left:0; right:0; z-index:20; padding:calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1.5rem; background:linear-gradient(to bottom,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.1) 70%,transparent 100%); pointer-events:none; }
@@ -1664,12 +1664,14 @@ function nextCard(){
     justCompletedStopId=completedId;
     const nextId=completedId<stops.length?completedId+1:null;
     const isLast=completedId===stops.length;
-    // Hide journey screen and show overworld immediately — this is what shows under the video
+
+    // Instantly hide journey screen — nothing visible behind the video
     document.getElementById('journey-screen').classList.remove('show');
-    showScreen('overworld');
-    // Now start the video fade — it plays over the overworld map
+
+    // Start video — reveals overworld underneath once it fades out
     playMapTransition(completedId, ()=>{
-      // Video done — run stamp + unlock sequence
+      // Video gone — now show overworld and run completion sequence
+      showScreen('overworld');
       animateStopCompletion(completedId, nextId, isLast);
       setTimeout(()=>animatePinReveal(completedId), 1200);
       preloadNextMapState(getMapState());
@@ -2121,40 +2123,36 @@ function playMapTransition(completedId, onComplete){
   if(!videoUrl){ onComplete&&onComplete(); return; }
 
   const newStateIdx=getMapState();
-  // Preload new map state image in background
-  const preload=new Image();
-  preload.src=MAP_STATE_URLS[newStateIdx]||MAP_STATE_URLS[0];
 
-  // Load video first so it's ready before we fade in
+  // Phase 1: cut to solid black instantly — nothing bleeds through
+  overlay.style.transition='none';
+  overlay.style.background='#000';
+  overlay.style.opacity='1';
+  overlay.classList.add('active');
+
+  // Load and play video
   video.src=videoUrl;
   video.load();
-
-  // Crossfade video IN over the map
-  overlay.classList.add('active');
-  // Force reflow then fade in
-  overlay.getBoundingClientRect();
-  overlay.style.opacity='1';
-
-  // Play as soon as browser allows
   const playPromise=video.play();
   if(playPromise&&typeof playPromise.then==='function'){
     playPromise.catch(()=>_finishTransition(overlay, video, onComplete, newStateIdx));
   }
 
-  // When video ends: swap map underneath, then crossfade video OUT
   const bail=setTimeout(()=>_finishTransition(overlay, video, onComplete, newStateIdx), 30000);
   video.onended=()=>{ clearTimeout(bail); _finishTransition(overlay, video, onComplete, newStateIdx); };
 }
 
 function _finishTransition(overlay, video, onComplete, newStateIdx){
-  // Swap map image while video is still visible — seamless
   applyMapState(newStateIdx, true);
-  // Crossfade video OUT
+  // Phase 2: crossfade overlay out, revealing prepped overworld underneath (2s)
+  overlay.style.transition='opacity 2s ease';
+  overlay.style.background='transparent';
   overlay.style.opacity='0';
-  // After fade completes, clean up and fire callback
   const FADE_MS=2000;
   setTimeout(()=>{
     overlay.classList.remove('active');
+    overlay.style.transition='none';
+    overlay.style.background='transparent';
     video.src='';
     onComplete&&onComplete();
   }, FADE_MS);
