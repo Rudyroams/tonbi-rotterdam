@@ -279,6 +279,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     <svg id="ow-svg-layer" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="ow-pins"></div>
     <div id="ow-nodes"></div>
+    <!-- Ambient soundtrack -->
+    <audio id="ow-audio" loop preload="none"
+      src="https://rudyroams.github.io/tonbi-rotterdam/videos/Soundtrack_Rotterdam.mp3">
+    </audio>
+    <!-- Sound toggle — top right of header -->
+    <button id="ow-sound-btn" onclick="toggleOwAudio()" style="position:absolute;top:calc(1.1rem + env(safe-area-inset-top));right:1.25rem;z-index:25;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:all;" title="Toggle sound">
+      <svg id="ow-sound-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <line x1="23" y1="9" x2="17" y2="15" class="ow-sound-x"/>
+        <line x1="17" y1="9" x2="23" y2="15" class="ow-sound-x"/>
+      </svg>
+    </button>
     <div class="ow-header">
       <div class="ow-logo">
         <div class="ow-logo-left">
@@ -1498,6 +1510,7 @@ function renderCard(card,idx,total){
 }
 
 function startJourney(stopId){
+  owAudioPause();
   currentStop=stops.find(s=>s.id===stopId);currentCardIdx=0;cards=buildCards(currentStop);
   // Reset this stop's ring to 0 when entering
   updateProgressRing(stopId, 0);
@@ -1741,9 +1754,8 @@ function prevCard(){
 function closeJourney(showEnd){
   stopCFVideo();
   document.getElementById('journey-screen').classList.remove('show');
-  // Always go to overworld — never directly to end screen
-  // End screen is reached via the Finish Tour button on the overworld
   showScreen('overworld');
+  owAudioResume();
 }
 function closeEndScreen(){
   document.getElementById('end-screen').style.display='none';
@@ -2173,6 +2185,9 @@ function playMapTransition(completedId, onComplete){
     playPromise.catch(()=>_finishTransition(overlay, video, onComplete, newStateIdx));
   }
 
+  // Start soundtrack during transition if user has unlocked audio
+  owAudioResume();
+
   const bail=setTimeout(()=>_finishTransition(overlay, video, onComplete, newStateIdx), 30000);
   video.onended=()=>{ clearTimeout(bail); _finishTransition(overlay, video, onComplete, newStateIdx); };
 }
@@ -2277,9 +2292,9 @@ const OW_AMBIENT_LAYERS = [
   { type:'dot', count:5,  rMin:2.5, rMax:4.5, vxRange:[-0.04,0.04], vyRange:[-0.05,-0.02], alphaMin:0.04, alphaMax:0.12 },
   // Seagulls — slow, subtle, slight size + rotation variation
   { type:'img', src:'https://rudyroams.github.io/tonbi-rotterdam/images/Seagull.png',
-    count:5, wMin:14, wMax:24,
+    count:5, wMin:18, wMax:30,
     vxRange:[0.10,0.26], vyRange:[-0.03,0.03],
-    alphaMin:0.30, alphaMax:0.60,
+    alphaMin:0.45, alphaMax:0.75,
     rotSpeedMin:-0.006, rotSpeedMax:0.006 },
 ];
 
@@ -2350,8 +2365,8 @@ function _tickParticles(canvas){
       const aspect=p.img.naturalHeight/p.img.naturalWidth;
       const hw=p.w/2, hh=p.w*aspect/2;
       p.angle=(p.angle||0)+p.rotSpeed;
-      // Clamp to ±π/2 (±90°) — seagulls bank but never fly upside down
-      const MAX_ANGLE=Math.PI/2;
+      // Clamp to ±π/3 (±60°) — seagulls bank gently but never tip too far
+      const MAX_ANGLE=Math.PI/3;
       if(p.angle>MAX_ANGLE){ p.angle=MAX_ANGLE; p.rotSpeed=-Math.abs(p.rotSpeed); }
       if(p.angle<-MAX_ANGLE){ p.angle=-MAX_ANGLE; p.rotSpeed=Math.abs(p.rotSpeed); }
       ctx.save();
@@ -2367,6 +2382,61 @@ function _tickParticles(canvas){
 
 function stopParticles(){
   if(_particleRAF){ cancelAnimationFrame(_particleRAF); _particleRAF=null; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// OVERWORLD AUDIO
+// ═══════════════════════════════════════════════════════════════════════
+let _audioUnlocked=false; // true once user has tapped the sound button
+
+function _getAudio(){ return document.getElementById('ow-audio'); }
+
+function _setAudioIcon(playing){
+  const icon=document.getElementById('ow-sound-icon');
+  if(!icon) return;
+  if(playing){
+    // Speaker with waves — sound on
+    icon.innerHTML=`
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>`;
+    icon.setAttribute('stroke','rgba(255,255,255,0.85)');
+  } else {
+    // Speaker with X — sound off
+    icon.innerHTML=`
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>`;
+    icon.setAttribute('stroke','rgba(255,255,255,0.45)');
+  }
+}
+
+function toggleOwAudio(){
+  const audio=_getAudio();
+  if(!audio) return;
+  if(!_audioUnlocked){
+    // First tap — unlock and start
+    _audioUnlocked=true;
+    audio.volume=0.45;
+    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+  } else if(audio.paused){
+    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+  } else {
+    audio.pause();
+    _setAudioIcon(false);
+  }
+}
+
+function owAudioPause(){
+  const audio=_getAudio();
+  if(audio&&!audio.paused) audio.pause();
+}
+
+function owAudioResume(){
+  const audio=_getAudio();
+  if(audio&&_audioUnlocked&&audio.paused){
+    audio.play().then(()=>_setAudioIcon(true)).catch(()=>{});
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════
