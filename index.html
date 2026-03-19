@@ -562,10 +562,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 <script>
 const stops=[
   {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",coords:[4.4871,51.9090],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."},
-    partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}],
-    subStops:[
-      {id:"1a",name:"De Boeg Monument",tagline:"The prow of a ship — Rotterdam's maritime soul",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=De+Boeg+Rotterdam",coords:[4.4855,51.9085],rudy:"This bronze prow is where Rotterdam's harbor history is condensed into a single sculpture. Face it, then turn around — that's the view my grandfather had every morning.",challenge:{title:"Prow & Bridge",desc:"Shoot the bronze prow with the Erasmus Bridge behind it, perfectly framed.",tip:"Get close to the prow and shoot wide. The bridge behind gives it scale."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"De Boeg represents Rotterdam's relationship with what?",opts:["The sea and harbor trade","The bombing of 1940","The city council"],correct:0,explanation:"The prow sculpture is a tribute to Rotterdam's centuries-long identity as a harbor city."}}
-    ]},
+    partners:[{name:"Langoest",type:"Restaurant",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"Right by the Erasmus Bridge, Langoest is a Rotterdam classic for fresh seafood and lobster rolls. Rudy's recommendation for lunch after the bridge.",location:"Boompjes, Rotterdam waterfront",mapUrl:"https://maps.google.com/?q=Langoest+Rotterdam",offer:"10% off your bill",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-002",emoji:"🦞",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg"]}]},
   {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",coords:[4.4917,51.9186],
     preSubStops:[
       {id:"2pre",name:"Blaak Station",tagline:"The flying saucers you walk under without noticing",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Blaak+Station+Rotterdam",coords:[4.4902,51.9185],rudy:"Everyone rushes through Blaak to catch the metro, but stop for a minute and look up. Those massive concrete discs were designed in 1987 — they look like something from a science fiction film and they're just a train station.",challenge:{title:"Saucer Overhead",desc:"Stand directly beneath one of the circular concrete canopies and shoot straight up.",tip:"Use portrait mode to blur the edges and make the concrete really pop against the sky."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"Blaak Station opened in which year?",opts:["1993","1987","It was always there"],correct:0,explanation:"Blaak metro station opened in 1993, designed by architect Harry Reijnders with those distinctive flying saucer canopies."}}
@@ -1668,13 +1665,16 @@ function nextCard(){
     // Instantly hide journey screen — nothing visible behind the video
     document.getElementById('journey-screen').classList.remove('show');
 
-    // Start video — reveals overworld underneath once it fades out
+    // Start video — _finishTransition will: swap map, show overworld, fire callback, then fade out
     playMapTransition(completedId, ()=>{
-      // Video gone — now show overworld and run completion sequence
+      // Called while overlay still black — overworld renders here, before reveal
       showScreen('overworld');
-      animateStopCompletion(completedId, nextId, isLast);
-      setTimeout(()=>animatePinReveal(completedId), 1200);
-      preloadNextMapState(getMapState());
+      // Stamp + unlock run after the 2s fade reveals the map
+      setTimeout(()=>{
+        animateStopCompletion(completedId, nextId, isLast);
+        setTimeout(()=>animatePinReveal(completedId), 1200);
+        preloadNextMapState(getMapState());
+      }, 2100);
     });
   } else {
     currentCardIdx++;updateCardPosition();updateProgressDots();updateNavBtns();
@@ -2143,19 +2143,27 @@ function playMapTransition(completedId, onComplete){
 }
 
 function _finishTransition(overlay, video, onComplete, newStateIdx){
+  // Swap map image and fully compose overworld WHILE overlay is still solid black
+  // so the old state is never visible during the fade
   applyMapState(newStateIdx, true);
-  // Phase 2: crossfade overlay out, revealing prepped overworld underneath (2s)
-  overlay.style.transition='opacity 2s ease';
-  overlay.style.background='transparent';
-  overlay.style.opacity='0';
-  const FADE_MS=2000;
-  setTimeout(()=>{
-    overlay.classList.remove('active');
-    overlay.style.transition='none';
+
+  // Fire onComplete now so showScreen/renderOwNodes/unlockNextStop all run
+  // while we're still hidden behind the black overlay
+  onComplete&&onComplete();
+
+  // Brief paint frame to let the browser render the new state behind the overlay
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    // Now crossfade the overlay OUT — new map is already fully composed underneath
+    overlay.style.transition='opacity 2s ease';
     overlay.style.background='transparent';
-    video.src='';
-    onComplete&&onComplete();
-  }, FADE_MS);
+    overlay.style.opacity='0';
+    setTimeout(()=>{
+      overlay.classList.remove('active');
+      overlay.style.transition='none';
+      overlay.style.background='#000';
+      video.src='';
+    }, 2000);
+  }));
 }
 
 // ═══════════════════════════════════════════════════════════════════════
