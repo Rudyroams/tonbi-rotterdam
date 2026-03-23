@@ -567,12 +567,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
         <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;margin-top:0.1rem;">Play again while you explore</div>
       </div>
       <div style="padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.6rem;">
-        <button onclick="closeEndScreen();startJourney(3);setTimeout(()=>{const gi=cards.findIndex(c=>c.type==='game');if(gi>=0){currentCardIdx=gi;updateCardPosition();updateProgressDots();updateNavBtns();}},350);"
+        <button onclick="gameReturnTo='endscreen';closeEndScreen();startJourney(3);setTimeout(()=>{const gi=cards.findIndex(c=>c.type==='game');if(gi>=0){currentCardIdx=gi;updateCardPosition();updateProgressDots();updateNavBtns();}},350);"
           style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem 1rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:0.6rem;box-shadow:0 4px 14px rgba(255,107,53,0.35);">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
           Herring Catch <span style="opacity:0.6;font-size:0.75rem;font-weight:700;">— Stop 3</span>
         </button>
-        <button onclick="closeEndScreen();startJourney(5);setTimeout(()=>{const gi=cards.findIndex(c=>c.type==='game');if(gi>=0){currentCardIdx=gi;updateCardPosition();updateProgressDots();updateNavBtns();}},350);"
+        <button onclick="gameReturnTo='endscreen';closeEndScreen();startJourney(5);setTimeout(()=>{const gi=cards.findIndex(c=>c.type==='game');if(gi>=0){currentCardIdx=gi;updateCardPosition();updateProgressDots();updateNavBtns();}},350);"
           style="width:100%;background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:0.8rem 1rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:0.6rem;box-shadow:0 4px 14px rgba(255,107,53,0.35);">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
           Herring Catch Pro <span style="opacity:0.6;font-size:0.75rem;font-weight:700;">— Stop 5</span>
@@ -705,6 +705,7 @@ function buildFilmstrip(){
 }
 let justCompletedStopId=null;
 let currentStop=null,currentCardIdx=0,cards=[];
+let gameReturnTo=null; // 'overworld' | 'endscreen' | null (normal tour flow)
 let pendingPhotoStopId=null;
 
 function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
@@ -891,27 +892,30 @@ function renderOwNodes(){
     if(isVisible) wireNodeTap(wrap, inner, stop.id);
 
     container.appendChild(wrap);
+  });
 
-    // Game link node — appears below stops 3 and 5 once completed
-    if((stop.id===3||stop.id===5) && isDone){
-      const gameLevel=stop.id===3?1:2;
-      const gameWrap=document.createElement('div');
-      gameWrap.style.cssText=`position:absolute;transform:translate(-50%,-50%);left:${pos.x*scaleX}px;top:${(pos.y*scaleY)+62}px;z-index:9;`;
-      const gameBtn=document.createElement('button');
-      gameBtn.style.cssText='background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border:none;border-radius:99px;padding:0.18rem 0.65rem;font-family:\'Nunito\',sans-serif;font-size:0.6rem;font-weight:900;color:white;cursor:pointer;box-shadow:0 2px 10px rgba(255,107,53,0.5);white-space:nowrap;display:flex;align-items:center;gap:0.3rem;';
-      gameBtn.innerHTML=`<svg width="8" height="8" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>${gameLevel===1?'Herring Catch':'Herring Catch Pro'}`;
-      gameBtn.addEventListener('click',e=>{
-        e.stopPropagation();
-        startJourney(stop.id);
-        // After journey starts, navigate to the game card
-        setTimeout(()=>{
-          const gameCardIdx=cards.findIndex(c=>c.type==='game');
-          if(gameCardIdx>=0){ currentCardIdx=gameCardIdx; updateCardPosition(); updateProgressDots(); updateNavBtns(); }
-        }, 350);
-      });
-      gameWrap.appendChild(gameBtn);
-      container.appendChild(gameWrap);
-    }
+  // Game replay links — pinned bottom-left of overworld screen
+  // Remove any old ones first
+  ['ow-game-link-3','ow-game-link-5'].forEach(id=>{
+    const old=document.getElementById(id); if(old) old.remove();
+  });
+  const screen2=document.getElementById('overworld-screen');
+  let gameLinkBottom=calc_safe_bottom=`calc(5.5rem + env(safe-area-inset-bottom))`;
+  stops.filter(st=>(st.id===3||st.id===5)&&stopsCompleted[st.id]).forEach((st,i)=>{
+    const gameLevel=st.id===3?1:2;
+    const btn=document.createElement('button');
+    btn.id='ow-game-link-'+st.id;
+    btn.style.cssText=`position:absolute;left:1rem;bottom:calc(${5.5+i*2.4}rem + env(safe-area-inset-bottom));z-index:25;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,107,53,0.5);border-radius:99px;padding:0.32rem 0.85rem;font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:800;color:white;cursor:pointer;display:flex;align-items:center;gap:0.35rem;box-shadow:0 2px 10px rgba(0,0,0,0.3);`;
+    btn.innerHTML=`<svg width="9" height="9" viewBox="0 0 12 12" fill="#ff6b35"><polygon points="2,1 11,6 2,11"/></svg><span style="color:rgba(255,165,50,0.9);">Re-play</span>&nbsp;${gameLevel===1?'Herring Catch':'Herring Catch Pro'}`;
+    btn.addEventListener('click',()=>{
+      gameReturnTo='overworld';
+      startJourney(st.id);
+      setTimeout(()=>{
+        const gi=cards.findIndex(c=>c.type==='game');
+        if(gi>=0){ currentCardIdx=gi; updateCardPosition(); updateProgressDots(); updateNavBtns(); }
+      }, 350);
+    });
+    if(screen2) screen2.appendChild(btn);
   });
 }
 
@@ -1642,6 +1646,8 @@ function renderCard(card,idx,total){
 
 function startJourney(stopId){
   owAudioPause();
+  // gameReturnTo is set by map/end-screen callers before invoking startJourney;
+  // for normal tour flow it stays null
   currentStop=stops.find(s=>s.id===stopId);currentCardIdx=0;cards=buildCards(currentStop);
   // Reset this stop's ring to 0 when entering
   updateProgressRing(stopId, 0);
@@ -1919,6 +1925,7 @@ function prevCard(){
 }
 function closeJourney(showEnd){
   stopCFVideo();
+  gameReturnTo=null;
   document.getElementById('journey-screen').classList.remove('show');
   showScreen('overworld');
   owAudioResume();
@@ -2125,36 +2132,56 @@ function _scheduleReload(){
 // Listen for game-over signal from embedded herring game iframe
 window.addEventListener('message',function(e){
   if(e.data&&e.data.type==='HERRING_GAME_DONE'){
-    // Show nav bar with ← Back (to card before game) and the finish/next button
     const cb=document.getElementById('card-bottom');
     if(cb) cb.style.display='flex';
-    // Find the card before the current game card and wire prev to go there
-    const prevCardIdx=currentCardIdx-1;
     const prevBtn=document.getElementById('prev-btn');
     const nextBtn=document.getElementById('next-btn');
-    if(prevBtn&&prevCardIdx>=0){
-      prevBtn.style.display='block';
-      prevBtn.style.cssText='';
-      prevBtn.textContent='← Back';
-      prevBtn.onclick=function(){ stopCFVideo(); currentCardIdx=prevCardIdx; updateCardPosition(); updateProgressDots(); updateNavBtns(); };
-    }
-    // Keep next button as-is (finish stop or next stop)
-    if(nextBtn){
-      const isLastStop=currentStop&&currentStop.id===stops.length;
-      nextBtn.textContent=isLastStop?'🎉 Finish Tour!':`Finish ${currentStop?currentStop.name:''}! →`;
-      nextBtn.className='card-next-btn'+(isLastStop?' final':'');
-      nextBtn.onclick=nextCard;
-      nextBtn.style.cssText='';
+
+    if(gameReturnTo){
+      // Launched from map or end screen — only show a Back button, no continue
+      if(prevBtn){
+        prevBtn.style.display='block';
+        prevBtn.style.cssText='flex:1;';
+        prevBtn.textContent='← Back';
+        const returnTo=gameReturnTo;
+        prevBtn.onclick=function(){
+          gameReturnTo=null;
+          document.getElementById('journey-screen').classList.remove('show');
+          if(returnTo==='endscreen') showEndScreen();
+          else showScreen('overworld');
+        };
+      }
+      if(nextBtn){ nextBtn.style.display='none'; }
+    } else {
+      // Normal tour flow — Back to prev card, next shows finish button
+      const prevCardIdx=currentCardIdx-1;
+      if(prevBtn&&prevCardIdx>=0){
+        prevBtn.style.display='block';
+        prevBtn.style.cssText='';
+        prevBtn.textContent='← Back';
+        prevBtn.onclick=function(){ stopCFVideo(); currentCardIdx=prevCardIdx; updateCardPosition(); updateProgressDots(); updateNavBtns(); };
+      }
+      if(nextBtn){
+        const isLastStop=currentStop&&currentStop.id===stops.length;
+        nextBtn.textContent=isLastStop?'🎉 Finish Tour!':`Finish ${currentStop?currentStop.name:''}! →`;
+        nextBtn.className='card-next-btn'+(isLastStop?' final':'');
+        nextBtn.onclick=nextCard;
+        nextBtn.style.cssText='';
+        nextBtn.style.display='';
+      }
     }
   }
   if(e.data&&e.data.type==='tonbi-skip-game'){
-    // Skip game — advance to card after game, or close journey if game is last card
-    if(currentCardIdx===cards.length-1){
-      // Game is the last card — go to overworld
+    if(gameReturnTo){
+      const returnTo=gameReturnTo;
+      gameReturnTo=null;
+      document.getElementById('journey-screen').classList.remove('show');
+      if(returnTo==='endscreen') showEndScreen();
+      else showScreen('overworld');
+    } else if(currentCardIdx===cards.length-1){
       closeJourney(false);
       showScreen('overworld');
     } else {
-      // Advance past the game card to whatever's next
       currentCardIdx++;
       updateCardPosition();updateProgressDots();updateNavBtns();
     }
