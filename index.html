@@ -1815,9 +1815,7 @@ function updateNavBtns(){
 
   prev.style.display=currentCardIdx===0?'none':'block';
   // "Back to Map" label when we're at the first content card of a segment
-  const atSegStart=cc&&currentCardIdx===cc.segStart;
-  // Finish cards: always just "← Back" going to previous card, never "Back to Map"
-  prev.textContent=(cc&&cc.type==='finish')?'← Back':(atSegStart?'← Back to Map':'← Back');
+  prev.textContent='← Back';
   prev.onclick=prevCard;
 
   if(isLast){
@@ -1945,15 +1943,7 @@ function prevCard(){
   stopCFVideo();
   if(currentCardIdx===0)return;
 
-  const cc=cards[currentCardIdx];
-  const navIdx=getSegNavIdx(currentCardIdx);
-
-  // If we're at the first content card of a segment → jump back to that segment's nav card
-  if(currentCardIdx===cc.segStart&&currentCardIdx>navIdx){
-    currentCardIdx=navIdx;
-  } else {
-    currentCardIdx--;
-  }
+  currentCardIdx--;
 
   updateCardPosition();updateProgressDots();updateNavBtns();
   const ac=cards[currentCardIdx];
