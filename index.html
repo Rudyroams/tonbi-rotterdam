@@ -258,7 +258,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 <div id="pw-screen">
   <div class="pw-logo">🪁</div>
   <div class="pw-wordmark">Tonbi</div>
-  <div class="pw-city">Rotterdam · Self-Guided Tour</div>
+  <div class="pw-city">Rotterdam · City Experience</div>
   <div style="position:relative;width:100%;max-width:320px;margin-bottom:0.75rem;">
     <input class="pw-field" type="password" id="pw-in" placeholder="Enter your access code"
       autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
@@ -293,14 +293,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       <div class="ow-logo">
         <div class="ow-logo-left">
           <div class="ow-logo-icon">🪁</div>
-          <div><div class="ow-logo-name">Tonbi · Rotterdam</div><div class="ow-logo-sub">SELF-GUIDED WALKING TOUR</div></div>
+          <div><div class="ow-logo-name">Tonbi · Rotterdam</div><div class="ow-logo-sub">CITY EXPERIENCE</div></div>
         </div>
       </div>
-    </div>
-    <!-- "Tap a stop to replay" — top right, below mute button, shown only when all done -->
-    <div id="ow-select-stop-header" style="display:none;position:absolute;top:calc(4.2rem + env(safe-area-inset-top));right:1.25rem;z-index:21;text-align:right;pointer-events:none;">
-      <span style="display:block;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;line-height:1.4;">Tap a stop</span>
-      <span style="display:block;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;line-height:1.4;">to replay it</span>
     </div>
     <!-- Reset button — bottom left -->
     <div style="position:absolute;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;z-index:25;pointer-events:all;">
@@ -333,7 +328,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
       <div class="home-header-top">
         <div class="home-logo">
           <div class="home-logo-icon">🪁</div>
-          <div><div class="home-logo-name">Tonbi</div><div class="home-logo-sub">Self-Guided Tour</div></div>
+          <div><div class="home-logo-name">Tonbi</div><div class="home-logo-sub">City Experience</div></div>
         </div>
 
       </div>
@@ -667,8 +662,6 @@ function resetProgress(){
   if(filmstrip){ filmstrip.style.display='none'; filmstrip._built=false; filmstrip.innerHTML=''; }
   const bonusBtn=document.getElementById('ow-bonus-link');
   if(bonusBtn) bonusBtn.style.display='none';
-  const selHeader=document.getElementById('ow-select-stop-header');
-  if(selHeader) selHeader.style.display='none';
   const divider=document.getElementById('ow-links-divider');
   if(divider) divider.style.display='none';
   const partnersLink=document.getElementById('ow-partners-link');
@@ -811,8 +804,6 @@ function renderOwNodes(){
     if(allDone){
       lbl.textContent='🎉 Finish Tour';
       btn.onclick=showEndScreen;
-      const selHeader=document.getElementById('ow-select-stop-header');
-      if(selHeader) selHeader.style.display='block';
       const filmstrip=document.getElementById('ow-bonus-filmstrip');
       if(filmstrip){ buildFilmstrip(); filmstrip.style.display=endScreenReached?'block':'none'; }
     } else if(anyDone){
@@ -906,22 +897,53 @@ function renderOwNodes(){
     container.appendChild(wrap);
   });
 
-  // Game replay links — pinned bottom-left, above the bottom nav
-  // Remove any old ones first
-  ['ow-game-link-3','ow-game-link-5'].forEach(id=>{
+  // Single "Play Games" button — bottom-left, shown when at least one game stop is completed
+  ['ow-game-link-3','ow-game-link-5','ow-game-link-btn'].forEach(id=>{
     const old=document.getElementById(id); if(old) old.remove();
   });
   const screen2=document.getElementById('overworld-screen');
   const gameStops=stops.filter(st=>(st.id===3||st.id===5)&&stopsCompleted[st.id]);
-  gameStops.forEach((st,i)=>{
-    const gameLevel=st.id===3?1:2;
+  if(gameStops.length>0&&screen2){
     const btn=document.createElement('button');
-    btn.id='ow-game-link-'+st.id;
-    // Stack upward from bottom nav: base ~7.5rem accounts for ow-bottom height + safe area
-    const bottomOffset=7.5+i*2.1;
-    btn.style.cssText=`position:absolute;left:1rem;bottom:calc(${bottomOffset}rem + env(safe-area-inset-bottom));z-index:25;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,107,53,0.4);border-radius:99px;padding:0.25rem 0.7rem;font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;color:rgba(255,255,255,0.85);cursor:pointer;display:flex;align-items:center;gap:0.3rem;white-space:nowrap;`;
-    btn.innerHTML=`<svg width="7" height="7" viewBox="0 0 12 12" fill="#ff6b35"><polygon points="2,1 11,6 2,11"/></svg><span style="color:#ff9955;">Re-play</span>&nbsp;${gameLevel===1?'Herring Catch':'Herring Catch Pro'}`;
-    btn.addEventListener('click',()=>{
+    btn.id='ow-game-link-btn';
+    btn.style.cssText=`position:absolute;left:1rem;bottom:calc(7.5rem + env(safe-area-inset-bottom));z-index:25;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,107,53,0.4);border-radius:99px;padding:0.28rem 0.75rem;font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:800;color:rgba(255,255,255,0.9);cursor:pointer;display:flex;align-items:center;gap:0.35rem;white-space:nowrap;`;
+    btn.innerHTML=`<svg width="8" height="8" viewBox="0 0 12 12" fill="#ff6b35"><polygon points="2,1 11,6 2,11"/></svg>Play Games`;
+    btn.addEventListener('click',()=>showGamePicker(gameStops));
+    screen2.appendChild(btn);
+  }
+}
+
+function showGamePicker(gameStops){
+  const existing=document.getElementById('ow-game-picker');
+  if(existing){existing.remove();return;}
+  const ov=document.createElement('div');
+  ov.id='ow-game-picker';
+  ov.style.cssText='position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom);';
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
+  const panel=document.createElement('div');
+  panel.style.cssText='background:#1a1a2e;border:1px solid rgba(255,255,255,0.12);border-radius:22px 22px 0 0;width:100%;max-width:480px;padding:1.25rem 1.25rem 1.5rem;';
+  const title=document.createElement('div');
+  title.style.cssText='font-family:\'Nunito\',sans-serif;font-size:1.1rem;font-weight:900;color:white;margin-bottom:0.25rem;';
+  title.textContent='Play a Game';
+  const sub=document.createElement('div');
+  sub.style.cssText='font-size:0.75rem;color:rgba(255,255,255,0.45);margin-bottom:1rem;';
+  sub.textContent='Pick up where you left off — or challenge a friend.';
+  panel.appendChild(title);panel.appendChild(sub);
+  gameStops.forEach(st=>{
+    const gameLevel=st.id===3?1:2;
+    const row=document.createElement('button');
+    row.style.cssText='width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,107,53,0.3);border-radius:14px;padding:0.9rem 1rem;margin-bottom:0.65rem;font-family:\'Nunito\',sans-serif;cursor:pointer;display:flex;align-items:center;gap:0.85rem;text-align:left;';
+    row.innerHTML=`
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff3b30,#ff6b35,#ffcc00);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(255,107,53,0.4);">
+        <svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:1rem;font-weight:900;color:white;line-height:1.1;">${gameLevel===1?'Herring Catch':'Herring Catch Pro'}</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:0.15rem;">${gameLevel===1?'Stop 3 · Oude Haven — catch herrings, beat the seagull':'Stop 5 · Markthal — bigger gull, wind power, multiplayer'}</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+    row.addEventListener('click',()=>{
+      ov.remove();
       gameReturnTo='overworld';
       startJourney(st.id);
       setTimeout(()=>{
@@ -929,8 +951,15 @@ function renderOwNodes(){
         if(gi>=0){ currentCardIdx=gi; updateCardPosition(); updateProgressDots(); updateNavBtns(); }
       }, 350);
     });
-    if(screen2) screen2.appendChild(btn);
+    panel.appendChild(row);
   });
+  const cancel=document.createElement('button');
+  cancel.style.cssText='width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:99px;padding:0.65rem;font-family:\'Nunito\',sans-serif;font-size:0.88rem;font-weight:700;color:rgba(255,255,255,0.5);cursor:pointer;';
+  cancel.textContent='Cancel';
+  cancel.addEventListener('click',()=>ov.remove());
+  panel.appendChild(cancel);
+  ov.appendChild(panel);
+  document.body.appendChild(ov);
 }
 
 function wireNodeTap(wrap, inner, stopId){
@@ -992,8 +1021,6 @@ function animateStopCompletion(completedId, nextId, isLast){
           btn.onclick=showEndScreen;
           setTimeout(()=>{ if(btn) btn.style.animation=''; }, 600);
         }
-        const selHeader=document.getElementById('ow-select-stop-header');
-        if(selHeader) selHeader.style.display='block';
         const filmstrip=document.getElementById('ow-bonus-filmstrip');
         if(filmstrip){ buildFilmstrip(); filmstrip.style.display=endScreenReached?'block':'none'; }
       }, 800);
