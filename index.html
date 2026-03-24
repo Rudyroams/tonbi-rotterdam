@@ -2215,9 +2215,10 @@ window.addEventListener('message',function(e){
         prevBtn.onclick=function(){ stopCFVideo(); currentCardIdx=prevCardIdx; updateCardPosition(); updateProgressDots(); updateNavBtns(); };
       }
       if(nextBtn){
+        const isLastCard=currentCardIdx===cards.length-1;
         const isLastStop=currentStop&&currentStop.id===stops.length;
-        nextBtn.textContent=isLastStop?'🎉 Finish Tour!':`Finish ${currentStop?currentStop.name:''}! →`;
-        nextBtn.className='card-next-btn'+(isLastStop?' final':'');
+        nextBtn.textContent=isLastCard&&isLastStop?'🎉 Finish Tour!':'Continue →';
+        nextBtn.className='card-next-btn'+(isLastCard&&isLastStop?' final':'');
         nextBtn.onclick=nextCard;
         nextBtn.style.cssText='';
         nextBtn.style.display='';
