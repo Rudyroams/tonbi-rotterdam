@@ -601,18 +601,121 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </div>
 
 <script>
-const stops=[
-  {id:1,name:"Erasmus Bridge",dutch:"Erasmusbrug",tagline:"Where Rotterdam announces itself to the world",img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",mapUrl:"https://maps.google.com/?q=Erasmusbrug,Rotterdam",address:"Boompjeskade, 3011 XE Rotterdam",coords:[4.4871,51.9090],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Called <em>The Swan</em> by locals, the Erasmus Bridge is Rotterdam's most iconic landmark. Completed in 1996, it connects the north and south banks of the Nieuwe Maas with a single asymmetric pylon. My grandfather worked the harbors visible from this very spot — the view hasn't changed as much as you'd think.",rudy:"Stand at De Boeg monument and look south across the bridge at golden hour. The light on the cable stays turns everything into a painting. I've shot this spot hundreds of times and it never gets old.",challenge:{title:"The Swan Shot",desc:"Frame the bridge so one of the steel cables cuts diagonally across your shot from corner to corner. Get low — crouch down or sit on the steps.",tip:"Shoot into the light for drama. The silhouette of the cables against the sky beats a correctly exposed shot every time."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/erasmus-bridge.jpeg",q:"The Erasmus Bridge has a famous nickname. What do locals call it?",opts:["The Swan","The Needle","A very large bridge"],correct:0,explanation:"It's called <em>De Zwaan</em> — The Swan — for the graceful curve of its single white pylon."}},
-  {id:2,name:"Witte Huis",dutch:"The White House",tagline:"Europe's first skyscraper, still standing proud",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Witte+Huis+Rotterdam",address:"Geldersekade 1, 3011 EG Rotterdam",coords:[4.4917,51.9186],
-    preSubStops:[
-      {id:"2pre",name:"Blaak Station",tagline:"The flying saucers you walk under without noticing",img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",mapUrl:"https://maps.google.com/?q=Blaak+Station+Rotterdam",coords:[4.4902,51.9185],rudy:"Everyone rushes through Blaak to catch the metro, but stop for a minute and look up. Those massive concrete discs were designed in 1987 — they look like something from a science fiction film and they're just a train station.",challenge:{title:"Saucer Overhead",desc:"Stand directly beneath one of the circular concrete canopies and shoot straight up.",tip:"Use portrait mode to blur the edges and make the concrete really pop against the sky."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"Blaak Station opened in which year?",opts:["1993","1987","It was always there"],correct:0,explanation:"Blaak metro station opened in 1993, designed by architect Harry Reijnders with those distinctive flying saucer canopies."}}
-    ],
-    cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Built in 1898, the Witte Huis was the tallest office building in Europe when completed — ten stories of ornate Art Nouveau stone. It survived the devastating bombing of 1940 almost miraculously.",rudy:"When I show people the before-and-after photos of the 1940 bombing, standing right here, it always creates a silence. Everything around this building was destroyed.",challenge:{title:"Old Meets New",desc:"Find an angle where the Witte Huis appears directly next to modern Rotterdam architecture.",tip:"Step back further than you think. A slight zoom compresses old and new together — much more dramatic."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg",q:"When was the Witte Huis completed, making it Europe's tallest office building?",opts:["1898","1924","It was built last Tuesday"],correct:0,explanation:"Completed in 1898. At 10 stories it was a genuine skyscraper for its era."}},
-  {id:3,name:"Oude Haven",dutch:"Old Harbor",tagline:"The oldest harbor in Rotterdam, still full of life",img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",mapUrl:"https://maps.google.com/?q=Oudehaven+Rotterdam",address:"Oudehaven, 3011 KN Rotterdam",coords:[4.4917,51.9193],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"The Oude Haven dates back to 1325 — this is where Rotterdam literally began. Today historic vessels bob alongside canal houses and the Cube Houses loom dramatically overhead.",rudy:"Early morning here is pure magic — the boats reflect in still water before the city wakes up.",challenge:{title:"Reflections",desc:"Find a reflection of the Cube Houses or the historic vessels in the harbor water.",tip:"Crouch as low as possible to get your phone close to the water. The lower your angle, the more dramatic the reflection."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg",q:"Approximately when was the Oude Haven first established?",opts:["1325","1600","Sometime during a rainy Tuesday in the 1400s"],correct:0,explanation:"Dating to 1325, the Oude Haven is essentially the birthplace of Rotterdam."}},
-  {id:4,name:"Cube Houses",dutch:"Kubuswoningen",tagline:"Living tilted at 45° — Rotterdam's most playful architecture",img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",mapUrl:"https://maps.google.com/?q=Kubuswoningen+Rotterdam",address:"Overblaak 70, 3011 MH Rotterdam",coords:[4.4877,51.9188],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Designed by Piet Blom and completed in 1984, each cube house is tilted 45 degrees on a hexagonal pylon.",rudy:"Find the path that runs underneath the bridge through the middle. From there you're completely surrounded — it feels like being inside abstract architecture.",challenge:{title:"Geometric Chaos",desc:"Look straight up from directly underneath the cubes and shoot vertically.",tip:"Tap the nearest cube edge to focus on it. The wide-angle distortion of your phone camera works beautifully here."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg",q:"Who designed the Cube Houses, completed in 1984?",opts:["Piet Blom","Rem Koolhaas","A very confused carpenter"],correct:0,explanation:"Piet Blom designed them — each cube a tree, together a forest canopy over the street."}},
-  {id:5,name:"Markthal",dutch:"Market Hall",tagline:"A cathedral of food — and the best ceiling in the Netherlands",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",address:"Dominee Jan Scharpstraat 298, 3011 GZ Rotterdam",coords:[4.4866,51.9200],cloudflareId:"cdf7ca48be25d626e763da55c81765b8",cfStyle:"fullscreen",desc:"Opened in 2014, the Markthal is a covered market with 228 apartments built into its horseshoe arch. The ceiling is covered in an 11,000 m² artwork called <em>Horn of Plenty</em>.",rudy:"Look up first. Always look up first. Then eat something — raw herring with onion is non-negotiable.",challenge:{title:"The Big Ceiling",desc:"Walk to the very centre of the Markthal and shoot straight up at the ceiling artwork.",tip:"Tap the ceiling in your viewfinder so it exposes for the artwork, not the stalls."},quiz:{img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",q:"What is the name of the enormous artwork covering the Markthal ceiling?",opts:["Horn of Plenty","Sea of Flowers","11,000 m² of pure ambition"],correct:0,explanation:"<em>Horn of Plenty</em> (Hoorn des Overvloeds) by Arno Coenen and Iris Roskam — at 11,000 m² one of the world's largest artworks."},
-    partners:[{name:"Markthal Herring Stand",type:"Street Food",img:"https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg",cloudflareId:"cdf7ca48be25d626e763da55c81765b8",desc:"The most authentic raw herring in Rotterdam. Order the broodje haring — chopped herring with onion on a white roll. Non-negotiable Rotterdam food culture.",location:"Inside Markthal, central aisle",mapUrl:"https://maps.google.com/?q=Markthal+Rotterdam",offer:"Free soft drink with any purchase",offerNote:"Show this screen to staff. One offer per tour code.",code:"TBR-001",emoji:"🐟",gallery:["https://rudyroams.github.io/tonbi-rotterdam/images/markthal.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/oude-haven.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/cube-houses.jpeg","https://rudyroams.github.io/tonbi-rotterdam/images/witte-huis.jpeg"]}]}
-];
+let stops=[];
+
+// ── Supabase config ──
+const SB_URL = 'https://gwvwzyzondplicgeubrc.supabase.co';
+const SB_KEY = 'sb_publishable_fraamO6ICFutVHHFkBbumA_rG3i4dcX';
+const TOUR_ACCESS_CODE = 'qqq';
+let _sb = null;
+
+function getSB() {
+  if (!_sb) _sb = window.supabase.createClient(SB_URL, SB_KEY);
+  return _sb;
+}
+
+async function loadTourData() {
+  try {
+    const sb = getSB();
+    // Find the tour by access code
+    const { data: tourData, error: tourErr } = await sb
+      .from('tours')
+      .select('*')
+      .eq('access_code', TOUR_ACCESS_CODE)
+      .single();
+    if (tourErr || !tourData) { console.warn('Tour not found, using fallback'); return false; }
+
+    // Fetch stops ordered by stop_number
+    const { data: stopsData, error: stopsErr } = await sb
+      .from('stops')
+      .select('*')
+      .eq('tour_id', tourData.id)
+      .order('stop_number');
+    if (stopsErr || !stopsData) { console.warn('Stops not found'); return false; }
+
+    // Fetch all cards for these stops
+    const stopIds = stopsData.map(s => s.id);
+    const { data: cardsData } = await sb
+      .from('cards')
+      .select('*')
+      .in('stop_id', stopIds)
+      .order('position');
+
+    // Fetch all partners for these stops
+    const { data: partnersData } = await sb
+      .from('partners')
+      .select('*')
+      .in('stop_id', stopIds);
+
+    // Group cards and partners by stop_id
+    const cardsByStop = {};
+    const partnersByStop = {};
+    (cardsData || []).forEach(c => { (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
+    (partnersData || []).forEach(p => { (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p); });
+
+    // Build stops array in the shape the app expects
+    stops = stopsData.map(s => {
+      const stopCards = cardsByStop[s.id] || [];
+      const stopPartners = (partnersByStop[s.id] || []).map(p => ({
+        name: p.name,
+        partner_type: p.partner_type,
+        photo_url: p.photo_url,
+        cloudflare_id: p.cloudflare_id,
+        description: p.description,
+        location: p.location,
+        map_url: p.map_url,
+        offer_text: p.offer_text,
+        offer_note: p.offer_note,
+        discount_code: p.discount_code,
+        gallery: p.gallery_urls || [],
+      }));
+
+      // Extract card content into flat stop fields
+      const descCard    = stopCards.find(c => c.card_type === 'desc');
+      const rudyCard    = stopCards.find(c => c.card_type === 'rudy');
+      const photoCard   = stopCards.find(c => c.card_type === 'photo');
+      const quizCard    = stopCards.find(c => c.card_type === 'quiz');
+      const gameCard    = stopCards.find(c => c.card_type === 'game');
+
+      return {
+        id: s.stop_number,
+        _db_id: s.id,
+        name: s.name,
+        dutch_name: s.dutch_name,
+        tagline: s.tagline,
+        photo_url: s.photo_url,
+        address: s.address,
+        map_url: s.map_url,
+        longitude: s.longitude,
+        latitude: s.latitude,
+        cloudflare_id: s.cloudflare_id,
+        cf_style: s.cf_style || 'fullscreen',
+        description: descCard?.caption || s.description || '',
+        rudy_notes: rudyCard?.body || s.rudy_notes || '',
+        // Photo challenge
+        photo_title: photoCard?.photo_title || '',
+        photo_desc: photoCard?.photo_desc || '',
+        photo_tip: photoCard?.photo_tip || '',
+        // Quiz (flat fields)
+        quiz_question: quizCard?.quiz_question || '',
+        quiz_options: quizCard?.quiz_options || [],
+        quiz_correct: quizCard?.quiz_correct ?? 0,
+        quiz_explanation: quizCard?.quiz_explanation || '',
+        quiz_image_url: quizCard?.quiz_image_url || s.photo_url || '',
+        // Game
+        _gameLevel: gameCard?.game_level || null,
+        // Partners
+        partners: stopPartners,
+      };
+    });
+
+    console.log(`Loaded ${stops.length} stops from Supabase`);
+    return true;
+  } catch(e) {
+    console.error('loadTourData error:', e);
+    return false;
+  }
+}
 
 const photoCollection={};
 const quizAnswered={};
@@ -715,9 +818,15 @@ let endScreenReached=false; // true once the tour-complete end screen has been s
 let pendingPhotoStopId=null;
 
 function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
-function unlock(){
+async function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
-  if(v==='qqq'){
+  // Find tour by access code — check Supabase first, fall back to hardcoded 'qqq'
+  const matchesTour = v === TOUR_ACCESS_CODE;
+  if(matchesTour){
+    const btn=document.querySelector('.pw-btn');
+    if(btn){btn.textContent='Loading…';btn.disabled=true;}
+    await loadTourData();
+    if(btn){btn.textContent='Start the Tour 🪁';btn.disabled=false;}
     const pw=document.getElementById('pw-screen');
     pw.classList.add('exit');
     setTimeout(()=>{
@@ -1085,8 +1194,8 @@ function renderOwPaths(){
 }
 
 function renderLists(){
-  document.getElementById('stop-list').innerHTML=stops.map(s=>`<div class="stop-item" onclick="startJourney(${s.id})"><div class="stop-item-num">${s.id}</div><img class="stop-item-img" src="${s.img}" alt="${s.name}" loading="lazy"><div class="stop-item-body"><div class="stop-item-name">${s.name}</div><div class="stop-item-tag">${s.tagline}</div></div><div class="stop-item-arrow">›</div></div>`).join('');
-  document.getElementById('map-pill-list').innerHTML=stops.map(s=>`<a class="map-pill" href="${s.mapUrl}" target="_blank"><div class="map-pill-num">${s.id}</div><div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div><div class="map-pill-link">Open →</div></a>`).join('');
+  document.getElementById('stop-list').innerHTML=stops.map(s=>`<div class="stop-item" onclick="startJourney(${s.id})"><div class="stop-item-num">${s.id}</div><img class="stop-item-img" src="${s.photo_url}" alt="${s.name}" loading="lazy"><div class="stop-item-body"><div class="stop-item-name">${s.name}</div><div class="stop-item-tag">${s.tagline}</div></div><div class="stop-item-arrow">›</div></div>`).join('');
+  document.getElementById('map-pill-list').innerHTML=stops.map(s=>`<a class="map-pill" href="${s.map_url}" target="_blank"><div class="map-pill-num">${s.id}</div><div><div class="map-pill-name">${s.name}</div><div class="map-pill-addr">${s.address}</div></div><div class="map-pill-link">Open →</div></a>`).join('');
 }
 
 function skipToTextFullscreen(stopId){const iframe=document.getElementById('cf-vid-'+stopId);if(iframe)iframe.src='';skipToCard(3);}
@@ -1123,8 +1232,8 @@ function buildCards(stop){
       const ssCards=[];
       ssCards.push({type:'substop-intro', stop, subStop:ss, isPre:true});
       ssCards.push({type:'nav',           stop, subStop:ss, isPre:true});
-      if(ss.rudy)      ssCards.push({type:'rudy',  stop, subStop:ss, isPre:true});
-      if(ss.challenge) ssCards.push({type:'photo', stop, subStop:ss, isPre:true});
+      if(ss.rudy_notes)      ssCards.push({type:'rudy',  stop, subStop:ss, isPre:true});
+      if(ss) ssCards.push({type:'photo', stop, subStop:ss, isPre:true});
       if(ss.quiz)      ssCards.push({type:'quiz',  stop, subStop:ss, isPre:true});
       if(ss.partners&&ss.partners.length>0)
         ss.partners.forEach((p,pi)=>ssCards.push({type:'partner',stop,subStop:ss,partner:p,partnerIdx:pi,isPre:true}));
@@ -1148,7 +1257,7 @@ function buildCards(stop){
 
   // ── Game card after main segment for stops 3 and 5 ──
   if(stop.id===3||stop.id===5){
-    result.push({type:'game',stop,gameLevel:stop.id===3?1:2,label:stop.name,_segId:'game_'+stop.id});
+    if(stop._gameLevel){result.push({type:'game',stop,gameLevel:stop._gameLevel,label:stop.name,_segId:'game_'+stop.id});}
   }
 
   // ── Partner cards come after game (so people can eat after playing) ──
@@ -1165,8 +1274,8 @@ function buildCards(stop){
       const ssCards=[];
       ssCards.push({type:'substop-intro', stop, subStop:ss});
       ssCards.push({type:'nav',           stop, subStop:ss});
-      if(ss.rudy)      ssCards.push({type:'rudy',  stop, subStop:ss});
-      if(ss.challenge) ssCards.push({type:'photo', stop, subStop:ss});
+      if(ss.rudy_notes)      ssCards.push({type:'rudy',  stop, subStop:ss});
+      if(ss) ssCards.push({type:'photo', stop, subStop:ss});
       if(ss.quiz)      ssCards.push({type:'quiz',  stop, subStop:ss});
       if(ss.partners&&ss.partners.length>0)
         ss.partners.forEach((p,pi)=>ssCards.push({type:'partner',stop,subStop:ss,partner:p,partnerIdx:pi}));
@@ -1212,11 +1321,11 @@ function renderCard(card,idx,total){
   // For sub-stop cards, use sub-stop data where it exists
   const ss=card.subStop||null;
   // Effective data sources — fall back to main stop if sub-stop doesn't override
-  const eImg   = ss ? ss.img   : s.img;
+  const eImg   = ss ? ss.photo_url   : s.photo_url;
   const eName  = ss ? ss.name  : s.name;
-  const eRudy  = ss ? ss.rudy  : s.rudy;
-  const eChallenge = ss ? ss.challenge : s.challenge;
-  const eQuiz  = ss ? ss.quiz  : s.quiz;
+  const eRudy  = ss ? ss.rudy_notes  : s.rudy_notes;
+  const eChallenge = ss ? ss : s;
+  const eQuiz  = ss ? ss : s;
   // Unique key prefix for DOM IDs — avoids collisions between main and sub-stop cards
   const eKey   = ss ? 'ss-'+ss.id : String(s.id);
 
@@ -1240,7 +1349,7 @@ function renderCard(card,idx,total){
         </div>
         <!-- Image + caption — narrower, centred -->
         <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
-          <div style="position:relative;width:100%;height:130px;"><img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div style="position:relative;width:100%;height:130px;"><img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div style="background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:0.7rem 0.9rem;text-align:left;">
             <div style="font-size:0.88rem;font-weight:500;line-height:1.55;color:rgba(255,255,255,0.88);">Allow location access when prompted — it lets the map draw your route.</div>
           </div>
@@ -1259,7 +1368,7 @@ function renderCard(card,idx,total){
     const eyebrow=isPre ? `` : `Keep Exploring · Stop ${s.id}`;
     // Hero shows main stop for pre; sub-stop for post
     const heroName=isPre ? s.name : ss.name;
-    const heroImg=isPre ? s.img : (ss.img||s.img);
+    const heroImg=isPre ? s.img : (ss.photo_url||s.photo_url);
     const btnLabel=`Let's go! 👟`;
 
     const routeContext=isPre?`
@@ -1318,7 +1427,7 @@ function renderCard(card,idx,total){
     // For sub-stops: use sub-stop name, mapUrl, and a unique container ID
     const ss=card.subStop;
     const navName=ss?ss.name:s.name;
-    const navMapUrl=ss?ss.mapUrl:s.mapUrl;
+    const navMapUrl=ss?ss.map_url:s.map_url;
     // Unique container ID avoids map re-init collision between main + sub-stop nav cards
     const mapContainerId=ss?`stop-map-${s.id}-ss-${ss.id}`:`stop-map-${s.id}`;
     const routeInfoId=ss?`route-info-${s.id}-ss-${ss.id}`:`route-info-${s.id}`;
@@ -1340,10 +1449,10 @@ function renderCard(card,idx,total){
     </div>`;
   }
   if(card.type==='desc'){
-    if(s.cloudflareId&&s.cfStyle==='fullscreen'){
+    if(s.cloudflare_id&&s.cf_style==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
-        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflareId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflare_id}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
           <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
             <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:12px;padding:7px 0 7px 0;box-shadow:0 8px 32px rgba(0,0,0,0.55);">
@@ -1365,18 +1474,18 @@ function renderCard(card,idx,total){
           </div>
         </div>
         <div style="position:absolute;top:0;left:0;right:0;z-index:10;padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 2.5rem;background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.4) 55%,transparent 100%);pointer-events:none;"><div style="font-family:'Nunito',sans-serif;font-size:1.4rem;font-weight:900;color:white;line-height:1.1;">${s.name}</div><div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-top:0.2rem;">${s.tagline}</div></div>
-        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.desc}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
+        <div id="text-section-${s.id}" style="display:none;position:absolute;inset:0;background:var(--white);z-index:30;padding:1.5rem;padding-top:calc(1.5rem + env(safe-area-inset-top));overflow-y:auto;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch_name}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-body" style="margin-bottom:1.5rem;">${s.description}</div><div style="text-align:center;padding-bottom:1rem;"><a onclick="document.getElementById('text-section-'+${s.id}).style.display='none'" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:rgba(255,107,53,0.82);color:white;font-weight:700;font-size:0.85rem;padding:0.65rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video instead</a></div></div>
       </div>`;}
 
-    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-section"><div class="arrival-text-body">${s.desc}</div></div></div>`;
+    return `<div class="card" data-stop="${s.id}" data-type="desc" style="padding:1.25rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch_name}</div><div class="arrival-title">${s.name}</div><div class="arrival-tagline">${s.tagline}</div><div class="arrival-text-section"><div class="arrival-text-body">${s.description}</div></div></div>`;
   }
 
   if(card.type==='rudy'){
     const ss=card.subStop;
     // Use sub-stop fields when available, fall back to main stop
-    const rudyImg  = ss ? ss.img  : s.img;
+    const rudyImg  = ss ? ss.photo_url  : s.photo_url;
     const rudyName = ss ? ss.name : s.name;
-    const rudyText = ss ? ss.rudy : s.rudy;
+    const rudyText = ss ? ss.rudy_notes : s.rudy_notes;
     const rudyExtra= ss ? (ss.rudyExtra||'') : (s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look.");
     const rudyFilm = ss ? (ss.rudyFilm||'') : (s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think.");
     const rudyLocal= ss ? (ss.rudyLocal||'') : (s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere.");
@@ -1431,13 +1540,13 @@ function renderCard(card,idx,total){
     </div>`;
   }
 
-  if(card.type==='text')return `<div class="card" data-stop="${s.id}" data-type="text" style="padding:1.5rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch}</div><div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;margin-bottom:0.35rem;">${s.name}</div><div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div><div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.desc}</div><a onclick="jumpToDescCard(${s.id})" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.88rem;padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video</a></div>`;
+  if(card.type==='text')return `<div class="card" data-stop="${s.id}" data-type="text" style="padding:1.5rem;"><div class="arrival-stop-num">Stop ${s.id} · ${s.dutch_name}</div><div style="font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.1;margin-bottom:0.35rem;">${s.name}</div><div style="font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem;">${s.tagline}</div><div style="font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:2rem;">${s.description}</div><a onclick="jumpToDescCard(${s.id})" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;background:var(--orange);color:white;font-weight:700;font-size:0.88rem;padding:0.7rem 1.4rem;border-radius:99px;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 12 12" fill="white"><polygon points="2,1 11,6 2,11"/></svg>Watch video</a></div>`;
 
   if(card.type==='photo'){
     const ss=card.subStop;
     const photoKey=ss?`${s.id}-${ss.id}`:String(s.id);
-    const challenge=ss?ss.challenge:s.challenge;
-    const photoImg=ss?ss.img:s.img;
+    const challenge=ss?ss:s;
+    const photoImg=ss?ss.photo_url:s.photo_url;
     const photoName=ss?ss.name:s.name;
     const hasPhoto=photoCollection[photoKey];
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
@@ -1464,11 +1573,11 @@ function renderCard(card,idx,total){
             <img src="${photoImg}" alt="${photoName}" style="width:100%;height:100%;object-fit:cover;display:block;">
             <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.05) 55%,transparent 100%);"></div>
             <div style="position:absolute;bottom:0.9rem;left:0.9rem;right:0.9rem;">
-              <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${challenge.title}</div>
+              <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,0.6);">${challenge.photo_title}</div>
             </div>
           </div>
           <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;">
-            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.65;">${challenge.desc}</div>
+            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.65;">${challenge.photo_desc}</div>
           </div>
         </div>
       </div>
@@ -1513,7 +1622,7 @@ function renderCard(card,idx,total){
             <div style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.1rem;">Rudy's Tip</div>
           </div>
           <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0 1.1rem 1.1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;">
-            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.7;">${challenge.tip}</div>
+            <div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.7;">${challenge.photo_tip}</div>
           </div>
         </div>
       </div>
@@ -1525,7 +1634,7 @@ function renderCard(card,idx,total){
 
   if(card.type==='quiz'){
     const ss=card.subStop;
-    const quizData=ss?ss.quiz:s.quiz;
+    const quizData=ss?ss:s;
     // Composite key so sub-stop quizzes don't collide with main stop quizzes
     const quizKey=ss?`${s.id}-${ss.id}`:String(s.id);
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
@@ -1539,21 +1648,21 @@ function renderCard(card,idx,total){
         const [stopId,ssId]=k.split('-');
         const st=stops.find(x=>x.id===parseInt(stopId));
         const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);
-        return ssData&&ans===ssData.quiz.correct;
+        return ssData&&ans===ssData.quiz_correct;
       } else {
         const st=stops.find(x=>x.id===parseInt(k));
-        return st&&ans===st.quiz.correct;
+        return st&&ans===st.quiz_correct;
       }
     }).length;
-    const opts=quizData.opts.map((opt,i)=>{
+    const opts=quizData.quiz_options.map((opt,i)=>{
       let cls='',icon='',stamp='';
-      if(answered){if(i===quizData.correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
-      return `<button class="quiz-o ${cls}${answered&&(i===quizData.correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz('${quizKey}',${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
+      if(answered){if(i===quizData.quiz_correct){cls='correct';icon='✓';if(i===qa)stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(15deg);">😊</div>`;}else if(i===qa){cls='wrong';icon='✗';stamp=`<div style="position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transform:rotate(-15deg);">😕</div>`;}}
+      return `<button class="quiz-o ${cls}${answered&&(i===quizData.quiz_correct||i===qa)?' answered':''} quiz-pop-in" style="animation-delay:${i*0.25}s;position:relative;" onclick="answerQuiz('${quizKey}',${i})" ${answered?'disabled':''}>${stamp}<span class="quiz-o-icon">${icon}</span><span>${opt}</span></button>`;
     }).join('');
-    const wasCorrect=answered&&qa===quizData.correct;
+    const wasCorrect=answered&&qa===quizData.quiz_correct;
     return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="quiz" style="padding:0;background:${RAINBOW};display:flex;flex-direction:column;overflow:hidden;">
       <div style="position:relative;flex-shrink:0;">
-        <img class="quiz-card-img" src="${quizData.img}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
+        <img class="quiz-card-img" src="${quizData.quiz_image_url}" alt="quiz" style="display:block;width:100%;height:185px;object-fit:cover;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.15) 55%,transparent 100%);pointer-events:none;"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;">
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%);border-radius:99px;padding:0.55rem 1.5rem;box-shadow:0 4px 20px rgba(255,107,53,0.5);">
@@ -1564,9 +1673,9 @@ function renderCard(card,idx,total){
       </div>
       <div style="margin:1.1rem 1.1rem 1.1rem;">
         <div style="background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${quizData.q}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:800;line-height:1.45;margin-bottom:0.85rem;color:white;" class="quiz-typewriter">${quizData.quiz_question}</div>
           <div class="quiz-opts" style="margin-top:0.25rem;">${opts}</div>
-          ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${quizData.explanation}</div>`:''}
+          ${answered?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:${wasCorrect?'rgba(52,199,89,0.15)':'rgba(255,59,48,0.15)'};border:1.5px solid ${wasCorrect?'rgba(52,199,89,0.6)':'rgba(255,59,48,0.6)'};border-radius:var(--radius-sm);font-size:0.85rem;line-height:1.7;color:${wasCorrect?'#7effa8':'#ffaaaa'};">${quizData.quiz_explanation}</div>`:''}
         </div>
       </div>
     </div>`;
@@ -1576,8 +1685,8 @@ function renderCard(card,idx,total){
     const p=card.partner;
     const RAINBOW='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
-    const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
-    const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#ffffff;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
+    const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.photo_url,p.photo_url,p.photo_url,p.photo_url];
+    const coupon=p.offer_text?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer_text}" data-note="${p.offer_note||'Show this screen to staff. Valid today only.'}" data-code="${p.discount_code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#ffffff;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28),0 1px 4px rgba(0,0,0,0.1);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer_text}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.06em;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.discount_code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;">Tap to Enlarge</div></div></div></div>`:'';
 
     return `<div class="card" data-stop="${s.id}" data-type="partner" style="padding:0 0 2rem 0;background:${RAINBOW};">
       <!-- 2×2 gallery with floating badge -->
@@ -1601,13 +1710,13 @@ function renderCard(card,idx,total){
           <div style="display:flex;gap:0.75rem;align-items:flex-start;">
             <div style="flex:1;min-width:0;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;margin-bottom:0.2rem;">${p.name}</div>
-              ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.65rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
+              ${p.map_url?`<a href="${p.map_url}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.65rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
               <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
             </div>
-            ${p.cloudflareId?`<div style="flex-shrink:0;width:128px;padding-top:0.25rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflareId}')">
+            ${p.cloudflare_id?`<div style="flex-shrink:0;width:128px;padding-top:0.25rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflare_id}')">
               <div style="background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:5px;gap:3px;">
                 <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
-                <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.img}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
+                <div style="position:relative;flex:1;min-width:0;aspect-ratio:1/2;overflow:hidden;border-radius:3px;background:#111;"><img src="${p.photo_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.65);"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M5 3l14 9-14 9V3z"/></svg></div></div></div>
                 <div style="width:14px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;">${[0,1,2,3,4,5,6,7].map(()=>`<div style="width:7px;height:7px;background:#f8f7f5;border-radius:2px;flex-shrink:0;"></div>`).join('')}</div>
               </div>
               <div style="text-align:center;margin-top:0.4rem;font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:900;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;">Watch video<br>about the owner</div>
@@ -1660,7 +1769,7 @@ function renderCard(card,idx,total){
         <!-- Badge -->
         <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.55);font-size:2.2rem;">✓</div>
         <!-- Stop name pill -->
-        <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:99px;padding:0.3rem 1rem;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.12em;">Stop ${s.id} · ${s.dutch||s.name}</div>
+        <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:99px;padding:0.3rem 1rem;font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.12em;">Stop ${s.id} · ${s.dutch_name||s.name}</div>
         <!-- Headline -->
         <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
           <div style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.05;">${s.name}</div>
@@ -1668,7 +1777,7 @@ function renderCard(card,idx,total){
         </div>
         <!-- Stop image -->
         <div style="width:88%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.5);">
-          <img src="${s.img}" alt="${s.name}" style="width:100%;height:130px;object-fit:cover;display:block;">
+          <img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:130px;object-fit:cover;display:block;">
         </div>
         <!-- Next stop hint or tour complete — plain text -->
         ${nextStop?`
@@ -1725,7 +1834,7 @@ function _refreshJtBar(){
   }
 
   const isNavCard=cc&&(cc.type==='nav'||cc.type==='transition'||cc.type==='substop-intro');
-  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
+  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cf_style==='fullscreen';
   document.getElementById('jt-bar').style.display=(isNavCard||isCFFS)?'none':'block';
   document.getElementById('progress-dots').style.display=(isNavCard||isCFFS)?'none':'flex';
   const js=document.getElementById('journey-screen');
@@ -1776,7 +1885,7 @@ function updateNavBtns(){
   const cc=cards[currentCardIdx];
   const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'),isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
-  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cfStyle==='fullscreen';
+  const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cf_style==='fullscreen';
 
   // Always reset card-bottom to normal document flow — prevents position:fixed leaking from video card
   const cb=document.getElementById('card-bottom');
@@ -1951,7 +2060,7 @@ function prevCard(){
   const ac=cards[currentCardIdx];
   if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),150);
   // Landing back on desc (CFFS) — reset to pre-video state
-  if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cfStyle==='fullscreen'){
+  if(ac&&ac.type==='desc'&&ac.stop&&ac.stop.cf_style==='fullscreen'){
     const iframe=document.getElementById('cf-vid-'+ac.stop.id);
     if(iframe){iframe.src='';iframe.style.display='none';}
     const popup=document.getElementById('sound-popup-'+ac.stop.id);
@@ -1986,8 +2095,8 @@ function showEndScreen(){
   const total=stops.length;
   const attempted=Object.keys(quizAnswered).length;
   const scored=Object.entries(quizAnswered).filter(([k,ans])=>{
-    if(k.includes('-')){const [stopId,ssId]=k.split('-');const st=stops.find(x=>x.id===parseInt(stopId));const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);return ssData&&ans===ssData.quiz.correct;}
-    const st=stops.find(x=>x.id===parseInt(k));return st&&ans===st.quiz.correct;
+    if(k.includes('-')){const [stopId,ssId]=k.split('-');const st=stops.find(x=>x.id===parseInt(stopId));const ssData=st&&st.subStops&&st.subStops.find(x=>x.id===ssId);return ssData&&ans===ssData.quiz_correct;}
+    const st=stops.find(x=>x.id===parseInt(k));return st&&ans===st.quiz_correct;
   }).length;
   const skipped=total-attempted;
   const pct=attempted>0?Math.round((scored/attempted)*100):0;
@@ -2033,7 +2142,7 @@ function initPhotoMap(card){
   const ss = card && typeof card === 'object' ? card.subStop : null;
   const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
   const stopId = stop ? stop.id : card;
-  const coord = ss ? ss.coords : (stop ? stop.coords : null);
+  const coord = ss ? [ss.longitude, ss.latitude] : (stop ? [stop.longitude, stop.latitude] : null);
   if(!coord)return;
   const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
   const container=document.getElementById(mapKey);
@@ -2044,7 +2153,7 @@ function initPhotoMap(card){
     const el=document.createElement('div');el.style.cssText='width:36px;height:36px;border-radius:50%;background:var(--orange);border:3px solid white;box-shadow:0 2px 10px rgba(255,107,53,0.6);display:flex;align-items:center;justify-content:center;font-size:1.1rem;';el.textContent='📷';new mapboxgl.Marker({element:el}).setLngLat(coord).addTo(m);
     if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{
       const ue=document.createElement('div');ue.style.cssText='width:14px;height:14px;border-radius:50%;background:#4a9eff;border:2.5px solid white;box-shadow:0 0 0 4px rgba(74,158,255,0.3);';
-      new mapboxgl.Marker({element:ue}).setLngLat([pos.coords.longitude,pos.coords.latitude]).addTo(m);
+      new mapboxgl.Marker({element:ue}).setLngLat([pos.longitude,pos.latitude]).addTo(m);
     },()=>{});}
   });
 }
@@ -2052,7 +2161,7 @@ function initPhotoMap(card){
 function initStopMap(stopId, subStop){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
   const stop=stops.find(x=>x.id===stopId);
-  const destCoord = subStop ? subStop.coords : (stop ? stop.coords : null);
+  const destCoord = subStop ? [subStop.longitude, subStop.latitude] : (stop ? [stop.longitude, stop.latitude] : null);
   if(!destCoord)return;
   const containerId = subStop ? `stop-map-${stopId}-ss-${subStop.id}` : 'stop-map-'+stopId;
   const routeInfoId = subStop ? `route-info-${stopId}-ss-${subStop.id}` : 'route-info-'+stopId;
@@ -2060,9 +2169,9 @@ function initStopMap(stopId, subStop){
   if(!container||container._mapInitialized)return;
   container._mapInitialized=true;
   const stopMap=new mapboxgl.Map({container:containerId,style:'mapbox://styles/mapbox/streets-v12',center:destCoord,zoom:10,attributionControl:false,interactive:true});
-  const displayImg = subStop ? subStop.img : (stop ? stop.img : '');
+  const displayImg = subStop ? subStop.photo_url : (stop ? stop.photo_url : '');
   const displayName = subStop ? subStop.name : (stop ? stop.name : '');
-  const navMapUrl = subStop ? subStop.mapUrl : (stop ? stop.mapUrl : '#');
+  const navMapUrl = subStop ? subStop.map_url : (stop ? stop.map_url : '#');
   const destEl=document.createElement('div');
   destEl.style.cssText='width:70px;height:70px;border-radius:50%;border:3.5px solid #ff6b35;box-shadow:0 3px 20px rgba(255,107,53,0.55);overflow:hidden;background:#ff6b35;cursor:pointer;';
   const destImg=document.createElement('img');destImg.src=displayImg;destImg.style.cssText='width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;';destEl.appendChild(destImg);
@@ -2094,7 +2203,7 @@ function initEndMap(){
     const bounds=coords.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(coords[0],coords[0]));endMap.fitBounds(bounds,{padding:45,animate:false,maxZoom:14});
     endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
     endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
-    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(stop.coords).addTo(endMap);});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat([stop.longitude, stop.latitude]).addTo(endMap);});
   });
 }
 
@@ -2151,7 +2260,7 @@ function initMap(){
   map.on('load',()=>{
     map.addSource('route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
     map.addLayer({id:'route-line',type:'line',source:'route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,1.5],'line-opacity':0.8}});
-    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText="width:36px;height:36px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;border:3px solid #fff;box-shadow:0 2px 12px rgba(255,107,53,0.5);cursor:pointer;";el.textContent=stop.id;const popup=new mapboxgl.Popup({offset:25,closeButton:false,maxWidth:'220px'}).setHTML(`<img class="popup-img" src="${stop.img}"><div class="popup-body"><div class="popup-num">Stop ${stop.id}</div><div class="popup-name">${stop.name}</div><div class="popup-tag">${stop.tagline}</div><button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button></div>`);new mapboxgl.Marker(el).setLngLat(coords[i]).setPopup(popup).addTo(map);});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText="width:36px;height:36px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;border:3px solid #fff;box-shadow:0 2px 12px rgba(255,107,53,0.5);cursor:pointer;";el.textContent=stop.id;const popup=new mapboxgl.Popup({offset:25,closeButton:false,maxWidth:'220px'}).setHTML(`<img class="popup-img" src="${stop.photo_url}"><div class="popup-body"><div class="popup-num">Stop ${stop.id}</div><div class="popup-name">${stop.name}</div><div class="popup-tag">${stop.tagline}</div><button class="popup-btn" onclick="startJourney(${stop.id});document.getElementById('journey-screen').classList.add('show')">Start this stop →</button></div>`);new mapboxgl.Marker(el).setLngLat(coords[i]).setPopup(popup).addTo(map);});
   });
 }
 
@@ -2265,8 +2374,8 @@ function showPartnersPage(){
         <div style="background:var(--orange);padding:0.2rem 0.5rem;"><div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.08em;">Your Offer</div></div>
         <div style="border-top:1.5px dashed rgba(255,107,53,0.3);margin:0 0.5rem;"></div>
         <div style="padding:0.35rem 0.5rem 0.3rem;">
-          <div style="font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:900;color:#1a1a1a;line-height:1.2;margin-bottom:0.2rem;">${p.offer}</div>
-          <div style="font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--orange);letter-spacing:0.08em;">${p.code||'TBR-001'}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:900;color:#1a1a1a;line-height:1.2;margin-bottom:0.2rem;">${p.offer_text}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:900;color:var(--orange);letter-spacing:0.08em;">${p.discount_code||'TBR-001'}</div>
         </div>
       </div>
     </div>`;
@@ -2275,7 +2384,7 @@ function showPartnersPage(){
   const listCards=allPartners.map((p,idx)=>`
     <div onclick="showPartnerDetail(${idx})" style="cursor:pointer;background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);overflow:visible;margin-bottom:1rem;position:relative;">
       <div style="position:relative;overflow:visible;">
-        <img src="${p.img}" style="width:100%;height:175px;object-fit:cover;display:block;border-radius:var(--radius) var(--radius) 0 0;">
+        <img src="${p.photo_url}" style="width:100%;height:175px;object-fit:cover;display:block;border-radius:var(--radius) var(--radius) 0 0;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 50%);border-radius:var(--radius) var(--radius) 0 0;pointer-events:none;"></div>
         <div style="position:absolute;bottom:12px;left:12px;pointer-events:none;">
           <div style="font-size:0.58rem;font-weight:700;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.08em;">Stop ${p.stopId} · ${p.stopName}</div>
@@ -2321,8 +2430,8 @@ function showPartnerDetail(idx){
 
   // Reuse the existing partner card renderer but add a back button
   const RY='linear-gradient(135deg,#ff3b30 0%,#ff6b35 60%,#ffcc00 100%)';
-  const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.img,p.img,p.img,p.img];
-  const coupon=p.offer?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer}" data-note="${p.offerNote||'Show this screen to staff. Valid today only.'}" data-code="${p.code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;">Tap to Enlarge</div></div></div></div>`:'';
+  const imgs=p.gallery&&p.gallery.length>=4?p.gallery:[p.photo_url,p.photo_url,p.photo_url,p.photo_url];
+  const coupon=p.offer_text?`<div class="partner-coupon-inline" data-name="${p.name}" data-offer="${p.offer_text}" data-note="${p.offer_note||'Show this screen to staff. Valid today only.'}" data-code="${p.discount_code||'TBR-001'}" onclick="couponTap(this)"><div style="background:#fffdf9;border-radius:6px;box-shadow:0 5px 20px rgba(0,0,0,0.28);overflow:hidden;border:1px solid rgba(0,0,0,0.07);"><div style="background:var(--orange);padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:0.58rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.1em;">Your Offer</div><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div style="border-top:2px dashed rgba(255,107,53,0.3);margin:0 0.65rem;"></div><div style="padding:0.5rem 0.7rem 0.45rem;"><div style="font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:900;color:#1a1a1a;line-height:1.25;margin-bottom:0.3rem;">${p.offer_text}</div><div style="display:flex;align-items:center;gap:0.4rem;"><div style="font-size:0.52rem;font-weight:700;color:#999;text-transform:uppercase;">Code</div><div style="font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;color:var(--orange);letter-spacing:0.1em;">${p.discount_code||'TBR-001'}</div></div></div><div style="border-top:2px dashed rgba(0,0,0,0.1);margin:0 0.65rem;"></div><div style="padding:0.28rem 0.7rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;background:rgba(255,107,53,0.06);"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg><div style="font-size:0.62rem;font-weight:800;color:var(--orange);text-transform:uppercase;">Tap to Enlarge</div></div></div></div>`:'';
 
   detailView.innerHTML=`
     <!-- Back button -->
@@ -2346,7 +2455,7 @@ function showPartnerDetail(idx){
     <!-- Partner info panel -->
     <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:0 0 var(--radius) var(--radius);padding:1.1rem 1.1rem 1.25rem;">
       <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;margin-bottom:0.25rem;">${p.name}</div>
-      ${p.mapUrl?`<a href="${p.mapUrl}" target="_blank" style="color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
+      ${p.map_url?`<a href="${p.map_url}" target="_blank" style="color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
       <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);margin-bottom:1rem;">${p.desc}</div>
       ${coupon}
     </div>`;
@@ -2694,7 +2803,7 @@ function _tickParticles(canvas){
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(p.angle);
-      ctx.drawImage(p.img, -hw, -hh, p.w, p.w*aspect);
+      ctx.drawImage(p.photo_url, -hw, -hh, p.w, p.w*aspect);
       ctx.restore();
     }
     ctx.globalAlpha=1;
@@ -2851,6 +2960,7 @@ function getCurrentStopProgress(){
 }
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js" onload="if(window._owPending&&!window._owDone){window._owDone=true;initOverworldMap();}"></script>
 
 <script id="game-data">
