@@ -1711,7 +1711,7 @@ function renderCard(card,idx,total){
             <div style="flex:1;min-width:0;">
               <div style="font-family:'Nunito',sans-serif;font-size:1.35rem;font-weight:900;color:white;margin-bottom:0.2rem;">${p.name}</div>
               ${p.map_url?`<a href="${p.map_url}" target="_blank" style="color:rgba(255,165,50,0.9);text-decoration:none;font-weight:600;font-size:0.78rem;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.65rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
-              <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
+              <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.description}</div>
             </div>
             ${p.cloudflare_id?`<div style="flex-shrink:0;width:128px;padding-top:0.25rem;"><div style="cursor:pointer;transform:rotate(4deg);transform-origin:center top;" onclick="openPartnerVideoFullscreen('${p.cloudflare_id}')">
               <div style="background:var(--orange);border-radius:7px;box-shadow:0 8px 28px rgba(255,107,53,0.55);display:flex;flex-direction:row;align-items:stretch;width:100%;padding:5px;gap:3px;">
@@ -1738,7 +1738,7 @@ function renderCard(card,idx,total){
       <!-- Panel 2 -->
       <div style="margin:0.75rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.7);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
+          <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.description}</div>
         </div>
       </div>
 
@@ -1750,7 +1750,7 @@ function renderCard(card,idx,total){
       <!-- Panel 3 -->
       <div style="margin:0.75rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.7);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.desc}</div>
+          <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);">${p.description}</div>
         </div>
       </div>
 
@@ -2368,7 +2368,7 @@ function showPartnersPage(){
   stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
 
   function miniCoupon(p){
-    if(!p.offer) return '';
+    if(!p.offer_text) return '';
     return `<div style="position:absolute;bottom:12px;right:-8px;width:130px;transform:rotate(4deg);pointer-events:none;z-index:5;">
       <div style="background:#fffdf9;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 14px rgba(0,0,0,0.35);">
         <div style="background:var(--orange);padding:0.2rem 0.5rem;"><div style="font-size:0.52rem;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.08em;">Your Offer</div></div>
@@ -2456,7 +2456,7 @@ function showPartnerDetail(idx){
     <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:0 0 var(--radius) var(--radius);padding:1.1rem 1.1rem 1.25rem;">
       <div style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900;color:white;margin-bottom:0.25rem;">${p.name}</div>
       ${p.map_url?`<a href="${p.map_url}" target="_blank" style="color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;margin-bottom:0.75rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Open in Google Maps</a>`:''}
-      <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);margin-bottom:1rem;">${p.desc}</div>
+      <div style="font-size:0.88rem;line-height:1.75;color:rgba(255,255,255,0.85);margin-bottom:1rem;">${p.description}</div>
       ${coupon}
     </div>`;
 
