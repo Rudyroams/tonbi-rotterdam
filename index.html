@@ -647,11 +647,43 @@ async function loadTourData() {
       .select('*')
       .in('stop_id', stopIds);
 
-    // Group cards and partners by stop_id
+    // Fetch all substops for these stops
+    const { data: substopsData } = await sb
+      .from('substops')
+      .select('*')
+      .in('stop_id', stopIds)
+      .order('position');
+
+    // Group cards, partners and substops by stop_id
     const cardsByStop = {};
     const partnersByStop = {};
+    const substopsByStop = {};
     (cardsData || []).forEach(c => { (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
     (partnersData || []).forEach(p => { (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p); });
+    (substopsData || []).forEach(ss => { (substopsByStop[ss.stop_id] = substopsByStop[ss.stop_id] || []).push(ss); });
+
+    // Shape a substop row into the format the app expects
+    function shapeSubstop(ss) {
+      return {
+        id: ss.id,
+        name: ss.name,
+        tagline: ss.tagline,
+        photo_url: ss.photo_url,
+        map_url: ss.map_url,
+        longitude: ss.longitude,
+        latitude: ss.latitude,
+        rudy_notes: ss.rudy_notes || '',
+        photo_title: ss.photo_title || '',
+        photo_desc: ss.photo_desc || '',
+        photo_tip: ss.photo_tip || '',
+        quiz_question: ss.quiz_question || '',
+        quiz_options: ss.quiz_options || [],
+        quiz_correct: ss.quiz_correct ?? 0,
+        quiz_explanation: ss.quiz_explanation || '',
+        quiz_image_url: ss.quiz_image_url || ss.photo_url || '',
+        partners: [],
+      };
+    }
 
     // Build stops array in the shape the app expects
     stops = stopsData.map(s => {
@@ -669,6 +701,10 @@ async function loadTourData() {
         discount_code: p.discount_code,
         gallery: p.gallery_urls || [],
       }));
+
+      const allSubstops = (substopsByStop[s.id] || []).map(shapeSubstop);
+      const preSubStops = allSubstops.filter((_, i) => (substopsByStop[s.id]||[])[i].is_pre);
+      const subStops    = allSubstops.filter((_, i) => !(substopsByStop[s.id]||[])[i].is_pre);
 
       // Extract card content into flat stop fields
       const descCard    = stopCards.find(c => c.card_type === 'desc');
@@ -704,6 +740,9 @@ async function loadTourData() {
         quiz_image_url: quizCard?.quiz_image_url || s.photo_url || '',
         // Game
         _gameLevel: gameCard?.game_level || null,
+        // Sub-stops
+        preSubStops,
+        subStops,
         // Partners
         partners: stopPartners,
       };
