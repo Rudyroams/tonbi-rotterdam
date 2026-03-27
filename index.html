@@ -726,7 +726,7 @@ async function loadTourData() {
         longitude: s.longitude,
         latitude: s.latitude,
         cloudflare_id: s.cloudflare_id,
-        transition_cloudflare_id: s.transition_cloudflare_id || null,
+        opener_cloudflare_id: s.opener_cloudflare_id || null,
         cf_style: s.cf_style || 'fullscreen',
         description: descCard?.caption || s.description || '',
         rudy_notes: rudyCard?.body || s.rudy_notes || '',
@@ -1287,7 +1287,7 @@ function buildCards(stop){
 
   // ── Main stop segment ──
   const mainCards=[
-    ...(stop.transition_cloudflare_id ? [{type:'transition', stop}] : []),
+    ...(stop.opener_cloudflare_id ? [{type:'transition', stop}] : []),
     {type:'nav',        stop},
     {type:'desc',       stop},
     {type:'text',       stop},
@@ -1492,7 +1492,7 @@ function renderCard(card,idx,total){
     </div>`;
   }
   if(card.type==='desc'){
-    if(s.transition_cloudflare_id&&s.cf_style==='fullscreen'){
+    if(s.cloudflare_id&&s.cf_style==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflare_id}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
