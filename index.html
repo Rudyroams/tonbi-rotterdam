@@ -699,7 +699,7 @@ async function loadTourData() {
         offer_text: p.offer_text,
         offer_note: p.offer_note,
         discount_code: p.discount_code,
-        gallery: p.gallery_urls || [],
+        gallery: (p.gallery_urls && p.gallery_urls.length >= 4) ? p.gallery_urls : [],
       }));
 
       const allSubstops = (substopsByStop[s.id] || []).map(shapeSubstop);
@@ -707,6 +707,7 @@ async function loadTourData() {
       const subStops    = allSubstops.filter((_, i) => !(substopsByStop[s.id]||[])[i].is_pre);
 
       // Extract card content into flat stop fields
+      const transCard   = stopCards.find(c => c.card_type === 'transition');
       const descCard    = stopCards.find(c => c.card_type === 'desc');
       const rudyCard    = stopCards.find(c => c.card_type === 'rudy');
       const photoCard   = stopCards.find(c => c.card_type === 'photo');
@@ -725,13 +726,16 @@ async function loadTourData() {
         longitude: s.longitude,
         latitude: s.latitude,
         cloudflare_id: s.cloudflare_id,
+        transition_cloudflare_id: s.transition_cloudflare_id || null,
         cf_style: s.cf_style || 'fullscreen',
         description: descCard?.caption || s.description || '',
         rudy_notes: rudyCard?.body || s.rudy_notes || '',
+        rudy_image_url: rudyCard?.image_url || s.photo_url || '',
         // Photo challenge
         photo_title: photoCard?.photo_title || '',
         photo_desc: photoCard?.photo_desc || '',
         photo_tip: photoCard?.photo_tip || '',
+        photo_image_url: photoCard?.image_url || s.photo_url || '',
         // Quiz (flat fields)
         quiz_question: quizCard?.quiz_question || '',
         quiz_options: quizCard?.quiz_options || [],
@@ -1283,7 +1287,7 @@ function buildCards(stop){
 
   // ── Main stop segment ──
   const mainCards=[
-    {type:'transition', stop},
+    ...(stop.transition_cloudflare_id ? [{type:'transition', stop}] : []),
     {type:'nav',        stop},
     {type:'desc',       stop},
     {type:'text',       stop},
@@ -1488,7 +1492,7 @@ function renderCard(card,idx,total){
     </div>`;
   }
   if(card.type==='desc'){
-    if(s.cloudflare_id&&s.cf_style==='fullscreen'){
+    if(s.transition_cloudflare_id&&s.cf_style==='fullscreen'){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
         <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflare_id}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
@@ -1522,7 +1526,7 @@ function renderCard(card,idx,total){
   if(card.type==='rudy'){
     const ss=card.subStop;
     // Use sub-stop fields when available, fall back to main stop
-    const rudyImg  = ss ? ss.photo_url  : s.photo_url;
+    const rudyImg  = ss ? (ss.rudy_image_url||ss.photo_url) : (s.rudy_image_url||s.photo_url);
     const rudyName = ss ? ss.name : s.name;
     const rudyText = ss ? ss.rudy_notes : s.rudy_notes;
     const rudyExtra= ss ? (ss.rudyExtra||'') : (s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look.");
@@ -1585,7 +1589,7 @@ function renderCard(card,idx,total){
     const ss=card.subStop;
     const photoKey=ss?`${s.id}-${ss.id}`:String(s.id);
     const challenge=ss?ss:s;
-    const photoImg=ss?ss.photo_url:s.photo_url;
+    const photoImg=ss?(ss.photo_image_url||ss.photo_url):(s.photo_image_url||s.photo_url);
     const photoName=ss?ss.name:s.name;
     const hasPhoto=photoCollection[photoKey];
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
