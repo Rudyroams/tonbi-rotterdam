@@ -647,23 +647,43 @@ async function loadTourData() {
       .select('*')
       .in('stop_id', stopIds);
 
-    // Fetch all substops for these stops
+    // Fetch all substops for these stops (ordered by global_position)
     const { data: substopsData } = await sb
       .from('substops')
       .select('*')
       .in('stop_id', stopIds)
-      .order('position');
+      .order('global_position');
 
-    // Group cards, partners and substops by stop_id
+    // Fetch substop cards and partners
+    const substopIds = (substopsData || []).map(ss => ss.id);
+    const substopCardsData = substopIds.length ? (await sb.from('cards').select('*').in('substop_id', substopIds).order('position')).data || [] : [];
+    const substopPartnersData = substopIds.length ? (await sb.from('partners').select('*').in('substop_id', substopIds)).data || [] : [];
+
+    // Group cards, partners and substops by stop_id / substop_id
     const cardsByStop = {};
     const partnersByStop = {};
     const substopsByStop = {};
-    (cardsData || []).forEach(c => { (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
-    (partnersData || []).forEach(p => { (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p); });
+    const cardsBySubstop = {};
+    const partnersBySubstop = {};
+    (cardsData || []).forEach(c => { if(c.stop_id) (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
+    (partnersData || []).forEach(p => { if(p.stop_id) (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p); });
     (substopsData || []).forEach(ss => { (substopsByStop[ss.stop_id] = substopsByStop[ss.stop_id] || []).push(ss); });
+    substopCardsData.forEach(c => { (cardsBySubstop[c.substop_id] = cardsBySubstop[c.substop_id] || []).push(c); });
+    substopPartnersData.forEach(p => { (partnersBySubstop[p.substop_id] = partnersBySubstop[p.substop_id] || []).push(p); });
 
     // Shape a substop row into the format the app expects
     function shapeSubstop(ss) {
+      const ssCards = cardsBySubstop[ss.id] || [];
+      const rudyCard  = ssCards.find(c => c.card_type === 'rudy');
+      const photoCard = ssCards.find(c => c.card_type === 'photo');
+      const quizCard  = ssCards.find(c => c.card_type === 'quiz');
+      const ssPartners = (partnersBySubstop[ss.id] || []).map(p => ({
+        name: p.name, partner_type: p.partner_type, photo_url: p.photo_url,
+        cloudflare_id: p.cloudflare_id, description: p.description,
+        location: p.location, map_url: p.map_url, offer_text: p.offer_text,
+        offer_note: p.offer_note, discount_code: p.discount_code, gallery: p.gallery_urls || [],
+      }));
+      const descCards = ssCards.filter(c => c.card_type === 'desc' && c.cloudflare_id);
       return {
         id: ss.id,
         name: ss.name,
@@ -672,16 +692,19 @@ async function loadTourData() {
         map_url: ss.map_url,
         longitude: ss.longitude,
         latitude: ss.latitude,
-        rudy_notes: ss.rudy_notes || '',
-        photo_title: ss.photo_title || '',
-        photo_desc: ss.photo_desc || '',
-        photo_tip: ss.photo_tip || '',
-        quiz_question: ss.quiz_question || '',
-        quiz_options: ss.quiz_options || [],
-        quiz_correct: ss.quiz_correct ?? 0,
-        quiz_explanation: ss.quiz_explanation || '',
-        quiz_image_url: ss.quiz_image_url || ss.photo_url || '',
-        partners: [],
+        rudy_notes: rudyCard?.body || ss.rudy_notes || '',
+        rudy_image_url: rudyCard?.image_url || ss.photo_url || '',
+        photo_title: photoCard?.photo_title || '',
+        photo_desc: photoCard?.photo_desc || '',
+        photo_tip: photoCard?.photo_tip || '',
+        photo_image_url: photoCard?.image_url || ss.photo_url || '',
+        quiz_question: quizCard?.quiz_question || '',
+        quiz_options: quizCard?.quiz_options || [],
+        quiz_correct: quizCard?.quiz_correct ?? 0,
+        quiz_explanation: quizCard?.quiz_explanation || '',
+        quiz_image_url: quizCard?.quiz_image_url || ss.photo_url || '',
+        _descCards: descCards,
+        partners: ssPartners,
       };
     }
 
@@ -702,9 +725,9 @@ async function loadTourData() {
         gallery: (p.gallery_urls && p.gallery_urls.length >= 4) ? p.gallery_urls : [],
       }));
 
-      const allSubstops = (substopsByStop[s.id] || []).map(shapeSubstop);
-      const preSubStops = allSubstops.filter((_, i) => (substopsByStop[s.id]||[])[i].is_pre);
-      const subStops    = allSubstops.filter((_, i) => !(substopsByStop[s.id]||[])[i].is_pre);
+      // All substops are pre-substops (they lead to the main stop)
+      const preSubStops = (substopsByStop[s.id] || []).map(shapeSubstop);
+      const subStops = [];
 
       // Extract card content into flat stop fields
       const descCards   = stopCards.filter(c => c.card_type === 'desc');
@@ -1319,33 +1342,8 @@ function buildCards(stop){
     });
 
   // ── Post-stop sub-stop segments ──
-  if(stop.subStops&&stop.subStops.length>0){
-    stop.subStops.forEach((ss,si)=>{
-      const ssCards=[];
-      ssCards.push({type:'substop-intro', stop, subStop:ss});
-      ssCards.push({type:'nav',           stop, subStop:ss});
-      if(ss.rudy_notes)      ssCards.push({type:'rudy',  stop, subStop:ss});
-      if(ss) ssCards.push({type:'photo', stop, subStop:ss});
-      if(ss.quiz)      ssCards.push({type:'quiz',  stop, subStop:ss});
-      if(ss.partners&&ss.partners.length>0)
-        ss.partners.forEach((p,pi)=>ssCards.push({type:'partner',stop,subStop:ss,partner:p,partnerIdx:pi}));
-      ssCards.forEach(c=>{ c.label=ss.name; c._segId='ss_'+si; });
-      result.push(...ssCards);
-    });
-  }
-
-  // ── Finish card — always the very last card of any stop ──
-  result.push({type:'finish', stop, label:stop.name, _segId:'finish'});
-
-  // ── Post-pass: stamp segStart / segEnd on every card ──
-  const segIds=[...new Set(result.map(c=>c._segId))];
-  segIds.forEach(sid=>{
-    const indices=result.reduce((acc,c,i)=>{ if(c._segId===sid)acc.push(i); return acc; },[]);
-    const last=indices[indices.length-1];
-    const firstContent=indices.find(i=>!['nav','substop-intro','transition'].includes(result[i].type));
-    const segStart=firstContent!=null?firstContent:indices[0];
-    result.forEach((c,i)=>{ if(c._segId===sid){ c.segStart=segStart; c.segEnd=last; }});
-  });
+  // postSubStops removed — all substops are pre
+);
 
   return result;
 }
