@@ -707,6 +707,7 @@ async function loadTourData() {
       const subStops    = allSubstops.filter((_, i) => !(substopsByStop[s.id]||[])[i].is_pre);
 
       // Extract card content into flat stop fields
+      const descCards   = stopCards.filter(c => c.card_type === 'desc');
       const transCard   = stopCards.find(c => c.card_type === 'transition');
       const descCard    = stopCards.find(c => c.card_type === 'desc');
       const rudyCard    = stopCards.find(c => c.card_type === 'rudy');
@@ -725,7 +726,7 @@ async function loadTourData() {
         map_url: s.map_url,
         longitude: s.longitude,
         latitude: s.latitude,
-        cloudflare_id: s.cloudflare_id,
+        cloudflare_id: s.cloudflare_id,  // kept for legacy; videos now live on desc cards
         opener_cloudflare_id: s.opener_cloudflare_id || null,
         cf_style: s.cf_style || 'fullscreen',
         description: descCard?.caption || s.description || '',
@@ -744,6 +745,8 @@ async function loadTourData() {
         quiz_image_url: quizCard?.quiz_image_url || s.photo_url || '',
         // Game
         _gameLevel: gameCard?.game_level || null,
+        // Desc cards (for multiple video support)
+        _descCards: descCards,
         // Sub-stops
         preSubStops,
         subStops,
@@ -1286,10 +1289,14 @@ function buildCards(stop){
   }
 
   // ── Main stop segment ──
+  // Build desc cards from card-level cloudflare_id (supports multiple video cards per stop)
+  const stopDescCards = (stop._descCards||[])
+    .filter(dc => dc.cloudflare_id)
+    .map(dc => ({type:'desc', stop, _cfId: dc.cloudflare_id, _caption: dc.caption}));
   const mainCards=[
     ...(stop.opener_cloudflare_id ? [{type:'transition', stop}] : []),
     {type:'nav',        stop},
-    {type:'desc',       stop},
+    ...stopDescCards,
     {type:'text',       stop},
     {type:'rudy',       stop},
     {type:'photo',      stop},
@@ -1492,10 +1499,11 @@ function renderCard(card,idx,total){
     </div>`;
   }
   if(card.type==='desc'){
-    if(s.cloudflare_id&&s.cf_style==='fullscreen'){
+    const descCfId = card._cfId || s.cloudflare_id;
+    if(descCfId){
       const oholes = (n) => Array(n).fill(0).map(()=>`<div style="width:9px;height:9px;background:#0a0a0a;border-radius:2px;flex-shrink:0;"></div>`).join('');
       return `<div class="card" data-stop="${s.id}" data-type="desc" style="position:relative;overflow:hidden;background:#060608;padding:0;">
-        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${s.cloudflare_id}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+        <iframe id="cf-vid-${s.id}" src="" data-src="https://customer-umijtu8zknmpubqb.cloudflarestream.com/${descCfId}/iframe?autoplay=1&muted=1&loop=0&controls=1&preload=auto" style="position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1;display:none;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
         <div id="sound-popup-${s.id}" style="position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(13,74,82,0.82) 0%,rgba(10,61,92,0.82) 55%,rgba(13,51,72,0.82) 100%);padding-bottom:calc(3.5rem + env(safe-area-inset-bottom));">
           <div onclick="startVideoAfterPopup('${s.id}')" style="position:relative;width:82%;max-width:300px;cursor:pointer;">
             <div style="background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);border-radius:12px;padding:7px 0 7px 0;box-shadow:0 8px 32px rgba(0,0,0,0.55);">
