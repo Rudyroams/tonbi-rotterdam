@@ -255,6 +255,49 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 </head>
 <body>
 
+<div id="intro-screen" style="display:none;position:fixed;inset:0;z-index:600;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+  <div style="max-width:480px;margin:0 auto;padding:calc(2rem + env(safe-area-inset-top)) 1.5rem calc(5rem + env(safe-area-inset-bottom));">
+    <!-- Tour title -->
+    <div id="intro-tour-title" style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:white;line-height:1.1;margin-bottom:0.35rem;"></div>
+    <div id="intro-tour-desc" style="font-size:0.95rem;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:1.75rem;"></div>
+
+    <!-- Meeting point -->
+    <div id="intro-meeting-wrap" style="display:none;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1.25rem;backdrop-filter:blur(8px);">
+      <div style="font-size:0.65rem;font-weight:800;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.35rem;">Meeting Point</div>
+      <div id="intro-meeting-name" style="font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:white;margin-bottom:0.15rem;"></div>
+      <div id="intro-meeting-address" style="font-size:0.82rem;color:rgba(255,255,255,0.55);margin-bottom:0.6rem;"></div>
+      <a id="intro-meeting-map" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:0.35rem;color:rgba(255,165,50,0.9);font-size:0.78rem;font-weight:700;text-decoration:none;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Open in Google Maps
+      </a>
+    </div>
+
+    <!-- Safety guidelines -->
+    <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:1rem;backdrop-filter:blur(8px);">
+      <div style="font-size:0.65rem;font-weight:800;color:rgba(255,165,50,0.9);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.75rem;">Safety Guidelines</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.75);line-height:1.8;" id="intro-safety-platform"></div>
+      <div id="intro-safety-custom-wrap" style="display:none;margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">From the tour creator</div>
+        <div id="intro-safety-custom" style="font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <!-- Accept checkbox -->
+    <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;margin-bottom:1.5rem;padding:0.85rem 1rem;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);">
+      <input type="checkbox" id="intro-accept" style="width:18px;height:18px;margin-top:2px;accent-color:#ff6b35;flex-shrink:0;" onchange="document.getElementById('intro-start-btn').disabled=!this.checked;document.getElementById('intro-start-btn').style.opacity=this.checked?'1':'0.5';">
+      <span style="font-size:0.82rem;color:rgba(255,255,255,0.7);line-height:1.6;">I have read the safety guidelines and accept the <a href="#" style="color:rgba(255,165,50,0.9);">terms and conditions</a>.</span>
+    </label>
+
+    <!-- Start button -->
+    <button id="intro-start-btn" disabled onclick="startFromIntro()" style="width:100%;background:linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%);color:white;border:none;border-radius:var(--radius-sm);padding:1rem;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 4px 16px rgba(255,107,53,0.35);opacity:0.5;transition:opacity 0.2s;" onmouseenter="if(!this.disabled)this.style.opacity='1'" onmouseleave="if(!this.disabled)this.style.opacity=''">
+      Begin the Tour →
+    </button>
+    <div id="intro-return-skip" style="display:none;text-align:center;margin-top:0.75rem;">
+      <button onclick="startFromIntro()" style="background:none;border:none;color:rgba(255,255,255,0.35);font-size:0.78rem;cursor:pointer;">Skip — continue where I left off</button>
+    </div>
+  </div>
+</div>
+
 <div id="pw-screen">
   <div class="pw-logo">🪁</div>
   <div class="pw-wordmark">Tonbi</div>
@@ -607,6 +650,21 @@ let stops=[];
 const SB_URL = 'https://gwvwzyzondplicgeubrc.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3dnd6eXpvbmRwbGljZ2V1YnJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NDk1OTMsImV4cCI6MjA5MDAyNTU5M30.Lu6mQ_0rmn6Pv9RnquJhQhg6bZbdA_vvWl7qEvC6rcA';
 const TOUR_ACCESS_CODE = 'qqq';
+const PLATFORM_SAFETY_GUIDELINES = `<strong style="color:rgba(255,255,255,0.9);">Before you go</strong><br>
+• Allow the indicated duration — check your booking confirmation<br>
+• Wear comfortable, closed-toe shoes suitable for urban streets<br>
+• Bring water, especially in warm weather<br>
+• Charge your phone before starting<br><br>
+<strong style="color:rgba(255,255,255,0.9);">During the tour</strong><br>
+• Always follow local traffic rules when crossing roads<br>
+• Stay aware of your surroundings at all times<br>
+• Keep your belongings secure in busy areas<br>
+• The tour involves outdoor walking and may be affected by weather<br><br>
+<strong style="color:rgba(255,255,255,0.9);">In case of emergency</strong><br>
+• Netherlands emergency number: 112<br>
+• The tour can be paused and resumed at any time later within the booking day<br>
+• If you feel unwell or unsafe, stop the tour and seek assistance`;
+
 let _sb = null;
 
 function getSB() {
@@ -778,6 +836,18 @@ async function loadTourData() {
       };
     });
 
+    // Store tour-level fields globally
+    window._tourData = {
+      title: tourData.title,
+      description: tourData.description,
+      intro_description: tourData.intro_description || '',
+      meeting_point_name: tourData.meeting_point_name || '',
+      meeting_point_address: tourData.meeting_point_address || '',
+      meeting_point_map_url: tourData.meeting_point_map_url || '',
+      safety_notes: tourData.safety_notes || '',
+      finish_message: tourData.finish_message || '',
+      author_card_label: tourData.author_card_label || "Rudy's Notes",
+    };
     console.log(`Loaded ${stops.length} stops from Supabase`);
     return true;
   } catch(e) {
@@ -887,6 +957,53 @@ let endScreenReached=false; // true once the tour-complete end screen has been s
 let pendingPhotoStopId=null;
 
 function togglePw(){const i=document.getElementById('pw-in'),e=document.getElementById('pw-eye');i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'👁':'🙈';}
+function showIntroScreen() {
+  const td = window._tourData || {};
+  const isReturn = !!localStorage.getItem('tonbi_intro_seen');
+  localStorage.setItem('tonbi_intro_seen', '1');
+
+  document.getElementById('intro-tour-title').textContent = td.title || 'Welcome';
+  document.getElementById('intro-tour-desc').textContent = td.intro_description || '';
+
+  // Meeting point
+  const meetWrap = document.getElementById('intro-meeting-wrap');
+  if (td.meeting_point_name) {
+    meetWrap.style.display = 'block';
+    document.getElementById('intro-meeting-name').textContent = td.meeting_point_name;
+    document.getElementById('intro-meeting-address').textContent = td.meeting_point_address || '';
+    const mapLink = document.getElementById('intro-meeting-map');
+    if (td.meeting_point_map_url) { mapLink.href = td.meeting_point_map_url; mapLink.style.display = 'inline-flex'; }
+    else mapLink.style.display = 'none';
+  } else { meetWrap.style.display = 'none'; }
+
+  // Safety
+  document.getElementById('intro-safety-platform').innerHTML = PLATFORM_SAFETY_GUIDELINES;
+  const customWrap = document.getElementById('intro-safety-custom-wrap');
+  if (td.safety_notes) {
+    customWrap.style.display = 'block';
+    document.getElementById('intro-safety-custom').textContent = td.safety_notes;
+  } else { customWrap.style.display = 'none'; }
+
+  // Return visit: show skip button, checkbox still required
+  document.getElementById('intro-return-skip').style.display = isReturn ? 'block' : 'none';
+
+  // Reset checkbox and button
+  document.getElementById('intro-accept').checked = false;
+  document.getElementById('intro-start-btn').disabled = true;
+  document.getElementById('intro-start-btn').style.opacity = '0.5';
+
+  document.getElementById('intro-screen').style.display = 'block';
+}
+
+function startFromIntro() {
+  document.getElementById('intro-screen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.classList.add('show');
+  app.style.cssText = 'display:block;position:fixed;inset:0;';
+  showScreen('overworld');
+  initOverworldMap();
+}
+
 async function unlock(){
   const v=document.getElementById('pw-in').value.toLowerCase().trim();
   // Find tour by access code — check Supabase first, fall back to hardcoded 'qqq'
@@ -900,11 +1017,7 @@ async function unlock(){
     pw.classList.add('exit');
     setTimeout(()=>{
       pw.style.display='none';
-      const app=document.getElementById('app');
-      app.classList.add('show');
-      app.style.cssText='display:block;position:fixed;inset:0;';
-      showScreen('overworld');
-      initOverworldMap();
+      showIntroScreen();
     },500);
   } else {
     document.getElementById('pw-err').textContent='Incorrect code — try again.';
@@ -1808,6 +1921,7 @@ function renderCard(card,idx,total){
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
     const isLastStop=s.id===stops.length;
+    const tourFinishMsg = card._tourFinishMessage || '';
     const nextStop=!isLastStop?stops.find(st=>st.id===s.id+1):null;
     return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
       <div style="position:absolute;top:-80px;left:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.13) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
@@ -1826,13 +1940,13 @@ function renderCard(card,idx,total){
         <div style="width:88%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.5);">
           <img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:130px;object-fit:cover;display:block;">
         </div>
-        <!-- Next stop hint or tour complete — plain text -->
+        <!-- Next stop hint or tour complete message -->
         ${nextStop?`
         <div style="font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.6;text-align:center;">
           Next up on the map: <strong style="color:rgba(255,255,255,0.8);">${nextStop.name}</strong>
         </div>`:`
-        <div style="font-size:0.95rem;color:rgba(255,255,255,0.6);line-height:1.6;text-align:center;">
-          🎉 That's all five stops — Rotterdam, explored.
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1.1rem 1.25rem;width:100%;text-align:center;">
+          <div style="font-size:0.95rem;color:rgba(255,255,255,0.85);line-height:1.7;">${tourFinishMsg||'🎉 Tour complete — well done!'}</div>
         </div>`}
       </div>
     </div>`;
