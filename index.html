@@ -733,6 +733,7 @@ async function loadTourData() {
     function shapeSubstop(ss) {
       const ssCards = cardsBySubstop[ss.id] || [];
       const rudyCard  = ssCards.find(c => c.card_type === 'rudy');
+      if (rudyCard) rudyCard.rudyData = rudyCard;
       const photoCard = ssCards.find(c => c.card_type === 'photo');
       const quizCard  = ssCards.find(c => c.card_type === 'quiz');
       const ssPartners = (partnersBySubstop[ss.id] || []).map(p => ({
@@ -799,6 +800,7 @@ async function loadTourData() {
       const transCard   = stopCards.find(c => c.card_type === 'transition');
       const descCard    = stopCards.find(c => c.card_type === 'desc');
       const rudyCard    = stopCards.find(c => c.card_type === 'rudy');
+      if (rudyCard) rudyCard.rudyData = rudyCard;
       const photoCard   = stopCards.find(c => c.card_type === 'photo');
       const quizCard    = stopCards.find(c => c.card_type === 'quiz');
       const gameCard    = stopCards.find(c => c.card_type === 'game');
@@ -1693,12 +1695,14 @@ function renderCard(card,idx,total){
   if(card.type==='rudy'){
     const ss=card.subStop;
     // Use sub-stop fields when available, fall back to main stop
-    const rudyImg  = ss ? (ss.rudy_image_url||ss.photo_url) : (s.rudy_image_url||s.photo_url);
     const rudyName = ss ? ss.name : s.name;
-    const rudyText = ss ? ss.rudy_notes : s.rudy_notes;
-    const rudyExtra= ss ? (ss.rudyExtra||'') : (s.rudyExtra||"Rotterdam is a city that reinvented itself from rubble. After the bombing of 1940 almost everything was lost, but the people decided not to rebuild the past — they built something entirely new. That spirit is visible everywhere you look.");
-    const rudyFilm = ss ? (ss.rudyFilm||'') : (s.rudyFilm||"When I frame a shot here, I always look for a foreground element to anchor the depth. Phones are much better at this than people think.");
-    const rudyLocal= ss ? (ss.rudyLocal||'') : (s.rudyLocal||"Most visitors spend 20 minutes here and move on. If you have time, come back at a different time of day — the light completely transforms the atmosphere.");
+    // All content from card data — only render what's filled in
+    const rudyImg   = card.rudyData?.image_url   || (ss ? ss.photo_url : s.photo_url) || '';
+    const rudyImg2  = card.rudyData?.image_url_2  || '';
+    const rudyText  = card.rudyData?.body         || '';
+    const rudyExtra = card.rudyData?.body_2        || '';
+    const rudyLocal = card.rudyData?.body_3        || '';
+    const rudyFilm  = ''; // merged into body_2 — left blank for forward compat
     // Unique scroll hint ID per card
     const hintId=ss?`rudy-scroll-hint-${s.id}-ss-${ss.id}`:`rudy-scroll-hint-${s.id}`;
     // Sub-stop badge — removed from title pill (no longer shows parent stop name)
@@ -1708,40 +1712,40 @@ function renderCard(card,idx,total){
     return `<div class="card" data-stop="${s.id}" data-substop="${ss?ss.id:''}" data-type="rudy" style="padding:0 0 2rem 0;background:${RAINBOW};">
       <div id="${hintId}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
 
-      <!-- Hero image -->
-      <div style="position:relative;width:100%;aspect-ratio:4/3;">
+      <!-- Hero image — only shown if an image is set -->
+      ${rudyImg?`<div style="position:relative;width:100%;aspect-ratio:4/3;">
         <img src="${rudyImg}" alt="${rudyName}" style="width:100%;height:100%;object-fit:cover;display:block;">
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 55%,transparent 100%);"></div>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="background:linear-gradient(135deg,#ff3b30 0%,#ff6b35 55%,#ffcc00 100%);border-radius:99px;padding:0.6rem 1.8rem;box-shadow:0 6px 28px rgba(255,107,53,0.6);text-align:center;">
             <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;letter-spacing:-0.01em;">${rudyName}</div>
             <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.75);margin-top:0.15rem;text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div>
-            ${subBadge}
           </div>
         </div>
-      </div>
+      </div>`:`<div style="padding:1.5rem 1.1rem 0;text-align:center;">
+        <div style="font-family:'Nunito',sans-serif;font-size:1.85rem;font-weight:900;color:white;line-height:1.0;">${rudyName}</div>
+        <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.5);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.1em;">Rudy's Note</div>
+      </div>`}
 
-      <!-- Main note text — dark frosted panel -->
-      <div style="margin:1rem 1.1rem 0;">
+      <!-- Main note text — only shown if set -->
+      ${rudyText?`<div style="margin:1rem 1.1rem 0;">
         <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius);padding:1.1rem;border:1px solid rgba(255,255,255,0.1);">
           <div style="font-size:1.05rem;line-height:1.85;color:white;">${rudyText}</div>
-          ${rudyExtra?`<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);font-size:1rem;line-height:1.85;color:rgba(255,255,255,0.85);">${rudyExtra}</div>`:''}
         </div>
-      </div>
-
-      <!-- Photo of the stop -->
-      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);position:relative;">
-        <img src="${rudyImg}" alt="${rudyName}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
-        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem 0.85rem;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);color:white;font-size:0.7rem;font-weight:600;">📍 ${rudyName}</div>
-      </div>
-
-      ${rudyFilm?`<!-- Filmmaker's Eye -->
-      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(255,107,53,0.25);">
-        <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
-        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${rudyFilm}</div></div>
       </div>`:''}
 
-      ${rudyLocal?`<!-- Local Knowledge -->
+      ${rudyImg2?`<!-- Optional second image between text blocks -->
+      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);">
+        <img src="${rudyImg2}" alt="${rudyName}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;">
+      </div>`:''}
+
+      ${rudyExtra?`<!-- Filmmaker's Eye / Text block 2 -->
+      <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(255,107,53,0.25);">
+        <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Filmmaker's Eye</span></div>
+        <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${rudyExtra}</div></div>
+      </div>`:''}
+
+      ${rudyLocal?`<!-- Local Knowledge / Text block 3 -->
       <div style="margin:1rem 1.1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(10,100,50,0.3);">
         <div style="background:${RY};padding:0.85rem 1.1rem;text-align:center;"><span style="font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.1em;">Local Knowledge</span></div>
         <div style="background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.1rem 1rem;border:1px solid rgba(255,255,255,0.08);border-top:none;"><div style="font-size:0.92rem;color:rgba(255,255,255,0.88);line-height:1.75;">${rudyLocal}</div></div>
