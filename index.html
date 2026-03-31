@@ -838,6 +838,7 @@ async function loadTourData() {
 
     // Store tour-level fields globally
     window._tourData = {
+      id: tourData.id,
       title: tourData.title,
       description: tourData.description,
       intro_description: tourData.intro_description || '',
@@ -995,13 +996,43 @@ function showIntroScreen() {
   document.getElementById('intro-screen').style.display = 'block';
 }
 
-function startFromIntro() {
+async function startFromIntro() {
   document.getElementById('intro-screen').style.display = 'none';
   const app = document.getElementById('app');
   app.classList.add('show');
   app.style.cssText = 'display:block;position:fixed;inset:0;';
   showScreen('overworld');
   initOverworldMap();
+  // Create or reuse a booking ID for this session
+  await ensureBookingId();
+}
+
+async function ensureBookingId() {
+  // Reuse existing booking ID from this session if still valid
+  let bookingId = localStorage.getItem('tonbi_booking_id');
+  const bookingDate = localStorage.getItem('tonbi_booking_date');
+  const today = new Date().toISOString().slice(0,10);
+  if (bookingId && bookingDate === today) return; // still valid
+  // Create a new booking record
+  try {
+    const sb = getSB();
+    const tourId = window._tourData?.id || null;
+    const { data, error } = await sb.from('bookings').insert({ tour_id: tourId, tour_date: today }).select('id').single();
+    if (data?.id) {
+      localStorage.setItem('tonbi_booking_id', data.id);
+      localStorage.setItem('tonbi_booking_date', today);
+    }
+  } catch(e) {
+    // Fallback: generate a local UUID so photos still work offline
+    if (!bookingId) {
+      const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random()*16|0;
+        return (c==='x'?r:(r&0x3|0x8)).toString(16);
+      });
+      localStorage.setItem('tonbi_booking_id', id);
+      localStorage.setItem('tonbi_booking_date', today);
+    }
+  }
 }
 
 async function unlock(){
@@ -2412,10 +2443,43 @@ function handlePhotoSelection(event){
     const pos=currentCardIdx;document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');currentCardIdx=pos;updateCardPosition(false);updateNavBtns();
     setTimeout(()=>{const card=document.querySelectorAll('.card')[pos];if(card)card.scrollTo({top:card.scrollHeight,behavior:'smooth'});},100);
     document.getElementById('lowres-overlay').style.display='flex';
+    // Upload to Supabase Storage in background
+    uploadPhotoToSupabase(dataUrl, key, stopName);
   };
   reader.readAsDataURL(file);event.target.value='';
 }
 function closeLowresOverlay(){document.getElementById('lowres-overlay').style.display='none';}
+
+async function uploadPhotoToSupabase(dataUrl, stopKey, stopName) {
+  try {
+    const bookingId = localStorage.getItem('tonbi_booking_id');
+    if (!bookingId) return;
+    // Convert dataUrl to blob
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const filename = `photos/${bookingId}/${stopKey}_${Date.now()}.jpg`;
+    const sb = getSb();
+    const { data, error } = await sb.storage.from('tour-photos').upload(filename, blob, {
+      contentType: 'image/jpeg', upsert: true
+    });
+    if (error) { console.warn('Photo upload failed:', error.message); return; }
+    // Store URL back into photoCollection so finish screen uses Supabase URL
+    const { data: urlData } = sb.storage.from('tour-photos').getPublicUrl(filename);
+    if (urlData?.publicUrl) {
+      photoCollection[stopKey].supabaseUrl = urlData.publicUrl;
+      photoCollection[stopKey].storagePath = filename;
+    }
+    // Record in photos table
+    const stopId = stops.find(s => String(s.id) === String(stopKey).split('-')[0])?.id || null;
+    await sb.from('photos').insert({
+      booking_id: bookingId,
+      stop_id: stopId,
+      storage_path: filename,
+    }).catch(() => {});
+  } catch(e) {
+    console.warn('Photo upload error:', e);
+  }
+}
 
 const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
 
