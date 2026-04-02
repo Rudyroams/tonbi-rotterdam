@@ -790,6 +790,7 @@ async function loadTourData() {
         const p = (window._partnersById || {})[c.partner_id];
         if (!p) return null;
         return {
+          _id: p.id,
           name: p.name,
           partner_type: p.partner_type,
           photo_url: p.photo_url,
