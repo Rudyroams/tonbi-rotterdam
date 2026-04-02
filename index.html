@@ -724,7 +724,15 @@ async function loadTourData() {
     const cardsBySubstop = {};
     const partnersBySubstop = {};
     (cardsData || []).forEach(c => { if(c.stop_id) (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
-    (partnersData || []).forEach(p => { if(p.stop_id) (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p); });
+    (partnersData || []).forEach(p => {
+      if(p.stop_id) {
+        // Stop-specific partner — assign to that stop only
+        (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p);
+      } else {
+        // Tour-level partner (no stop_id) — assign to all stops
+        stopIds.forEach(sid => (partnersByStop[sid] = partnersByStop[sid] || []).push(p));
+      }
+    });
     (substopsData || []).forEach(ss => { (substopsByStop[ss.stop_id] = substopsByStop[ss.stop_id] || []).push(ss); });
     substopCardsData.forEach(c => { (cardsBySubstop[c.substop_id] = cardsBySubstop[c.substop_id] || []).push(c); });
     substopPartnersData.forEach(p => { (partnersBySubstop[p.substop_id] = partnersBySubstop[p.substop_id] || []).push(p); });
