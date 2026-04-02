@@ -699,11 +699,11 @@ async function loadTourData() {
       .in('stop_id', stopIds)
       .order('position');
 
-    // Fetch all partners for these stops
+    // Fetch all partners for this tour (tour-scoped, stop_id may be null)
     const { data: partnersData } = await sb
       .from('partners')
       .select('*')
-      .in('stop_id', stopIds);
+      .eq('tour_id', tourData.id);
 
     // Fetch all substops for these stops (ordered by global_position)
     const { data: substopsData } = await sb
