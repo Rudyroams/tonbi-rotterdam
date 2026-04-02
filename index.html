@@ -724,15 +724,14 @@ async function loadTourData() {
     const cardsBySubstop = {};
     const partnersBySubstop = {};
     (cardsData || []).forEach(c => { if(c.stop_id) (cardsByStop[c.stop_id] = cardsByStop[c.stop_id] || []).push(c); });
+    // Build a lookup of all partners by id for partner card resolution
+    const partnersById = {};
     (partnersData || []).forEach(p => {
-      if(p.stop_id) {
-        // Stop-specific partner — assign to that stop only
-        (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p);
-      } else {
-        // Tour-level partner (no stop_id) — assign to all stops
-        stopIds.forEach(sid => (partnersByStop[sid] = partnersByStop[sid] || []).push(p));
-      }
+      partnersById[p.id] = p;
+      // Only auto-assign to stop if explicitly stop-scoped
+      if(p.stop_id) (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p);
     });
+    window._partnersById = partnersById;
     (substopsData || []).forEach(ss => { (substopsByStop[ss.stop_id] = substopsByStop[ss.stop_id] || []).push(ss); });
     substopCardsData.forEach(c => { (cardsBySubstop[c.substop_id] = cardsBySubstop[c.substop_id] || []).push(c); });
     substopPartnersData.forEach(p => { (partnersBySubstop[p.substop_id] = partnersBySubstop[p.substop_id] || []).push(p); });
@@ -785,19 +784,25 @@ async function loadTourData() {
     // Build stops array in the shape the app expects
     stops = stopsData.map(s => {
       const stopCards = cardsByStop[s.id] || [];
-      const stopPartners = (partnersByStop[s.id] || []).map(p => ({
-        name: p.name,
-        partner_type: p.partner_type,
-        photo_url: p.photo_url,
-        cloudflare_id: p.cloudflare_id,
-        description: p.description,
-        location: p.location,
-        map_url: p.map_url,
-        offer_text: p.offer_text,
-        offer_note: p.offer_note,
-        discount_code: p.discount_code,
-        gallery: (p.gallery_urls && p.gallery_urls.length >= 4) ? p.gallery_urls : [],
-      }));
+      // Partners come from explicit partner cards in the cards table (ordered by position)
+      const partnerCards = stopCards.filter(c => c.card_type === 'partner' && c.partner_id);
+      const stopPartners = partnerCards.map(c => {
+        const p = (window._partnersById || {})[c.partner_id];
+        if (!p) return null;
+        return {
+          name: p.name,
+          partner_type: p.partner_type,
+          photo_url: p.photo_url,
+          cloudflare_id: p.cloudflare_id,
+          description: p.description,
+          location: p.location,
+          map_url: p.map_url,
+          offer_text: p.offer_text,
+          offer_note: p.offer_note,
+          discount_code: p.discount_code,
+          gallery: (p.gallery_urls && p.gallery_urls.length >= 4) ? p.gallery_urls : [],
+        };
+      }).filter(Boolean);
 
       // All substops are pre-substops (they lead to the main stop)
       const preSubStops = (substopsByStop[s.id] || []).map(shapeSubstop);
