@@ -732,6 +732,7 @@ async function loadTourData() {
       if(p.stop_id) (partnersByStop[p.stop_id] = partnersByStop[p.stop_id] || []).push(p);
     });
     window._partnersById = partnersById;
+    window._allTourPartners = partnersData || [];
     (substopsData || []).forEach(ss => { (substopsByStop[ss.stop_id] = substopsByStop[ss.stop_id] || []).push(ss); });
     substopCardsData.forEach(c => { (cardsBySubstop[c.substop_id] = cardsBySubstop[c.substop_id] || []).push(c); });
     substopPartnersData.forEach(p => { (partnersBySubstop[p.substop_id] = partnersBySubstop[p.substop_id] || []).push(p); });
@@ -2639,7 +2640,29 @@ function showPartnersPage(){
   ov.style.cssText='position:fixed;inset:0;z-index:800;background:linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;';
 
   const allPartners=[];
-  stops.forEach(s=>{ if(s.partners) s.partners.forEach(p=>allPartners.push({...p,stopName:s.name,stopId:s.id})); });
+  const seenIds=new Set();
+  // Partners from stop cards (card-driven), deduplicated
+  stops.forEach(s=>{
+    if(s.partners) s.partners.forEach(p=>{
+      if(p._id && !seenIds.has(p._id)){ seenIds.add(p._id); allPartners.push({...p,stopName:s.name,stopId:s.id}); }
+      else if(!p._id){ allPartners.push({...p,stopName:s.name,stopId:s.id}); }
+    });
+  });
+  // Also add featured partners not already showing via cards
+  (window._allTourPartners||[]).forEach(p=>{
+    if(p.featured && !seenIds.has(p.id)){
+      seenIds.add(p.id);
+      allPartners.push({
+        _id: p.id,
+        name: p.name, partner_type: p.partner_type,
+        photo_url: p.photo_url, cloudflare_id: p.cloudflare_id,
+        description: p.description, location: p.location,
+        map_url: p.map_url, offer_text: p.offer_text,
+        offer_note: p.offer_note, discount_code: p.discount_code,
+        gallery: (p.gallery_urls&&p.gallery_urls.length>=4)?p.gallery_urls:[]
+      });
+    }
+  });
 
   function miniCoupon(p){
     if(!p.offer_text) return '';
