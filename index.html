@@ -2277,7 +2277,7 @@ function nextCard(){
     setTimeout(()=>{
       const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
       const ac=cards[currentCardIdx];
-      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id, ac.subStop||null),100);
+      if(ac&&ac.type==='nav'){const _ss=ac.subStop||null;const _cid=_ss?`stop-map-${ac.stop.id}-ss-${_ss.id}`:`stop-map-${ac.stop.id}`;setTimeout(()=>initStopMap(_cid, ac.stop, _ss),100);}
       if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac),300);
       if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
@@ -2384,7 +2384,7 @@ function initPhotoMap(card){
   const ss = card && typeof card === 'object' ? card.subStop : null;
   const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
   const stopId = stop ? stop.id : card;
-  const coord = ss ? _getCoord(ss) : (stop ? _getCoord(stop) : null);
+  const coord = ss ? (_getCoord(ss) || _getCoord(stop)) : (stop ? _getCoord(stop) : null);
   if(!coord)return;
   const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
   const container=document.getElementById(mapKey);
@@ -2400,13 +2400,12 @@ function initPhotoMap(card){
   });
 }
 
-function initStopMap(stopId, subStop){
+function initStopMap(containerId, stop, subStop){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const stop=stops.find(x=>x.id===stopId);
-  const destCoord = subStop ? _getCoord(subStop) : (stop ? _getCoord(stop) : null);
+  // Try substop coords first, then fall back to main stop
+  const destCoord = (subStop ? (_getCoord(subStop) || _getCoord(stop)) : _getCoord(stop));
   if(!destCoord)return;
-  const containerId = subStop ? `stop-map-${stopId}-ss-${subStop.id}` : 'stop-map-'+stopId;
-  const routeInfoId = subStop ? `route-info-${stopId}-ss-${subStop.id}` : 'route-info-'+stopId;
+  const routeInfoId = containerId.replace('stop-map-', 'route-info-');
   const container=document.getElementById(containerId);
   if(!container||container._mapInitialized)return;
   container._mapInitialized=true;
