@@ -1491,11 +1491,9 @@ function buildCards(stop){
   const stopDescCards = (stop._descCards||[])
     .filter(dc => dc.cloudflare_id)
     .map(dc => ({type:'desc', stop, _cfId: dc.cloudflare_id, _caption: dc.caption}));
-  const hasPreSubs = stop.preSubStops && stop.preSubStops.length > 0;
   const mainCards=[
     ...(stop.opener_cloudflare_id ? [{type:'transition', stop}] : []),
-    // Skip nav card if pre-substops exist — traveller already walked to this area
-    ...(!hasPreSubs ? [{type:'nav', stop}] : []),
+    {type:'nav',        stop},
     ...stopDescCards,
     {type:'text',       stop},
     {type:'rudy',       stop},
@@ -1590,12 +1588,10 @@ function renderCard(card,idx,total){
     const isPre=card.isPre||false;
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    // Pre-stop: no eyebrow — big name speaks for itself
-    // Post-stop: keep "Keep Exploring" label
-    const eyebrow=isPre ? `` : `Keep Exploring · Stop ${s.id}`;
-    // Hero shows main stop for pre; sub-stop for post
-    const heroName=isPre ? s.name : ss.name;
-    const heroImg=isPre ? s.img : (ss.photo_url||s.photo_url);
+    const eyebrow=isPre ? `On the way to Stop ${s.id}` : `Keep Exploring · Stop ${s.id}`;
+    // Always show the substop's own name and image
+    const heroName=ss.name;
+    const heroImg=ss.photo_url||s.photo_url;
     const btnLabel=`Let's go! 👟`;
 
     const routeContext=isPre?`
@@ -2386,7 +2382,7 @@ function initPhotoMap(card){
   const ss = card && typeof card === 'object' ? card.subStop : null;
   const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
   const stopId = stop ? stop.id : card;
-  const coord = ss ? _getCoord(ss) : (stop ? _getCoord(stop) : null);
+  const coord = ss ? (_getCoord(ss) || _getCoord(stop)) : (stop ? _getCoord(stop) : null);
   if(!coord)return;
   const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
   const container=document.getElementById(mapKey);
@@ -2404,7 +2400,8 @@ function initPhotoMap(card){
 
 function initStopMap(containerId, stop, subStop){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const destCoord = subStop ? _getCoord(subStop) : (stop ? _getCoord(stop) : null);
+  // For substops without their own coords, fall back to main stop location
+  const destCoord = subStop ? (_getCoord(subStop) || _getCoord(stop)) : _getCoord(stop);
   if(!destCoord)return;
   const routeInfoId = containerId.replace('stop-map-', 'route-info-');
   const container=document.getElementById(containerId);
@@ -2547,19 +2544,19 @@ function _extractCoordsFromMapUrl(url) {
   return null;
 }
 
-// Get [lng, lat] for Mapbox from a stop/substop, with map_url fallback
+// Get [lng, lat] for Mapbox from a stop/substop, with map_url extraction as primary source
 function _getCoord(obj) {
-  if (obj && obj.longitude && obj.latitude) {
-    // Validate: longitude should be roughly -180..180, latitude -90..90
-    // For Rotterdam area: lng ~4.4, lat ~51.9
-    if (Math.abs(obj.latitude) <= 90 && Math.abs(obj.longitude) <= 180) {
-      return [obj.longitude, obj.latitude];
-    }
-  }
-  // Fallback: extract from map_url
-  if (obj && obj.map_url) {
+  if (!obj) return null;
+  // Primary: extract from map_url (most reliable, matches Google Maps link)
+  if (obj.map_url) {
     const c = _extractCoordsFromMapUrl(obj.map_url);
     if (c) return [c.lng, c.lat];
+  }
+  // Fallback: use stored DB coordinates
+  const lng = parseFloat(obj.longitude);
+  const lat = parseFloat(obj.latitude);
+  if (!isNaN(lng) && !isNaN(lat) && lng !== 0 && lat !== 0) {
+    return [lng, lat];
   }
   return null;
 }
