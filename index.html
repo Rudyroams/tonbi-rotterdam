@@ -1702,16 +1702,16 @@ function renderCard(card,idx,total){
           ${s.id}
         </div>
         <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
-          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">You've arrived at Stop ${s.id}</div>
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">Now heading to Stop ${s.id}</div>
           <div style="font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:white;line-height:1.15;">${s.name}</div>
         </div>
         <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
           <img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:140px;object-fit:cover;display:block;">
         </div>
         <div style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.6;max-width:85%;">
-          Time to explore this stop. Swipe through the cards to discover what makes this place special.
+          The map on the next screen will guide you there. Allow location access for walking directions.
         </div>
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Explore this stop</button>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
       </div>
     </div>`;
   }
