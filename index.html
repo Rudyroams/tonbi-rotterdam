@@ -2377,12 +2377,12 @@ function showOffer(name,offer,note,code){
 }
 function closeOffer(e){if(!e||e.target===document.getElementById('offer-overlay'))document.getElementById('offer-overlay').classList.remove('show');}
 
-function initPhotoMap(card){
+async function initPhotoMap(card){
   // Accept either a card object or a legacy stopId number
   const ss = card && typeof card === 'object' ? card.subStop : null;
   const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
   const stopId = stop ? stop.id : card;
-  const coord = ss ? (_getCoord(ss) || _getCoord(stop)) : (stop ? _getCoord(stop) : null);
+  const coord = ss ? (await _getCoordAsync(ss) || _getCoord(stop)) : (stop ? _getCoord(stop) : null);
   if(!coord)return;
   const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
   const container=document.getElementById(mapKey);
@@ -2398,10 +2398,12 @@ function initPhotoMap(card){
   });
 }
 
-function initStopMap(containerId, stop, subStop){
+async function initStopMap(containerId, stop, subStop){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
-  // For substops without their own coords, fall back to main stop location
-  const destCoord = subStop ? (_getCoord(subStop) || _getCoord(stop)) : _getCoord(stop);
+  // Try async resolution for substops (handles short Google Maps URLs)
+  const destCoord = subStop
+    ? (await _getCoordAsync(subStop) || _getCoord(stop))
+    : _getCoord(stop);
   if(!destCoord)return;
   const routeInfoId = containerId.replace('stop-map-', 'route-info-');
   const container=document.getElementById(containerId);
@@ -2557,6 +2559,32 @@ function _getCoord(obj) {
   const lat = parseFloat(obj.latitude);
   if (!isNaN(lng) && !isNaN(lat) && lng !== 0 && lat !== 0) {
     return [lng, lat];
+  }
+  return null;
+}
+
+// Async version: tries to resolve short Google Maps URLs
+async function _getCoordAsync(obj) {
+  // First try sync extraction
+  const sync = _getCoord(obj);
+  if (sync) return sync;
+  // If map_url is a short URL, try to resolve it
+  if (obj && obj.map_url && /maps\.app\.goo\.gl|goo\.gl\/maps/i.test(obj.map_url)) {
+    try {
+      const resp = await fetch(obj.map_url, { redirect: 'follow' });
+      const finalUrl = resp.url;
+      if (finalUrl && finalUrl !== obj.map_url) {
+        const c = _extractCoordsFromMapUrl(finalUrl);
+        if (c) {
+          // Cache the resolved coords on the object so future calls are instant
+          obj.longitude = c.lng;
+          obj.latitude = c.lat;
+          return [c.lng, c.lat];
+        }
+      }
+    } catch(e) {
+      // CORS blocked — can't resolve client-side
+    }
   }
   return null;
 }
