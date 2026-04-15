@@ -2156,6 +2156,8 @@ function updateProgressDots(){
 
 function updateNavBtns(){
   if(!currentStop)return;
+  // Hide all rudy scroll hints when switching cards
+  document.querySelectorAll('[id^="rudy-scroll-hint"]').forEach(h=>h.style.display='none');
   const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn'),tb=document.getElementById('read-text-btn');
   const cc=cards[currentCardIdx];
   const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'),isNav=cc&&cc.type==='nav';
