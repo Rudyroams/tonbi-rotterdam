@@ -1486,14 +1486,10 @@ function buildCards(stop){
     });
   }
 
-  // ── Main stop arrival/heading card ──
-  // Show before nav when there's no opener video transition card
+  // ── Main stop arrival/heading card (always shown before nav) ──
   const hasPreSubs = stop.preSubStops && stop.preSubStops.length > 0;
-  const hasOpener = !!stop.opener_cloudflare_id;
-  if (!hasOpener) {
-    const arrivalCard = {type:'main-stop-arrival', stop, _hasPreSubs: hasPreSubs, label:stop.name, _segId:'main'};
-    result.push(arrivalCard);
-  }
+  const arrivalCard = {type:'main-stop-arrival', stop, _hasPreSubs: hasPreSubs, label:stop.name, _segId:'main'};
+  result.push(arrivalCard);
 
   // ── Main stop segment ──
   // Build desc cards from card-level cloudflare_id (supports multiple video cards per stop)
