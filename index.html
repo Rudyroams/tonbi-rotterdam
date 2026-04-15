@@ -1460,21 +1460,6 @@ function setupRudyScrollHint(card){
   cardEl.addEventListener('scroll',function(){if(cardEl.scrollTop>60)hint.style.display='none';},{passive:true});
 }
 
-function setupIntroScrollHint(card){
-  const ss = card.subStop;
-  const s = card.stop;
-  if(!ss||!s) return;
-  const introCardId = `substop-intro-${s.id}-${ss.id}`;
-  const cardEl = document.getElementById(introCardId);
-  const hintId = `scroll-hint-${introCardId}`;
-  const hint = document.getElementById(hintId);
-  if(!cardEl||!hint) return;
-  // Show hint initially
-  hint.style.display = 'flex';
-  // Hide when scrolled
-  cardEl.addEventListener('scroll', function(){ if(cardEl.scrollTop > 40) hint.style.display='none'; }, {passive:true});
-}
-
 // ─── buildCards ─────────────────────────────────────────────────────────────
 // Returns a flat card array. Each card is tagged with:
 //   .label     — displayed in the top bar
@@ -1499,6 +1484,13 @@ function buildCards(stop){
       ssCards.forEach(c=>{ c.label=ss.name; c._segId='pre_'+si; });
       result.push(...ssCards);
     });
+  }
+
+  // ── Main stop arrival card (only when there were pre-substops) ──
+  const hasPreSubs = stop.preSubStops && stop.preSubStops.length > 0;
+  if (hasPreSubs) {
+    const arrivalCard = {type:'main-stop-arrival', stop, label:stop.name, _segId:'main'};
+    result.push(arrivalCard);
   }
 
   // ── Main stop segment ──
@@ -1673,7 +1665,7 @@ function renderCard(card,idx,total){
           ${routeContext}
           <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);flex-shrink:0;">Let's go! 👟</button>
         </div>
-        <div id="scroll-hint-${introCardId}" style="position:fixed;bottom:calc(56px + env(safe-area-inset-bottom) + 0.5rem);left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;animation:scrollBounce 1.6s ease-in-out infinite;"><span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;">scroll</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div id="scroll-hint-${introCardId}" style="display:none;"></div>
       </div>`;
     } else {
       // ── Subsequent substops: simple "Next up" message ──
@@ -1696,6 +1688,32 @@ function renderCard(card,idx,total){
         </div>
       </div>`;
     }
+  }
+
+  if(card.type==='main-stop-arrival'){
+    const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
+    const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
+    return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
+        <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
+        <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:white;">
+          ${s.id}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">You've arrived at Stop ${s.id}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:white;line-height:1.15;">${s.name}</div>
+        </div>
+        <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
+          <img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:140px;object-fit:cover;display:block;">
+        </div>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.6;max-width:85%;">
+          Time to explore this stop. Swipe through the cards to discover what makes this place special.
+        </div>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Explore this stop</button>
+      </div>
+    </div>`;
   }
 
   if(card.type==='nav'){
@@ -2109,9 +2127,6 @@ function renderJourney(){
   document.getElementById('card-track').innerHTML=cards.map((c,i)=>renderCard(c,i,cards.length)).join('');
   updateCardPosition(false);updateNavBtns();
   setTimeout(reloadGalleryImages,100);
-  // Setup scroll hint for first card if it's a substop-intro
-  const firstCard = cards[0];
-  if(firstCard && firstCard.type==='substop-intro') setTimeout(()=>setupIntroScrollHint(firstCard),300);
 }
 
 // Update top bar label + progress indicator from current card
@@ -2177,10 +2192,10 @@ function updateProgressDots(){
 function updateNavBtns(){
   if(!currentStop)return;
   // Hide all scroll hints when switching cards
-  document.querySelectorAll('[id^="rudy-scroll-hint"],[id^="scroll-hint-substop-intro"]').forEach(h=>h.style.display='none');
+  document.querySelectorAll('[id^="rudy-scroll-hint"]').forEach(h=>h.style.display='none');
   const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn'),tb=document.getElementById('read-text-btn');
   const cc=cards[currentCardIdx];
-  const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'),isNav=cc&&cc.type==='nav';
+  const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'||cc.type==='main-stop-arrival'),isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
   const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cf_style==='fullscreen';
 
@@ -2334,7 +2349,6 @@ function nextCard(){
       const ac=cards[currentCardIdx];
       if(ac&&ac.type==='nav'){const _ss=ac.subStop||null;const _cid=_ss?`stop-map-${ac.stop.id}-ss-${_ss.id}`:`stop-map-${ac.stop.id}`;setTimeout(()=>initStopMap(_cid, ac.stop, _ss),100);}
       if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac),300);
-      if(ac&&ac.type==='substop-intro')setTimeout(()=>setupIntroScrollHint(ac),300);
       if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),450);
