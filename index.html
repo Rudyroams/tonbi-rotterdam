@@ -181,7 +181,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .jt-bar { background:linear-gradient(135deg,#0f9b8e 0%,#1a6fb5 60%,#2d3faa 100%); padding:calc(0.9rem + env(safe-area-inset-top)) 1.25rem 0.5rem; border-bottom:none; flex-shrink:0; }
 .jt-bar-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.45rem; }
 .jt-stop-label { font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:800; color:white; }
-.jt-close { background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:32px; height:32px; font-size:1rem; cursor:pointer; color:white; display:flex; align-items:center; justify-content:center; }
+.jt-close { background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:28px; height:28px; font-size:0.85rem; cursor:pointer; color:white; display:flex; align-items:center; justify-content:center; }
 .progress-dots { display:flex; gap:0.4rem; align-items:center; }
 .dot { height:4px; border-radius:4px; background:rgba(255,255,255,0.3); transition:all 0.3s; width:8px; }
 .dot.active { background:white; width:20px; }
@@ -1476,7 +1476,7 @@ function buildCards(stop){
   if(stop.preSubStops&&stop.preSubStops.length>0){
     stop.preSubStops.forEach((ss,si)=>{
       const ssCards=[];
-      ssCards.push({type:'substop-intro', stop, subStop:ss, isPre:true});
+      ssCards.push({type:'substop-intro', stop, subStop:ss, isPre:true, _ssIndex:si, _allPreSubs:stop.preSubStops});
       ssCards.push({type:'nav',           stop, subStop:ss, isPre:true});
       if(ss.rudy_notes)      ssCards.push({type:'rudy',  stop, subStop:ss, isPre:true});
       if(ss) ssCards.push({type:'photo', stop, subStop:ss, isPre:true});
@@ -1487,6 +1487,11 @@ function buildCards(stop){
       result.push(...ssCards);
     });
   }
+
+  // ── Main stop arrival/heading card (always shown before nav) ──
+  const hasPreSubs = stop.preSubStops && stop.preSubStops.length > 0;
+  const arrivalCard = {type:'main-stop-arrival', stop, _hasPreSubs: hasPreSubs, label:stop.name, _segId:'main'};
+  result.push(arrivalCard);
 
   // ── Main stop segment ──
   // Build desc cards from card-level cloudflare_id (supports multiple video cards per stop)
@@ -1563,7 +1568,6 @@ function renderCard(card,idx,total){
       <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
-        <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
         <!-- Icon -->
         <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);font-size:2rem;">
           👟
@@ -1588,64 +1592,122 @@ function renderCard(card,idx,total){
   if(card.type==='substop-intro'){
     const ss=card.subStop;
     const isPre=card.isPre||false;
+    const ssIndex=card._ssIndex||0;
+    const allPreSubs=card._allPreSubs||[];
+    const isFirst=isPre && ssIndex===0;
     const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
     const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
-    // Pre-stop: no eyebrow — big name speaks for itself
-    // Post-stop: keep "Keep Exploring" label
-    const eyebrow=isPre ? `` : `Keep Exploring · Stop ${s.id}`;
-    // Hero shows main stop for pre; sub-stop for post
-    const heroName=isPre ? s.name : ss.name;
-    const heroImg=isPre ? s.img : (ss.photo_url||s.photo_url);
-    const btnLabel=`Let's go! 👟`;
+    const heroName=ss.name;
+    const heroImg=ss.photo_url||s.photo_url;
 
-    const routeContext=isPre?`
-      <div style="width:82%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1rem 1.1rem;text-align:left;">
-        <div style="font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
-          We're heading to <strong style="color:white;">${s.name}</strong>, but there are a few sights along the way. You'll be guided to them one by one — <strong style="color:white;">allow Location Access</strong> when the map appears and you're good to go.
-        </div>
-        <div style="margin-top:0.75rem;font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
-          Stories and adventures await. Let the exploration begin!
-        </div>
-        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
-          <div style="display:flex;align-items:center;gap:0.65rem;">
-            <div style="width:26px;height:26px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </div>
-            <div>
-              <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${ss.name}</div>
-              <div style="font-size:0.62rem;color:rgba(255,255,255,0.5);">First — on the way</div>
-            </div>
-          </div>
-          <div style="width:1px;height:12px;background:rgba(255,255,255,0.15);margin-left:13px;"></div>
-          <div style="display:flex;align-items:center;gap:0.65rem;opacity:0.5;">
-            <div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <div style="font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:900;color:white;">${s.id}</div>
-            </div>
-            <div>
-              <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${s.name}</div>
-              <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);">Main destination — the goal</div>
-            </div>
+    if(isFirst){
+      // ── First substop: full route overview ──
+      const eyebrow=`On the way to Stop ${s.id}`;
+      // Build route steps: all substops + main stop at the end
+      const routeSteps = allPreSubs.map((sub,i) => {
+        const isCurrent = i === 0;
+        const opacity = isCurrent ? '1' : '0.55';
+        const bg = isCurrent ? RY : 'rgba(255,255,255,0.12)';
+        const border = isCurrent ? '' : 'border:1.5px solid rgba(255,255,255,0.25);';
+        const iconInner = isCurrent
+          ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`
+          : `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3" fill="white"/></svg>`;
+        const label = isCurrent ? 'First — on the way' : 'On the way';
+        return `<div style="display:flex;align-items:center;gap:0.65rem;opacity:${opacity};">
+          <div style="width:26px;height:26px;border-radius:50%;background:${bg};${border}display:flex;align-items:center;justify-content:center;flex-shrink:0;">${iconInner}</div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${sub.name}</div>
+            <div style="font-size:0.62rem;color:rgba(255,255,255,0.5);">${label}</div>
           </div>
         </div>
-      </div>`:'';
+        <div style="width:1px;height:10px;background:rgba(255,255,255,0.15);margin-left:13px;"></div>`;
+      }).join('');
 
+      const routeContext=`
+        <div style="width:82%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:1rem 1.1rem;text-align:left;">
+          <div style="font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
+            We're heading to <strong style="color:white;">${s.name}</strong>, but there are a few sights along the way. You'll be guided to them one by one — <strong style="color:white;">allow Location Access</strong> when the map appears and you're good to go.
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.85rem;line-height:1.75;color:rgba(255,255,255,0.8);">
+            Stories and adventures await. Let the exploration begin!
+          </div>
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;">
+            ${routeSteps}
+            <div style="display:flex;align-items:center;gap:0.65rem;opacity:0.45;">
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div style="font-family:'Nunito',sans-serif;font-size:0.65rem;font-weight:900;color:white;">${s.id}</div>
+              </div>
+              <div>
+                <div style="font-size:0.72rem;font-weight:800;color:white;line-height:1.2;">${s.name}</div>
+                <div style="font-size:0.62rem;color:rgba(255,255,255,0.45);">Main destination</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+
+      const introCardId = `substop-intro-${s.id}-${ss.id}`;
+      return `<div class="card" data-type="substop-intro" data-stop="${s.id}" id="${introCardId}" style="padding:0;background:${DARK};position:relative;">
+        <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+        <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1.1rem;padding:calc(2.5rem + env(safe-area-inset-top)) 2rem 2rem;width:100%;text-align:center;">
+          <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);flex-shrink:0;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
+            <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">${eyebrow}</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${heroName}</div>
+          </div>
+          <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);flex-shrink:0;">
+            <img src="${heroImg}" alt="${heroName}" style="width:100%;height:120px;object-fit:cover;display:block;">
+          </div>
+          ${routeContext}
+          <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);flex-shrink:0;">Let's go! 👟</button>
+        </div>
+        <div id="scroll-hint-${introCardId}" style="display:none;"></div>
+      </div>`;
+    } else {
+      // ── Subsequent substops: simple "Next up" message ──
+      return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+        <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
+          <div style="width:52px;height:52px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(255,107,53,0.45);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.2rem;align-items:center;">
+            <div style="font-size:0.65rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;">Next up</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.45rem;font-weight:900;color:white;line-height:1.15;">Continue towards</div>
+            <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;background:${RY};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;">${heroName}</div>
+          </div>
+          <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
+            <img src="${heroImg}" alt="${heroName}" style="width:100%;height:120px;object-fit:cover;display:block;">
+          </div>
+          <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
+        </div>
+      </div>`;
+    }
+  }
+
+  if(card.type==='main-stop-arrival'){
+    const RY='linear-gradient(160deg,#ff3b30 0%,#ff6b35 45%,#ffcc00 100%)';
+    const DARK='linear-gradient(160deg,#0d4a52 0%,#0a3d5c 55%,#0d3348 100%)';
     return `<div class="card" style="padding:0;background:${DARK};display:flex;flex-direction:column;text-align:center;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
-      <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.07) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
+      <div style="position:absolute;bottom:0;right:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,204,0,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;"></div>
       <div style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.5rem 2rem;width:100%;">
-        <button onclick="closeJourney()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:50%;width:34px;height:34px;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">&#x2715;</button>
-        <div style="width:64px;height:64px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div style="width:72px;height:72px;border-radius:50%;background:${RY};display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(255,107,53,0.5);font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:white;">
+          ${s.id}
         </div>
         <div style="display:flex;flex-direction:column;gap:0.25rem;align-items:center;">
-          ${eyebrow?`<div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">${eyebrow}</div>`:''}
-          <div style="font-family:'Nunito',sans-serif;font-size:1.55rem;font-weight:900;color:white;line-height:1.15;">${heroName}</div>
+          <div style="font-size:0.65rem;font-weight:700;color:rgba(255,107,53,0.9);text-transform:uppercase;letter-spacing:0.12em;">Now heading to Stop ${s.id}</div>
+          <div style="font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:white;line-height:1.15;">${s.name}</div>
         </div>
         <div style="width:82%;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.45);">
-          <img src="${heroImg}" alt="${heroName}" style="width:100%;height:120px;object-fit:cover;display:block;">
+          <img src="${s.photo_url}" alt="${s.name}" style="width:100%;height:140px;object-fit:cover;display:block;">
         </div>
-        ${routeContext}
-        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">${btnLabel}</button>
+        <div style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.6;max-width:85%;">
+          The map on the next screen will guide you there. Allow location access for walking directions.
+        </div>
+        <button onclick="nextCard()" style="width:100%;background:${RY};color:#fff;border:none;border-radius:var(--radius-sm);padding:0.95rem;font-family:'Nunito',sans-serif;font-size:1.25rem;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,53,0.4);">Let's go! 👟</button>
       </div>
     </div>`;
   }
@@ -2125,9 +2187,11 @@ function updateProgressDots(){
 
 function updateNavBtns(){
   if(!currentStop)return;
+  // Hide all scroll hints when switching cards
+  document.querySelectorAll('[id^="rudy-scroll-hint"]').forEach(h=>h.style.display='none');
   const prev=document.getElementById('prev-btn'),next=document.getElementById('next-btn'),tb=document.getElementById('read-text-btn');
   const cc=cards[currentCardIdx];
-  const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'),isNav=cc&&cc.type==='nav';
+  const isTransition=cc&&(cc.type==='transition'||cc.type==='substop-intro'||cc.type==='main-stop-arrival'),isNav=cc&&cc.type==='nav';
   const isLast=currentCardIdx===cards.length-1,isLastStop=currentStop.id===stops.length;
   const isCFFS=cc&&cc.type==='desc'&&cc.stop&&cc.stop.cf_style==='fullscreen';
 
@@ -2279,7 +2343,7 @@ function nextCard(){
     setTimeout(()=>{
       const el=document.querySelector('.card-track .card:nth-child('+(currentCardIdx+1)+')');if(el)el.scrollTop=0;
       const ac=cards[currentCardIdx];
-      if(ac&&ac.type==='nav')setTimeout(()=>initStopMap(ac.stop.id, ac.subStop||null),100);
+      if(ac&&ac.type==='nav'){const _ss=ac.subStop||null;const _cid=_ss?`stop-map-${ac.stop.id}-ss-${_ss.id}`:`stop-map-${ac.stop.id}`;setTimeout(()=>initStopMap(_cid, ac.stop, _ss),100);}
       if(ac&&ac.type==='rudy')setTimeout(()=>setupRudyScrollHint(ac),300);
       if(ac&&ac.type==='photo')setTimeout(()=>initPhotoMap(ac),200);
       if(ac&&ac.type==='partner')setTimeout(()=>reloadGalleryImages(),100);
@@ -2320,6 +2384,7 @@ function prevCard(){
   }
 }
 function closeJourney(showEnd){
+  if (!confirm('Leave this stop? Your progress within this stop will be lost.')) return;
   stopCFVideo();
   gameReturnTo=null;
   document.getElementById('journey-screen').classList.remove('show');
@@ -2386,7 +2451,7 @@ function initPhotoMap(card){
   const ss = card && typeof card === 'object' ? card.subStop : null;
   const stop = card && typeof card === 'object' ? card.stop : stops.find(s=>s.id===card);
   const stopId = stop ? stop.id : card;
-  const coord = ss ? [ss.longitude, ss.latitude] : (stop ? [stop.longitude, stop.latitude] : null);
+  const coord = ss ? (_getCoord(ss) || _getCoord(stop)) : (stop ? _getCoord(stop) : null);
   if(!coord)return;
   const mapKey = ss ? 'photo-map-ss-'+ss.id : 'photo-map-'+stopId;
   const container=document.getElementById(mapKey);
@@ -2402,13 +2467,12 @@ function initPhotoMap(card){
   });
 }
 
-function initStopMap(stopId, subStop){
+function initStopMap(containerId, stop, subStop){
   if(!window.mapboxgl)return;mapboxgl.accessToken=MAPBOX_TOKEN;
-  const stop=stops.find(x=>x.id===stopId);
-  const destCoord = subStop ? [subStop.longitude, subStop.latitude] : (stop ? [stop.longitude, stop.latitude] : null);
+  // Try substop coords first, fall back to main stop if substop has none
+  const destCoord = subStop ? (_getCoord(subStop) || _getCoord(stop)) : _getCoord(stop);
   if(!destCoord)return;
-  const containerId = subStop ? `stop-map-${stopId}-ss-${subStop.id}` : 'stop-map-'+stopId;
-  const routeInfoId = subStop ? `route-info-${stopId}-ss-${subStop.id}` : 'route-info-'+stopId;
+  const routeInfoId = containerId.replace('stop-map-', 'route-info-');
   const container=document.getElementById(containerId);
   if(!container||container._mapInitialized)return;
   container._mapInitialized=true;
@@ -2447,7 +2511,7 @@ function initEndMap(){
     const bounds=coords.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(coords[0],coords[0]));endMap.fitBounds(bounds,{padding:45,animate:false,maxZoom:14});
     endMap.addSource('end-route',{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:coords}}});
     endMap.addLayer({id:'end-route-line',type:'line',source:'end-route',paint:{'line-color':'#ff6b35','line-width':3,'line-dasharray':[2,2],'line-opacity':0.85}});
-    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat([stop.longitude, stop.latitude]).addTo(endMap);});
+    stops.forEach((stop,i)=>{const el=document.createElement('div');el.style.cssText='width:28px;height:28px;border-radius:50%;background:#ff6b35;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:900;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(255,107,53,0.5);';el.textContent=stop.id;const sc=_getCoord(stop);if(sc)new mapboxgl.Marker({element:el,anchor:'center'}).setLngLat(sc).addTo(endMap);});
   });
 }
 
@@ -2529,6 +2593,42 @@ async function uploadPhotoToSupabase(dataUrl, stopKey, stopName) {
 }
 
 const MAPBOX_TOKEN='pk.eyJ1IjoicnVkeXJvYW1zIiwiYSI6ImNtbTRtY'+'3ZmazBjcWYycXM5MTU0cHF6aTIifQ.sSDsGX9TVMc0vE1j3LOLjw';
+
+// Extract lat/lng from Google Maps URLs (various formats)
+function _extractCoordsFromMapUrl(url) {
+  if (!url) return null;
+  let m;
+  m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/[?&]ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/[?&]sll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  m = url.match(/destination=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (m) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+  return null;
+}
+
+// Get [lng, lat] for Mapbox from a stop/substop, with map_url extraction as primary source
+function _getCoord(obj) {
+  if (!obj) return null;
+  // Primary: extract from map_url (most reliable, matches Google Maps link)
+  if (obj.map_url) {
+    const c = _extractCoordsFromMapUrl(obj.map_url);
+    if (c) return [c.lng, c.lat];
+  }
+  // Fallback: use stored DB coordinates
+  const lng = parseFloat(obj.longitude);
+  const lat = parseFloat(obj.latitude);
+  if (!isNaN(lng) && !isNaN(lat) && lng !== 0 && lat !== 0) {
+    return [lng, lat];
+  }
+  return null;
+}
 
 function initMap(){
   mapboxgl.accessToken=MAPBOX_TOKEN;
